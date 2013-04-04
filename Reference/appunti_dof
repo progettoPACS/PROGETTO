@@ -1,0 +1,27 @@
+Consideriamo un dominio a sezione quadrata
+z cordinata principale x,y coordinate trasversali
+
+FEM:   N dof nella direzione principale
+	   n dof in entrambe le direzioni (x,y)
+	
+		=> Nn^2 dof totali
+
+HIMOD: N dof nella direzione principale
+	   m dof in entrambe le direzioni (x,y)
+	
+		=> Nm^2 dof totali
+
+esempio
+m=7				dofHIMO/dofFEM=22%  (-78% dof)
+n=15
+
+Pattern  
+ - Hi-Mod è strutturato e ben noto.
+ - FEM 3d---emh non saprei.
+
+Sparsità della matrice.
+ - Hi-Mod ha m^2*(3N-2) elementi non zero.
+ - FEM emh--cacchio se ne sappiamo poco.
+
+Possibile parallelizzazione
+ - Hi-Mod sicuramente in fase di assemblaggio + DD(ma parallelizza davvero?)
