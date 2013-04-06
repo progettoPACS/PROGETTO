@@ -1,0 +1,44 @@
+53% tests passed, 26 tests failed out of 55
+
+Label Time Summary:
+Core               =  73.00 sec
+Darcy              =   3.41 sec
+FSI                =  36.72 sec
+LevelSet           = 1500.03 sec
+Multiscale         =  15.03 sec
+NavierStokes       =   4.99 sec
+Structure          =  51.55 sec
+ZeroDimensional    =   1.03 sec
+
+Total Test time (real) = 1687.59 sec
+
+The following tests FAILED:
+	  3 - Core_ADRAssembler1D_MPI_1 (Failed)
+	  9 - Core_FEFunction_MPI_2 (Failed)
+	 16 - Core_HyperbolicSolver_MPI_2 (Failed)
+	 25 - Core_RegionMarkerID_MPI_1 (Failed)
+	 26 - Core_PartitionIO_Write_MPI_1 (Failed)
+	 27 - Core_PartitionIO_Read_MPI_3 (Failed)
+	 31 - LevelSet_BasicTest_MPI_3 (Timeout)
+	 32 - Darcy_BasicTest_3D_MPI_3 (Failed)
+	 33 - Darcy_BasicTest_2D_MPI_3 (Failed)
+	 34 - NavierStokes_BasicTest_MPI_2 (Failed)
+	 35 - NavierStokes_BasicTest2D_MPI_2 (Failed)
+	 36 - NavierStokes_ExporterEnsightToHDF5_MPI_4 (Failed)
+	 37 - Structure_TimeAdvanceI_MPI_2 (Failed)
+	 38 - Structure_TimeAdvanceII_MPI_2 (Failed)
+	 43 - FSI_Segregated_MPI_2 (Failed)
+	 44 - FSI_MonolithicGI_MPI_2 (Failed)
+	 45 - FSI_MonolithicGE_MPI_2 (Failed)
+	 46 - FSI_restartFSIGI_MPI_2 (Failed)
+	 47 - FSI_restartFSIGCE_MPI_2 (Failed)
+	 49 - Multiscale_Framework_Windkessel0D_MPI_4 (Failed)
+	 50 - Multiscale_Framework_Fluid3D_MTNS_MPI_4 (Failed)
+	 51 - Multiscale_Framework_FSI1D_MNS_MPI_4 (Failed)
+	 52 - Multiscale_Framework_FSI3D_MTNS_MPI_4 (Failed)
+	 53 - Multiscale_Framework_1D-FSI3D-1D_MNSA_MPI_4 (Failed)
+	 54 - Multiscale_Framework_Restart_MPI_4 (Failed)
+	 55 - Multiscale_OneDModel_MPI_1 (Failed)
+Errors while running CTest
+make: *** [test] Errore 8
+
