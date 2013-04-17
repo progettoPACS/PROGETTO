@@ -1,0 +1,37 @@
+97% tests passed, 16 tests failed out of 559
+
+Label Time Summary:
+Amesos       =   4.30 sec
+Anasazi      = 15019.71 sec
+AztecOO      =   0.44 sec
+Belos        = 311.72 sec
+Epetra       =   7.97 sec
+EpetraExt    =   2.85 sec
+Ifpack       =  10.00 sec
+ML           =  13.70 sec
+NOX          =  33.60 sec
+Rythmos      =   8.35 sec
+Teuchos      =   2.83 sec
+Thyra        =   6.33 sec
+Zoltan       =  22.70 sec
+
+Total Test time (real) = 15446.07 sec
+
+The following tests FAILED:
+	123 - Zoltan_ch_simple_zoltan_parallel (Failed)
+	124 - Zoltan_ch_simple_parmetis_parallel (Failed)
+	127 - Zoltan_hg_simple_zoltan_parallel (Failed)
+	272 - Belos_minres_complex_hb_MPI_4 (Failed)
+	325 - Anasazi_Epetra_BlockDavidson_test_0_MPI_4 (Timeout)
+	326 - Anasazi_Epetra_BlockDavidson_test_1_MPI_4 (Timeout)
+	327 - Anasazi_Epetra_BlockDavidson_test_2_MPI_4 (Timeout)
+	331 - Anasazi_Epetra_BlockDavidson_test_6_MPI_4 (Timeout)
+	334 - Anasazi_Epetra_BlockDavidson_auxtest_MPI_4 (Timeout)
+	336 - Anasazi_Epetra_BKS_test_0_MPI_4 (Timeout)
+	339 - Anasazi_Epetra_BKS_nh_test_0_MPI_4 (Timeout)
+	340 - Anasazi_Epetra_BKS_nh_test_1_MPI_4 (Timeout)
+	341 - Anasazi_Epetra_LOBPCG_solvertest_MPI_4 (Failed)
+	344 - Anasazi_Epetra_LOBPCG_auxtest_MPI_4 (Failed)
+	378 - Anasazi_BlockDavidsonThyra_test_MPI_4 (Timeout)
+	379 - Anasazi_BlockKrylovSchurThyra_test_MPI_4 (Timeout)
+Errors while running CTest
