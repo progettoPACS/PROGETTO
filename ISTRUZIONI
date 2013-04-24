@@ -1,0 +1,29 @@
+Per connettersi dal poli via cavo:
+ssh aletti@10.48.136.25
+
+in generale
+ssh aletti@tosca.mate.polimi.it
+opzione -Y per l'interfaccia grafica
+
+Mie cartelle:
+			/u/laureandi/aletti
+			/u/aletti
+
+Per copiare da locale a remoto
+scrivere sul pc locale:
+$ scp file.txt aletti@tosca.mate.polimi.it:/u/laureandi/aletti
+
+Per copiare da remoto in locale
+scrivere, sempre sul pc in locale:
+$ scp aletti@tosca.mate.polimi.it:/u/laureandi/aletti/u.txt prova.txt
+
+indirizzo del REPO
+/u/software/Repository/Packages/pkgbuild
+
+Comando per settare l'ambiente per life
+source /u/software/Repository/Packages/pkgbuild/setenvironment -v --arch=x86_64-sl6
+
+alcune macchine-->da chiarire cosa possiamo usare e nice.
+tosca
+dougga
+mactaris
