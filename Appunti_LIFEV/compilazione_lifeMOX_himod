@@ -1,0 +1,43 @@
+#! /bin/bash
+# author: Antonio Cervone <ant.cervone@gmail.com>
+# modified by Nur Fadel <nuraiman@gmail.com>
+# last update: 16-04-2012
+
+LIFEV_SRC_DIR=/u/laureandi/aletti/lifev
+LIFEV_BUILD_DIR=/u/laureandi/aletti/lifev-build
+LIFEV_INSTALL_DIR=/u/laureandi/aletti/lifev-install
+
+TRILINOS_HOME=${REPO}/opt/trilinos−10.12.2
+PARMETIS_HOME=${REPO}/opt/parmetis-3.1.1
+
+mkdir -p ${LIFEV_BUILD_DIR}
+cd ${LIFEV_BUILD_DIR}
+rm -f CMakeCache.txt
+cmake \
+  -D CMAKE_SYSTEM_PREFIX_PATH:PATH=$REPO \
+  -D CMAKE_INSTALL_PREFIX:PATH=$LIFEV_INSTALL_DIR \
+  -D CMAKE_BUILD_TYPE:STRING=profiling \
+  -D CMAKE_CXX_FLAGS:STRING="-Wall -Wconversion -ansi " \
+  -D LifeV_Core_ENABLE_SPIRIT_PARSER:BOOL=ON \
+  -D LifeV_ENABLE_ALL_PACKAGES:BOOL=OFF \
+  -D LifeV_ENABLE_Core:BOOL=ON \
+  -D LifeV_ENABLE_ETA:BOOL=ON \
+  -D LifeV_ENABLE_HiMod:BOOL=ON \
+  -D LifeV_ENABLE_EXAMPLES:BOOL=ON \
+  -D LifeV_ENABLE_TESTS:BOOL=ON \
+  -D Track_ENABLE_EXAMPLES:BOOL=ON \
+  -D LifeV_ENABLE_STRONG_CXX_COMPILE_WARNINGS:BOOL=ON \
+  -D MPI_BASE_DIR:PATH=$REPO \
+  \
+  -D Trilinos_INCLUDE_DIRS:PATH=$TRILINOS_HOME/include \
+  -D Trilinos_LIBRARY_DIRS:PATH=$TRILINOS_HOME/lib \
+  \
+  -D ParMETIS_INCLUDE_DIRS:PATH=$PARMETIS_HOME/include \
+  -D ParMETIS_LIBRARY_DIRS:PATH=$PARMETIS_HOME/lib \
+  \
+  -D Boost_NO_BOOST_CMAKE:BOOL=ON \
+  -D BOOST_ROOT:PATH=$REPO \
+  $*\
+  $LIFEV_SRC_DIR || return 1
+
+#  -D BUILD_SHARED_LIBS:BOOL=TRUE \
