@@ -1,0 +1,26 @@
+\documentclass[a4paper,11pt,notitlepage,fleqn]{report}
+
+\usepackage[italian]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{amsthm}
+\usepackage{amstext}
+\usepackage{array}
+\usepackage{graphicx,color,psfrag,pgfplots}
+\usepackage[tight]{subfigure}
+\usepackage[bf,small]{caption}
+\usepackage{bbm}
+\usetikzlibrary{patterns}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\figref}[1]{( Fig.\ref{#1} )}
+\theoremstyle{plain}
+\newtheorem{teorema}{Teorema}
+\graphicspath{{img/}}
+
+
+\begin{document}
+\input{fronte}
+\clearpage
+\tableofcontents
+\input{conti}
+\clearpage
+\end{document}
