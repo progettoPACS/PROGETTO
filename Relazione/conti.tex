@@ -23,27 +23,15 @@ u=0 & \text{su $\Gamma _{vaso}$} \\
 \begin{center}
 \begin{tikzpicture}
 [scale=1.5]
-%\begin{axis}
-%[
- %xmin=0,xmax=1,ymin=0,ymax=1,
- %xtick={0},
- %xticklabels={},
- %ytick={0},
- %yticklabels={},
-  %axis y line=left, 
-  %axis x line=bottom,
- %width=0.55\textwidth,
- %height=0.24\textwidth
- %]
-% \end{axis}
 
 \draw [thick] (2,0) rectangle (3,1);
-%\node (inflow) at (-0.25,0.5) {$\Gamma_{in}$};
-%\node (outflow) at (5.25,0.5) {$\Gamma_{out}$};
-%\node (up) at (2.5,1.15) {$\Gamma_{Up}$};
-%\node (down) at (2.5,-0.15) {$\Gamma_{Down}$};
-%\node (x) at (5.4,-0.15) {$x$};
-%\node (y) at (-0.2,1.4) {$y$};
+\node at (-0.25,1.25) {$\Gamma_{in}$};
+\node at (3.3,0.5) {$\Gamma_{out}$};
+\node at (2,1.75) {$\Gamma_{vaso}$};
+\node at (0.5,0.4) {$\gamma_{x}$};
+%\node at (0.7,0.88) {$\gamma_{x}$};
+
+
 \draw [thick] (2,1)--(0,2)--(1,2)--(3,1);
 \draw [thick] (2,0)--(0,1)--(0,2);
 
@@ -100,19 +88,20 @@ Si adoperi l'espansione tramite i coefficienti di Fourier della $u_m(x,y,z)=\sum
 \end{displaymath}
 e si considerino le funzioni test $v_m=\vartheta(x)\varphi _k(y,z)$ con $\vartheta(x)\in V_{1D}$ e $k=1,...m$. Il problema assume la seguente forma:
 \begin{multline}
-\sum_{j=1}^m
-\int_\Omega\mu\nabla (\tilde{u}_j(x)\varphi _j(y,z))\nabla (\vartheta(x)\varphi _k(y,z))\,dxdydz+\\
-\int_\Omega\left(\vect{b}\nabla (\tilde{u}_j(x)\varphi _j(y,z))+\sigma (\tilde{u}_j(x)\varphi _j(y,z))\right)\vartheta(x)\varphi _k(y,z)\,dxdydz =\\
-\int_\Omega f\vartheta(x)\varphi _k(y,z)\,dxdydz\\
+\sum_{j=1}^m \Bigg[
+\int_\Omega\mu\nabla (\tilde{u}_j(x)\varphi _j(y,z))\nabla (\vartheta(x)\varphi _k(y,z))\,dxdydz\\
++\int_\Omega\vect{b}\nabla (\tilde{u}_j(x)\varphi _j(y,z)\vartheta(x)\varphi _k(y,z)\,dxdydz\\
++\int_\Omega\sigma\tilde{u}_j(x)\varphi _j(y,z)\vartheta(x)\varphi _k(y,z)\,dxdydz \Bigg] \\
+=\int_\Omega f\vartheta(x)\varphi _k(y,z)\,dxdydz\\
 \end{multline}
 
 Svolgendo l'operatore gradiente si ottiene:
 \begin{multline}
-\sum_{j=1}^m
+\sum_{j=1}^m \Bigg[
 \int_\Omega\mu( \partial_x\tilde{u}_j \partial_x\vartheta\varphi _j\varphi _k + \tilde{u}_j \vartheta \partial_y\varphi _j\partial_y\varphi _k + \tilde{u}_j \vartheta \partial_z\varphi _j\partial_z\varphi _k)\,dxdydz \\
-+ \int_\Omega (b_1\partial_x\tilde{u}_j\varphi _j+b_2\tilde{u}_j\partial_y\varphi _j + b_3\tilde{u}_j\partial_z\varphi_j)\vartheta\varphi _k\,dxdydz + \\ 
-\int_\Omega \sigma\tilde{u}_j\vartheta\varphi _j\varphi _k\,dxdydz =\\
-\int_\Omega f\vartheta\varphi _k\,dxdydz
++ \int_\Omega (b_1\partial_x\tilde{u}_j\varphi _j+b_2\tilde{u}_j\partial_y\varphi _j + b_3\tilde{u}_j\partial_z\varphi_j)\vartheta\varphi _k\,dxdydz\\ 
++ \int_\Omega \sigma\tilde{u}_j\vartheta\varphi _j\varphi _k\,dxdydz \Bigg]\\
+=\int_\Omega f\vartheta\varphi _k\,dxdydz
 \end{multline}
 
 
@@ -128,10 +117,10 @@ X_h^r= \left\{\psi_h \in C^0(\Omega_{1D}): \psi_h \vert_K  \in \mathbb{P}_r,\for
 
 \begin{multline}
 \sum_{j=1}^m \sum_{s=1}^N
-u_{js} \Bigg( \int_\Omega\mu( \partial_x\psi_s \partial_x\psi_l\varphi _j\varphi _k + \psi_s \psi_l \partial_y\varphi _j\partial_y\varphi _k + \psi_s \psi_l \partial_z\varphi _j\partial_z\varphi _k)\,dxdydz \\
-+ \int_\Omega (b_1\partial_x\psi_s\varphi _j+b_2\psi_s\partial_y\varphi _j + b_3\psi_s\partial_z\varphi_j)\psi_l\varphi _k\,dxdydz + \\ 
-\int_\Omega \sigma\psi_s\vartheta\varphi _j\varphi _k\,dxdydz \Bigg) =\\
-\int_\Omega f\psi_l\varphi _k\,dxdydz
+u_{js} \Bigg[ \int_\Omega\mu( \partial_x\psi_s \partial_x\psi_l\varphi _j\varphi _k + \psi_s \psi_l \partial_y\varphi _j\partial_y\varphi _k + \psi_s \psi_l \partial_z\varphi _j\partial_z\varphi _k)\,dxdydz \\
++ \int_\Omega (b_1\partial_x\psi_s\varphi _j+b_2\psi_s\partial_y\varphi _j + b_3\psi_s\partial_z\varphi_j)\psi_l\varphi _k\,dxdydz\\ 
++\int_\Omega \sigma\psi_s\psi_l\varphi _j\varphi _k\,dxdydz \Bigg]\\
+=\int_\Omega f\psi_l\varphi _k\,dxdydz
 \end{multline}
 
  Si osservi che il doppio indice $"js"$, in realt\`a scorre un vettore, la rimappatura in un solo indice pu\`o 
@@ -151,5 +140,19 @@ In generale il problema che si porrebbe ora sarebbe la scelta della base modale.
 \varphi_j(y,z)=sin\left(\frac{\alpha}{\pi L_y}y\right)sin\left(\frac{\beta}{\pi L_z}z\right)
 &
 \lambda_j=\alpha^2+\beta^2
+\end{array}
+\end{equation}
+
+
+\section{Implementazione integrali}
+
+Nel caso i coefficienti del problema ADR siano dipendenti dalla sola coordinata $x$ o risultino fattorizabili lungo la direzione $x$ e il piano ortogonale, il risultato finale di HiMod \`e la trasformazione di un problema ADR full 3D a $m^2$ problemi ADR 1D accoppiati con coefficienti modificati opportunatamente dalle funzioni modali a seconda della coppia di frequenze considerata. Nel caso non ricadiamo in tale ipotesi vale comunque la scomposizione in problemi 1D ma risulta pi\`u delicata l'integrazione.
+\textcolor{red}{Nel caso si fattorizza anche $\mu$ proiettandola sulle basi modali, non penso che dia dei buoni risultati, tuttavia \`e fattibile}
+
+\begin{equation}
+\begin{array}{l r}
+\partial_x\psi_s\partial_x\psi_l & \int_{\gamma_x} \mu\varphi_j\varphi_k\,dydz \\
+\partial_x\psi_s\psi_l & \int_{\gamma_x}\varphi_j\varphi_k\,dydz\\
+\psi_s\psi_l & \int_{\gamma_x}(\mu\partial_y\varphi _j\partial_y\varphi _k + \mu\partial_z\varphi _j\partial_z\varphi _k + b_2\partial_y\varphi_j\varphi_k +b_3\partial_z\varphi_j\varphi_k + \sigma\varphi_j\varphi_k)\,dydz
 \end{array}
 \end{equation}
