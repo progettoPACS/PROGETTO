@@ -1,0 +1,76 @@
+EPETRA 
+Qui viene spiegato in dettaglio tutto:
+<http://trilinos.sandia.gov/Trilinos10.6Tutorial.pdf>
+
+
+idea alla base della MAPPA: ho a che fare con un vettore di N elementi -> creo una mappa che mi associa ogni elemento del vettore a un processore diverso, come suddivide gli elementi? beh dipende dal costruttore che si usa.
+
+
+
+<http://www2.mate.polimi.it/corsi/materiale/incinf2012/trilinos_presentation.pdf>
+
+
+due tipologie di vettori 
+
+1)  ereditano da Epetra_SerialDenseMatrix
+Epetra_SerialDenseVector (sequenziale)
+
+Epetra_SerialIntDenseVector V(100);
+Epetra_SerialDenseVector V(100);
+
+
+2) eriditano da Epetr_MultiVector.
+Epetra_Vector (distributed)
+#per forza con la mappa!
+
+Epetra_Vector x(mappa); //default
+Epetra_Vector y(x); //copia!
+Epetra_Vector x(Copy,mappa,localvalues); //??
+
+x[i]=1.0*i;
+
+due modi per accedere:
+
+Epetra CopyMode--> ExtractCopy()
+Epetra ViewMode--> ExtractView()
+ResetView() (erase evert value)
+
+MATRICI!
+anche qui due tipi sequenziale e distribuito
+
+Epetra_SerialDenseMatrix vs Epetra_Matrix
+
+
+Epetra_Matrix
+-> Creare un vettore di interi Nnz lungo quante sono le righe della matrice.
+->loop sulle righe locali + calcolo degli elementi nnz su ogni riga
+->creare la matrice sparsa
+->riempirla
+
+
+Epetra_CrsMatrix A(Copy,Map,NumNz);
+
+per riempirla servono indexes a values
+per ogni riga indice contiene gli indici di colonna globali.
+
+InsertGlobalValues(GlobalRow, NumEntries, Values, Indices)
+
+A.FillComplete();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

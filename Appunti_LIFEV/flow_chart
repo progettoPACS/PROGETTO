@@ -1,0 +1,38 @@
+Flow chart!
+
+Obiettivo: 
+	scrivere solutore per un problema ADR a coefficienti costanti, con forzante (costante?) su un dominio (0,L)x(0,x1)x(0,x2)
+	condizioni di Dirichlet OMOGENEE sui lati
+	condizioni Dirichlet all'inflow
+		   Neumann (omogenee?) all'outflow
+
+
+
+Lettura da file di:
+
+	mu, beta1, beta2, sigma COSTANTI REALI
+	f (costante?)
+	m (# di modi)
+	BC
+
+
+Base modale --> come?
+
+
+Struttura a blocchi.
+
+
+Creare la struttura a blocchi della matrice  -->  come si affronta la parallelizzazione? ogni blocco è condiviso (più facile da implementare)
+												  										 ad ogni processore viene assegnato un certo numero di
+																						 blocchi (forse più efficiente)
+
+
+Assemblaggio --> per ogni blocco calcolare r_kj^st  (come? sul riferimento? umh..)
+			 --> ADRAssembler
+			 --> BCfem --> calcolare proiezione dato di Dirichlet su base modale
+			 		   --> come applicare BC? occorre riflettere un attimo.
+
+
+Risoluzione
+
+PostProcessing

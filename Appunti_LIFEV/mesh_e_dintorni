@@ -1,0 +1,17 @@
+Dall'esempio in lifev/core/testsuit/adr_assembler/1d si scopre che:
+
+La classe più importante è 
+		RegionMesh<  >
+nel codice viene istanziata su LinearLine, LinearLine è una classe istanziata in ElementShape.hpp  ed è più o meno un segmento.
+
+La funzione che viene utilizzata è contenuta in RegionMesh1DStructured.hpp
+
+template <typename MeshType>
+void regularMesh1D ( MeshType& mesh,
+                     markerID_Type regionFlag,
+                     const UInt& numberOfElements,
+                     bool verbose = false,
+                     const Real& length = 1.,
+                     const Real& origin = 0. )
+
+//TODO cosa è region FLAG nell'esempio viene messo a 0.
