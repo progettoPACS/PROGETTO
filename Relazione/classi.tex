@@ -1,0 +1,70 @@
+\chapter{Descrizione classi}
+\section{Modalspace}
+
+Modalspace \'e una classe base da cui derivano le figlie di modalspace che nascono dal momento che tipo di condizioni al bordo di parete vengono scelte.
+
+Perch\'e si \'e scelto questo tipo di eredit\'a? Gli autovalori generati e le rispettive basi sono propriet\'a esclusiva del tipo di p roblema ai limiti che si intende istanziare. Dunque le classi figlie si preoccupano di calcolare l'appropriata successione di autovalori e inoltre registrano i valori nodali delle funzioni di base sulla griglia di quadratura scelta. I dati vengono raccolti nei membri:
+
+\begin{itemize}
+\item Eigenvalues
+\item Mphi
+\item Mdphi
+\end{itemize}
+
+Fissandoci sulla slice di riferimento $[0,1]\times[0,1]$, si osserva che l'unico parametro che occorre ad una figlia per generare i materiale elencato precedentemente è la specifica delle condizioni di bordo \textcolor{red}{anche mtot!!}.
+
+\textcolor{red}{Mi sta venendo un dubbio, il discorso della factory mi aveva intrigato, tuttavia mi stavo chiedendo, ma noi cosa registriamo di preciso?Un oggetto modalspace DDDD a cui per\'o vanno specificati mtot, gli autovalori e i valori delle basi?Dovrei registrare modalspaceDDDD per ogni possibile valore di mtot!!!Forse mi sfugge qualcosa....}
+
+
+Modalspace raccoglie gli elementi e le operazioni comuni a tutti i suoi figli tra questi vi sono sicuramente:
+\begin{itemize}
+\item Dimensioni della slice
+\item Numero modi utilizzato
+\item Regola di quadratura
+\item Calcolo coefficienti Fourier g(y,z) - vettore [g1 g2 ...]
+\item Calcolo del coefficiente Fuourier di g(x,y,z) - reale (g(x))
+\end{itemize}
+
+\textcolor{red}{In realt\'a Eigenvalues appartiene ancora a Modalspace sar\'a il caso di sposatarlo?Fare attenzione a findmyzmax() che è definito in Modalspace.cpp, lo teniamo perch\'e le funzioni comuni fanno usa di tale membro?Dovremmo costruire il getter nelle classi figlie secondo me sarebbe pi\'u coerente}
+
+Stabiliti infatti i valori nodali delle funzioni di base e delle loro derivate tutte le basi modali istruite possono essere trattate alla stessa maniera. Sono comuni infatti i seguenti metodi (con j si intende l'indice legato alla soluzione e con k quello legato alla funzione test):
+\begin{itemize}
+\item ComputePhiPhi $\int_{\gamma_x}\varphi_j(y,z)\varphi_k(y,x) \,dydz$
+\item ComputeDyPhiPhi $\int_{\gamma_x} \partial_y \varphi_j(y,z)\varphi_k(y,x) \,dydz$
+\item ComputeDzPhiPhi
+$\int_{\gamma_x} \partial_z \varphi_j(y,z)\varphi_k(y,x) \,dydz$
+\item ComputeDyPhiDyPhi $\int_{\gamma_x} \partial_y \varphi_j(y,z)\partial_y\varphi_k(y,x) \,dydz$
+\item ComputeDzPhiDzPhi
+$\int_{\gamma_x} \partial_z \varphi_j(y,z)\partial_z\varphi_k(y,x) \,dydz$
+\item ComputePhi
+$\int_{\gamma_x} \varphi_k(y,x) \,dydz$
+\end{itemize}
+
+L'elemento principale di questa classe \'e ConstructModalBasis. In realt\'a tale metodo non \'e altro che un wrappers che facilita l'istanziamento della classe da parte dell'utente. Infatti dietro tale metodo si nasconde una chiamata alla factory dove sono schedati i possibili figli di ModalSpace.
+ \textcolor{red}{Qua possiamo aggiungere il codice di ConstructModalBasis cos\'i si capisce cosa nascondiamo.}
+ 
+ \textcolor{blue}{Mi sono convinto che l'approccio ereditariet\'a \'e quello migliore, tuttavia dovremmo vedere il reale utilizzo che facciamo di questa factory}
+ 
+\section{HiModAssembler  HiModView}
+ 
+ Sono momentaneamente separate ma \'e chiaro che devono appartenere alla stessa classe, ovvero a quella che sintetizzer\'a insieme Modalspace e FESpace 1D (ovvero quello costruito sulla fibra di supporto).
+ 
+ \textcolor{red}{HiModView e HiModAssembler devono continuamente lavorare con gli elementi di Modalspace e FESpace 1D non sarebbe il caso di instaurare un legame pi\'u intimo?Magari specificando l'amicizia di HiMod con Modalspace e FESpace?Troppo incasinato?Si velocizza il tutto (non occorre infatti passare dai noiosi getters)?}
+ 
+Gli unici membri di HiModAssembler e HiModView sono fespace e modalbasis (in HiModAssembler c'\'e anche etfespace ma direi che dobbiamo toglierlo e non farlo creare nel main, quella \'e sicuramente una questione interna di come abbiamo voluto implementare il calcolo dei coefficienti della matrice, inoltre aumentiamo in leggibilit\'a).
+
+Ecco le uilit\'a di HiModAssembler:
+\begin{itemize}
+\item AddADRProblem
+\item interpolate
+\item Addrhs (costante e functionType)
+\item Addrhsfunctor
+\item AddDirichletBCIn (Momentanemente via penalizzazione)
+\end{itemize}
+
+Ecco invece le utilit\'a di HiModView:
+\begin{itemize}
+\item funCoeff3D (genera i valori nodali su una griglia partendo dal vettore soluzione o da una funzione)
+\item normL2 (dato il vettore che sputa fuori funCoeff3D ne fa la normaL2)
+\item ConvergeFile (crea un file di output gestibile tramite getpot, utilizzo limitato al testconvergence)
+\end{itemize}
