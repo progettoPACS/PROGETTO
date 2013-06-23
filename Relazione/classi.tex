@@ -42,7 +42,35 @@ $\int_{\gamma_x} \varphi_k(y,x) \,dydz$
 
 L'elemento principale di questa classe \'e ConstructModalBasis. In realt\'a tale metodo non \'e altro che un wrappers che facilita l'istanziamento della classe da parte dell'utente. Infatti dietro tale metodo si nasconde una chiamata alla factory dove sono schedati i possibili figli di ModalSpace.
  \textcolor{red}{Qua possiamo aggiungere il codice di ConstructModalBasis cos\'i si capisce cosa nascondiamo.}
- 
+
+
+\begin{lstlisting}
+boost::shared_ptr <ModalSpace> ModalSpace::
+ConstructModalBasis ( 	const Real & Ly,
+ 			const Real & Lz, 
+ 			const UInt & M, 
+ 			const std::string & down, 
+ 			const std::string & left, 
+ 			const std::string & up, 
+ 			const std::string & right )
+{
+	std::string bc = down + left + up + right;
+	std::string id;
+
+	if(bc == "dirdirdirdir")
+	{
+		id = "DDDD";
+	}
+	else if (bc == "robrobrobrob")
+	{
+		id = "RRRR"
+	}
+	else
+	{
+		ERROR_MSG ("This kind of bc has not been implemented yet, please add it!");
+	}
+}
+\end{lstlisting} 
  \textcolor{blue}{Mi sono convinto che l'approccio ereditariet\'a \'e quello migliore, tuttavia dovremmo vedere il reale utilizzo che facciamo di questa factory}
  
 \section{HiModAssembler  HiModView}
@@ -68,3 +96,81 @@ Ecco invece le utilit\'a di HiModView:
 \item normL2 (dato il vettore che sputa fuori funCoeff3D ne fa la normaL2)
 \item ConvergeFile (crea un file di output gestibile tramite getpot, utilizzo limitato al testconvergence)
 \end{itemize}
+
+
+\section{Educated Basis}
+
+Le Educated Bases (E.B.) sono una scelta possibile da adottare nella risoluzione di un problema ADR con tecniche di riduzione gerarchica. Il concetto base si fonda sul teorema (citazione di Salsa) e sullipotesi di separabilit\`a delle variabili. Le E.B. vengono costruite "ad hoc" sulle condizioni di vaso del problema in oggetto. L'algoritmo che permette la generazione di queste basi \`e riassunto qui di seguito:
+\begin{itemize}
+\item[\textbf{1.}] \textbf{Costruzione di un problema ausiliario} che rispecchi la natura delle condizioni alle pareti del problema originale (devono essere omogenee) e passaggio ai relativi problemi agli autovalori.
+\mybox{
+Nel caso si abbiano condizioni di robin uguali sull'intera parete del vaso, dovremo considerare il seguente problema ausiliario:
+\begin{equation}
+\label{eq: problema RRRR}
+\begin{cases}
+-\Delta u(y,z)= 0 & \text{in $\gamma_x$}\\
+\mu \nabla u(y,z) \cdot \vect{n}_{\gamma_x} +\chi u(y,z)=0 & \text{su $\Gamma_{vaso}$} \\
+\end{cases}
+\end{equation}
+Si passi ora al problema agli autovalori associato al precedente sistema e ipotizzando la separazione di variabili per $u(y,z)=\varphi(y)\vartheta(z)$, si arrivano facilmente ad ottenere i seguenti sottoproblemi agli autovalori:
+\begin{equation}
+\label{eq: problema RR1}
+\begin{cases}
+-\varphi(y)'' = K_y\varphi(y) & \\
+\mu \varphi(y)' +\chi \varphi(y) = 0 & \text{per $y=L_y$} \\
+-\mu \varphi(y)'+\chi \varphi(y)=0 & \text{per $y=0$} \\
+\end{cases}
+\end{equation}
+\begin{equation}
+\label{eq: problema RR2}
+\begin{cases}
+-\vartheta(z)'' = K_z\vartheta(z) & \\
+\mu \vartheta(z)' +\chi \vartheta(z) = 0 & \text{per $z=L_z$} \\
+-\mu \vartheta(z)'+\chi \vartheta(z)=0 & \text{per $z=0$} \\
+\end{cases}
+\end{equation}
+}{Esempio - RRRR}
+
+\item[\textbf{2.}] \textbf{Identificazione del tipo di soluzione} dei problemi agli autovalori associati.
+
+\mybox{
+Per i sottoproblemi ottenuti i generi di soluzione sono i seguenti:
+\begin{equation}
+\label{eq: 1sottoproblema}
+\begin{array}{c}
+\varphi (y)=Asin(\sqrt{K_y}y)+Bcos(\sqrt{K_y}y) \\ \\
+\vartheta (z)=Asin(\sqrt{K_z}z)+Bcos(\sqrt{K_z}z)
+\end{array}
+\end{equation}
+
+}{Esempio - RRRR}
+
+\item[\textbf{3.}] \textbf{Ricerca degli autovalori di un sottoproblema} tramite risoluzione dell'equazione non lineare associata ad esso, ottenuta risolvendo le condizioni di bordo.
+\mybox{
+Nel caso trattato in esempio le equazioni che si ottengono sono le seguenti ($x = \sqrt{K_y}$ e $w= \sqrt{K_z}$):
+\begin{equation}
+\label{eq: funzione autovalori}
+\begin{array}{c}
+f(x)= 2\mu x + tan(L_y x)\left(\chi - \frac{\mu ^2 x^2 }{\chi} \right) \\ \\
+f(w)= 2\mu w + tan(L_z w)\left(\chi - \frac{\mu ^2 w^2 }{\chi} \right)
+\end{array}
+\end{equation}
+}{Esempio - RRRR}
+
+\end{itemize}
+
+Come presentato in breve nel capitolo (Nozioni base), HiMod si basa sulla riduzione dei gradi di libert\'a ordinando le basi scelte in maniera gerarchica, pesando maggioramente quelle legate alle frequenze pi\'u basse. Dunque il primo passo \'e capire, dato un numero di modi massimo per il problema 2d (sulla slice), qual'\'e il set di basi modali da utilizzare.
+\mybox{
+Nel caso di condizioni al bordo di Dirichlet il problema si semplifica. Infatti non occorre adottare l'algoritmo mostrato precedentemente, gli autovalori che si ottengono sono noti a priori e sono della forma:
+\begin{equation}
+\label{eq: problema agli autovalori dirichlet}
+\begin{array}{c l}
+K_y = \big( \frac{\pi p}{L_y}\big)^2 & p = 1, ... ,m_y\\
+K_z = \big( \frac{\pi q}{L_z}\big)^2 & q = 1, ... ,m_z\\
+\end{array}
+\end{equation}
+Dunque \'e nota la relazione $\lambda(K_y,K_z)$ a priori e risulta molto semplice ordinare in modo crescente gli autovalori definendo quindi $m_y$ e $m_z$.
+}{Osservazione}
+
+\textcolor{red}{Possiamo discutere velocemente l'albero delle scelte (che poi sarebbe la funzione EigensProvider), che in realt\'a sar\'a utilizzato tale e quale per il caso generale delle educated basis, infatti se adesso il passaggio \'e semplicemente p = p +1, dopo il passaggio sar\'a p = Next().
+La ricerca degli autovalori rallenter\'a parecchio dato che si dovr\'a risolvere un problema non lineare ogni volta che si vuole aggiornare un nodo.}
