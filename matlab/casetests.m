@@ -1,8 +1,11 @@
-Ly=2;
-Lz=2;
-Lx=3;
+Ly=0.1;
+Lz=0.1;
+Lx=0.2;
 
-ues=sym('y*(Ly-y)*z*(Lz-z)*exp((x-Lx)^2*y*z*2)');
+%ues=sym('y*(Ly-y)*z*(Lz-z)*exp((x-Lx)^2*y*z*2)');
+
+ues=sym('y*(Ly-y)*z*(Lz-z)*(x-Lx)^2*exp((x-Lx)^2*y*z*2)');
+
 dxues=diff(ues,'x');
 dyues=diff(ues,'y');
 dzues=diff(ues,'z');
@@ -13,7 +16,7 @@ LAPLues=dxxues+dyyues+dzzues;
 
 neumann_out=subs(subs(dxues,'Lx',Lx),'x',Lx)
 
-dirichlet_in=subs(subs(dxues,'Lx',Lx),'x',0)
+dirichlet_in=subs(ues,'x',0)
 
 S=sym('S');
 Bx=sym('Bx');
@@ -30,3 +33,17 @@ bz=0;
 mu=1;
 
 f=subs(subs(subs(subs(subs(f,'S',s),'Bx',bx),'By',by),'Mu',mu),'Bz',bz)
+
+[x,y,z] = meshgrid(0:Lx/100:Lx,0:Ly/100:Ly,0:Lz/100:Lz);
+u=matlabFunction(ues);
+v=u(Lx,Ly,Lz,x,y,z);
+
+xslice = linspace(0,Lx,10); yslice = []; zslice = [];
+contourslice(x,y,z,v,xslice,yslice,zslice);daspect([1,1,1])
+camva(6); 
+camproj perspective;
+campos([0.6,-0.9,0.45])
+set(gcf,'Color',[.5,.5,.5],'Renderer','zbuffer')
+set(gca,'Color','black','XColor','white', ...
+	'YColor','white','ZColor','white')
+box on
