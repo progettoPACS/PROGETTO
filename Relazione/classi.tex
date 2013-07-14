@@ -101,6 +101,7 @@ Ecco invece le utilit\'a di HiModView:
 \section{Educated Basis}
 
 Le Educated Bases (E.B.) sono una scelta possibile da adottare nella risoluzione di un problema ADR con tecniche di riduzione gerarchica. Il concetto base si fonda sul teorema (citazione di Salsa) e sullipotesi di separabilit\`a delle variabili. Le E.B. vengono costruite "ad hoc" sulle condizioni di vaso del problema in oggetto. L'algoritmo che permette la generazione di queste basi \`e riassunto qui di seguito:
+
 \begin{itemize}
 \item[\textbf{1.}] \textbf{Costruzione di un problema ausiliario} che rispecchi la natura delle condizioni alle pareti del problema originale (devono essere omogenee) e passaggio ai relativi problemi agli autovalori.
 \mybox{
@@ -156,7 +157,6 @@ f(w)= 2\mu w + tan(L_z w)\left(\chi - \frac{\mu ^2 w^2 }{\chi} \right)
 \end{array}
 \end{equation}
 }{Esempio - RRRR}
-
 \end{itemize}
 
 Come presentato in breve nel capitolo (Nozioni base), HiMod si basa sulla riduzione dei gradi di libert\'a del sistema discreto, questo risultato si ottiene ordinando le basi scelte in maniera gerarchica ed utilizzando quelle legate alle frequenze pi\'u basse. Dunque il primo passo \'e capire, dato un numero di modi massimo che si vuole dedicare per la componente trasversale, qual'\'e il set di basi modali da utilizzare.
@@ -172,5 +172,48 @@ K_z = \big( \frac{\pi q}{L_z}\big)^2 & q = 1, ... ,m_z\\
 Dunque \'e nota la relazione $\lambda(K_y,K_z)$ a priori e risulta molto semplice ordinare in modo crescente gli autovalori definendo quindi $m_y$ e $m_z$.
 }{Osservazione}
 
+
 \textcolor{red}{Possiamo discutere velocemente l'albero delle scelte (che poi sarebbe la funzione EigensProvider), che in realt\'a sar\'a utilizzato tale e quale per il caso generale delle educated basis, infatti se adesso il passaggio \'e semplicemente p = p +1, dopo il passaggio sar\'a p = Next().
 La ricerca degli autovalori rallenter\'a parecchio dato che si dovr\'a risolvere un problema non lineare ogni volta che si vuole aggiornare un nodo.}
+
+Esponiamo quindi lo pseudocodice che, dato il numero di modi da utilizzare, determina l'elenco delle frequenze e sotto frequenze:
+
+
+\begin{lstlisting}
+//Dichiarazione set di ritorno
+M_Eigenvalues;
+//Suggerisco di farlo un pair di pair visto che non possiamo fare la tupla, la prima pair sono i sotto autovalori, la seconda pair sono le coordinate (ovver p e q)
+
+//Dichiarazione set degli scarti
+scarti;
+
+//Inserimento delle prime sottofrequenze e prima coordinata (1,1)
+KzOld = M_EducatedBasisy->Next();
+kyOld = M_educated->BasiszNext();
+M_eigenvalues.insert(make_pair(KyOld,KzOld) );
+
+//Inizializzazione set degli scarti
+scarti.insert(make_pair(M_EducatedBasisy->Next(),KzOld));
+scarti.insert(make_pair(KyOld,M_EducatedBasisz->Next()));
+
+//Ciclo sul numero di modi scelto
+for(UInt i=1;i\M_mtot;++i)
+{
+	//Prendo il primo elemento del vettore degli scarti, che sono ordinati per lambda=Ky+Kz dal più piccolo al più grande e lo inserisco nel set di uscita
+	M_eigenvalues.insert(scarti.begin());
+
+//Inoltre registro le coordinate del nodo preso e i valori dei sottoautovalori
+i = prima coordinata;
+j = seconda coordinata;
+KzOld =  
+KyOld =
+
+//Mi occupo ora di branchare in maniera corretta e senza ricalcolare autovalori che già conosco
+	if(!Check_presence(i+1,j))
+		scarti.insert(Check_eigen(1,i+1),KzOld);
+
+	if(!Check_presence(i,j+1))		
+		scarti.insert(KyOld,Check_eigen(2,j+1));
+}
+\end{lstlisting}
+
