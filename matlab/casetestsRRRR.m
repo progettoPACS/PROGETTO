@@ -17,10 +17,10 @@ Lx=sym('Lx');
 Lz=sym('Lz');
 
 g=sym('0');
-b= 1.0/( 1.0 + x*z);
-fstar=(-2.0/3.0/Ly*b*y^3+b*y^2+g)*70;
-%ues=sym('z*(Lz-z)*exp ( -gamma / Ly * (y -  Ly/2 ) ^ 2 + fstar )');
-ues=10^5*z*(Lz-z)*exp( - gamma/Ly * (y - Ly/2 ) ^ 2 + fstar  )*(Lx-x)^2
+b= 1.0/( 1.0 + x);
+fstary=(-2.0/3.0/Ly*b*y^3+b*y^2+g)*70;
+fstarz=(-2.0/3.0/Lz*b*z^3+b*z^2+g)*70;
+ues=10^5*exp( - gamma/Ly * (y - Ly/2 ) ^ 2 + fstary  )*exp( - gamma/Lz * (z - Lz/2 ) ^ 2 + fstarz  )*(Lx-x)^2
 
 dxues=diff(ues,'x');
 dyues=diff(ues,'y');
@@ -34,6 +34,8 @@ neumann_out  = subs(dxues,'x',Lx)
 dirichlet_in = subs(ues,'x',0)
 robin_left   = -Mu*subs(dyues,'y',0)  +  Chi*subs(ues,'y',0)
 robin_right = +Mu*subs(dyues,'y',Ly) +  Chi*subs(ues,'y',Ly)
+robin_up= Mu*subs(dzues,'z',Lz)  +  Chi*subs(ues,'z',Lz)
+robin_down = -Mu*subs(dzues,'z',0) +  Chi*subs(ues,'z',0)
 
 
 

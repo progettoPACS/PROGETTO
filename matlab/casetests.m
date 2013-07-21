@@ -2,9 +2,7 @@ Ly=0.1;
 Lz=0.1;
 Lx=0.2;
 
-%ues=sym('y*(Ly-y)*z*(Lz-z)*exp((x-Lx)^2*y*z*2)');
-
-ues=sym('y*(Ly-y)*z*(Lz-z)*(x-Lx)^2*exp((x-Lx)^2*y*z*2)');
+ues=sym('10^7*y*(Ly-y)*z*(Lz-z)*(x-Lx)^2*exp((x-Lx)^2*y*z*2)');
 
 dxues=diff(ues,'x');
 dyues=diff(ues,'y');
@@ -26,14 +24,14 @@ Mu=sym('Mu');
 
 f=(-Mu*LAPLues+Bx*dxues+By*dyues+Bz*dzues+S*ues);
 
-s=0;
-bx=0;
-by=0;
-bz=0;
+s=3;
+bx=5;
+by=1;
+bz=1;
 mu=1;
 
 f=subs(subs(subs(subs(subs(f,'S',s),'Bx',bx),'By',by),'Mu',mu),'Bz',bz)
-
+collect(f,sym('exp(2*y*z*(Lx - x)^2)'))
 [x,y,z] = meshgrid(0:Lx/100:Lx,0:Ly/100:Ly,0:Lz/100:Lz);
 u=matlabFunction(ues);
 v=u(Lx,Ly,Lz,x,y,z);
