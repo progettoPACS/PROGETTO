@@ -156,3 +156,23 @@ Nel caso i coefficienti del problema ADR siano dipendenti dalla sola coordinata 
 \psi_s\psi_l & \int_{\gamma_x}(\mu\partial_y\varphi _j\partial_y\varphi _k + \mu\partial_z\varphi _j\partial_z\varphi _k + b_2\partial_y\varphi_j\varphi_k +b_3\partial_z\varphi_j\varphi_k + \sigma\varphi_j\varphi_k)\,dydz
 \end{array}
 \end{equation}
+
+\section{Ipotesi}
+
+Le ipotesi alla base di questo progetto sono le seguenti:
+
+\begin{itemize}
+\item Il dominio di calcolo \`e un parallelepipedo che si estende nell'ottante positivo.
+\item I coefficienti della forma sono assunti costanti.
+\item Viene risolto un problema ADR stazionario con condizioni di inflow di tipo Dirichlet e di outflow di tipo Neumann omogeneo.
+\item Condizioni sulle pareti omogenee (estensione e non omogenee non difficile ma cmq costanti lungo x)
+\end{itemize}
+
+La forma del dominio considerato ci consente agilmente di applicare le tecninche di separazione di variabili e utilizzare la teoria delle basi educate. Pi\`u delicata risulterebbe la gestione di condizioni di bordo sulla parete del vaso, nel caso di sezione a forma generica. Nei capitoli successivi verranno accennate le difficolt\`a che presenta questa tematica.
+Anche nel caso di generalizzazione dei coefficienti della forma, viene presentata una soluzione possibile, tuttavia il codice \`e strutturato per l'utilizzo di coefficienti costanti. In ogni caso consideriamo termini forzanti non costanti lungo il dominio.
+Per quanto il problema a sezione cilindrica potesse sembrare uno stretto parente del parallelepipedo cos\`i non \`e; renderemo chiare le principali differenze, insite nell'equazione risultante dalla separazione di variabili.
+Per quanto riguarda le condizioni di inflow, il codice permette di applicare condizioni di Dirichlet non omogenee, tale generalit\`a non vale per la condizione di Neuamann all'outflow, ma l'eventuale estensione \`e triviale, dato che \`e sufficiente modificare opportunamente la forma bilineare.
+
+Dalla teoria di HiMod sar\`a ormai chiaro che nella discretizzazione del dominio si fondono due concezioni molto diverse, da una parte gli Elementi Finiti lungo la fibra di supporto, dall'altra la base modale 2D, che ricorda molto i metodi spettrali. 
+Dunque l'organizzazione delle classi \`e seguita naturalmente dalle necessit\`del metodo. Avevamo bisogno inizialmente di una classe che ci permettesse di maneggiare gli elementi dello spazio modale, ovvero la classe \textbf{ModalSpace}, ottenuto questo primo risultato \`e stata creata la classe che mette in comunicazione la fibra di supporto con le slices e risolve il problema, ovvero \textbf{HiModAssembler}. Il terzo soggetto principale di questo lavoro \`e \textbf{Basis1DAbstract}, ovvero la classe su cui si appoggia ModalSpace per costruire le basi modali basate sulla teoria delle basi educate.
+Nel prossimo capitolo analizzeremo nel dettaglio queste tre colonne portanti del codice.

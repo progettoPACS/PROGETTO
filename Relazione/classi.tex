@@ -1,6 +1,22 @@
 \chapter{Descrizione classi}
 \section{Modalspace}
 
+Inizialmente ModalSpace \`e stata concepita per essere una classe base, dalla quale ereditasse ogni possibile scelta delle condizioni di bordo sulla parete del vaso. Facendo un rapido conto ci si accorge che comprendendo le condizioni di Dirichlet, Neumann e Robin su una sezione rettangolare arriviamo a 81 possibili combinazioni. Una grande quanti\`a di codice da scrivere, che comprende casistiche molto simili fra loro se non identiche. Questo \`e stato il primo motivo che ci ha portato a scorporare il trattamento delle condizioni di bordo dalla classe ModalSpace per poi includerlo in modo ottimale in Basis1DAbstract. Un secondo punto a favore di questa scelta riguarda la valutazione e la lettura delle basi modali. \`E chiaro che le basi modali sono contenute in ModalSpace, tuttavia ogni figlia avrebbe avuto un tipo di base differente e accedervi tramite la classe base ogni qual volta fosse necessario, non risultava essere efficiente. Infine abbiamo ottenuto maggiore generalit\`a, ModalSpace \`e pronta ad utilizzare nuovi metodi in grado di generare una corretta base modale, infatti la classe possiede esclusivamente le valutazioni delle basi modali su un'opportuna griglia e i generatori di basi.
+
+\subsection{I membri}
+ModalSpace conosce la geometria della sezione (Ly, Lz) e sicuramente deve conoscere il grado di precisione desiderato dall'utente, ovvero il numero di modi da utilizzare (mtot). Nel caso di basi educate per procedere al passo successivo occorrono le condizioni sulla parete del vaso, tuttavia questa operazione \`e stata scorporta dal costruttore generico al fine di garantire una certa generalit\`a e seguendo l'ottica della separazione di variabili sono state create due funzioni pubbliche dedicate ad aggiungere le condizioni di bordo:
+\begin{itemize}
+\item AddSliceBCY(const string left, const string right, const Real mu = 1, const Real Chi =1);
+\item AddSliceBCZ(const string left, const string right, const Real mu = 1, const Real Chi =1)
+\end{itemize}
+
+Un altro punto fondamentale del costruttore generico \`e senz'altro la regola di quadratura da utilizzare sulla slice. Si noti che le basi utilizzate necessitano regole di quadratura di alto ordine e il grado di esattezza \`e strettamente legato al numero di modi. Questo legame \`e evidente se si pensa che maggiore \`e il modo, maggiore sar\`a la frequenza della base modale e di conseguenza si avr\`a bisogno di una fitta successione di nodi di quadratura. Su una sezione quadrata una buona approssimazione dei nodi necessari su ciascun lato \`e $\sqrt{mtot}$. Il risultato non \`e valido nel caso di sezioni molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u nodi lungo la direzione maggiore e meno sull'altra (si porti qui ad esempio i conti che abbiamo fatto sulle basi). In definitiva non parliamo della regola di quadratura, ma piuttosto permettiamo all'utente di scegliere le regole di quadratura da adottare lungo i lati, sar\`a compito suo scegliere un grado di esattezza adeguato per il caso in oggetto.
+
+
+
+
+
+
 Modalspace \'e una classe base da cui derivano le figlie di modalspace che nascono dal momento che tipo di condizioni al bordo di parete vengono scelte.
 
 Perch\'e si \'e scelto questo tipo di eredit\'a? Gli autovalori generati e le rispettive basi sono propriet\'a esclusiva del tipo di p roblema ai limiti che si intende istanziare. Dunque le classi figlie si preoccupano di calcolare l'appropriata successione di autovalori e inoltre registrano i valori nodali delle funzioni di base sulla griglia di quadratura scelta. I dati vengono raccolti nei membri:
@@ -73,7 +89,7 @@ ConstructModalBasis ( 	const Real & Ly,
 \end{lstlisting} 
  \textcolor{blue}{Mi sono convinto che l'approccio ereditariet\'a \'e quello migliore, tuttavia dovremmo vedere il reale utilizzo che facciamo di questa factory}
  
-\section{HiModAssembler  HiModView}
+\section{HiModAssembler}
  
  Sono momentaneamente separate ma \'e chiaro che devono appartenere alla stessa classe, ovvero a quella che sintetizzer\'a insieme Modalspace e FESpace 1D (ovvero quello costruito sulla fibra di supporto).
  
@@ -98,7 +114,7 @@ Ecco invece le utilit\'a di HiModView:
 \end{itemize}
 
 
-\section{Educated Basis}
+\section{Basis1dAbstract}
 
 Le Educated Bases (E.B.) sono una scelta possibile da adottare nella risoluzione di un problema ADR con tecniche di riduzione gerarchica. Il concetto base si fonda sul teorema (citazione di Salsa) e sullipotesi di separabilit\`a delle variabili. Le E.B. vengono costruite "ad hoc" sulle condizioni di vaso del problema in oggetto. L'algoritmo che permette la generazione di queste basi \`e riassunto qui di seguito:
 
