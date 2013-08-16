@@ -4,15 +4,94 @@
 Inizialmente ModalSpace \`e stata concepita per essere una classe base, dalla quale ereditasse ogni possibile scelta delle condizioni di bordo sulla parete del vaso. Facendo un rapido conto ci si accorge che comprendendo le condizioni di Dirichlet, Neumann e Robin su una sezione rettangolare arriviamo a 81 possibili combinazioni. Una grande quanti\`a di codice da scrivere, che comprende casistiche molto simili fra loro se non identiche. Questo \`e stato il primo motivo che ci ha portato a scorporare il trattamento delle condizioni di bordo dalla classe ModalSpace per poi includerlo in modo ottimale in Basis1DAbstract. Un secondo punto a favore di questa scelta riguarda la valutazione e la lettura delle basi modali. \`E chiaro che le basi modali sono contenute in ModalSpace, tuttavia ogni figlia avrebbe avuto un tipo di base differente e accedervi tramite la classe base ogni qual volta fosse necessario, non risultava essere efficiente. Infine abbiamo ottenuto maggiore generalit\`a, ModalSpace \`e pronta ad utilizzare nuovi metodi in grado di generare una corretta base modale, infatti la classe possiede esclusivamente le valutazioni delle basi modali su un'opportuna griglia e i generatori di basi.
 
 \subsection{I membri}
-ModalSpace conosce la geometria della sezione (Ly, Lz) e sicuramente deve conoscere il grado di precisione desiderato dall'utente, ovvero il numero di modi da utilizzare (mtot). Nel caso di basi educate per procedere al passo successivo occorrono le condizioni sulla parete del vaso, tuttavia questa operazione \`e stata scorporta dal costruttore generico al fine di garantire una certa generalit\`a e seguendo l'ottica della separazione di variabili sono state create due funzioni pubbliche dedicate ad aggiungere le condizioni di bordo:
+ModalSpace conosce la geometria della sezione (Ly, Lz) e sicuramente deve conoscere il grado di precisione desiderato dall'utente, ovvero il numero di modi da utilizzare (mtot). 
+Un altro punto fondamentale del costruttore generico \`e senz'altro la regola di quadratura da utilizzare sulla slice. Si noti che le basi utilizzate necessitano regole di quadratura di alto ordine e il grado di esattezza \`e strettamente legato al numero di modi. Questo legame \`e evidente se si pensa che maggiore \`e il modo, maggiore sar\`a la frequenza della base modale e di conseguenza si avr\`a bisogno di una fitta successione di nodi di quadratura. Su una sezione quadrata una buona approssimazione dei nodi necessari su ciascun lato \`e $\sqrt{mtot}$. Il risultato non \`e valido nel caso di sezioni molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u nodi lungo la direzione maggiore e meno sull'altra (si porti qui ad esempio i conti che abbiamo fatto sulle basi, magari una piccola tabellina con gli errori). In definitiva non parliamo della regola di quadratura, ma piuttosto permettiamo all'utente di scegliere le regole di quadratura da adottare lungo i lati, sar\`a compito suo scegliere un grado di esattezza adeguato per il caso in oggetto.
+
+Nel caso di basi educate per procedere al passo successivo occorrono le condizioni sulla parete del vaso, tuttavia questa operazione \`e stata scorporta dal costruttore al fine di garantire una certa generalit\`a e seguendo l'ottica della separazione di variabili sono state create due funzioni pubbliche dedicate ad aggiungere le condizioni di bordo:
 \begin{itemize}
 \item AddSliceBCY(const string left, const string right, const Real mu = 1, const Real Chi =1);
 \item AddSliceBCZ(const string left, const string right, const Real mu = 1, const Real Chi =1)
 \end{itemize}
+Queste  funzioni definiscono il generatore di basi, che nel caso di basi educate \`e strettamente legato alla condizione di parete. Nel caso di future generalizzazioni o aggiunte di nuove basi sar\`a in questo punto che occorrer\`a procedere.
+\textcolor{red}{Qua aprire il discorso della factory?}.
+Infine si conlude il seting della classe ModalSpace tramite la funzione membro pubblica EvaluateBasis(), che chiama le funzioni che si occupano di riempire le cinque strutture dati utili ai fini dei conti.
 
-Un altro punto fondamentale del costruttore generico \`e senz'altro la regola di quadratura da utilizzare sulla slice. Si noti che le basi utilizzate necessitano regole di quadratura di alto ordine e il grado di esattezza \`e strettamente legato al numero di modi. Questo legame \`e evidente se si pensa che maggiore \`e il modo, maggiore sar\`a la frequenza della base modale e di conseguenza si avr\`a bisogno di una fitta successione di nodi di quadratura. Su una sezione quadrata una buona approssimazione dei nodi necessari su ciascun lato \`e $\sqrt{mtot}$. Il risultato non \`e valido nel caso di sezioni molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u nodi lungo la direzione maggiore e meno sull'altra (si porti qui ad esempio i conti che abbiamo fatto sulle basi). In definitiva non parliamo della regola di quadratura, ma piuttosto permettiamo all'utente di scegliere le regole di quadratura da adottare lungo i lati, sar\`a compito suo scegliere un grado di esattezza adeguato per il caso in oggetto.
+\begin{lstlisting}[style = general]
+boost::shared_ptr<ModalSpace> MB (new ModalSpace(Ly,Lz,mtot,quadY,quadZ));
+MB ->AddSliceBCY("dir","dir");
+MB ->AddSliceBCZ("rob","rob",1.,3.);
+MB ->EvaluateBasis();
+\end{lstlisting}
 
+\subsubsection{Strutture dati}
+Diamo un breve descrizione delle strutture dati possedute dalla classe ModalSpace:
+\begin{itemize}
 
+\item \texttt{EigenContainer M\_eigenvalues}, contiene le sottofrequenze e gli indici corrispondenti, viene prodotta in fase di setting dello spazio modale tramite la funzione membro \texttt{EigensProvider()}, chiamata da \texttt{EvaluateBasis()}. Il tipo \`e un \texttt{vector$<$EigenMap$>$} dove:
+ 
+\begin{lstlisting}[style = general]
+struct EigenMap
+{
+	Real wp;	//subfrequency y
+	Real wq;	//subfrequency z
+	UInt p;
+	UInt q;
+	
+	static EigenMap make_eigenmap(const Real& _wp,const Real& _wq,const UInt& _p,const UInt& _q)
+	{
+		EigenMap a;
+		a.wp = _wp;
+		a.wq = _wq;
+		a.p = _p;
+		a.q = _q;
+		return a;	
+	}
+};
+\end{lstlisting}
+L'ordinamento gerarchico degli autovalori e la corrispondenza delle sottofrequenze con i sottoindici \`e fondamentale, approfondiremo in seguito il metodo \texttt{EigensProvider()}.
+
+\item \textbf{MBMatrix\_type M\_phiy}, valutazione delle basi modali lungo la direzione Y sui nodi di quadratura, dimensioni della matrice $p_{max}\times nquadY$;
+
+\item \textbf{MBMatrix\_type M\_phiz}, valutazione delle basi modali lungo la direzione Z sui nodi di quadratura,dimensioni della matrice $q_{max}\times nquadZ$;
+
+\item \textbf{MBMatrix\_type M\_dphiy}, valutazione delle derivate delle basi modali lungo la direzione Y sui nodi di quadratura;
+
+\item \textbf{MBMatrix\_type M\_dphiz}, valutazione delle derivate delle basi modali lungo la direzione Z sui nodi di quadratura;
+
+\end{itemize}
+
+\subsubsection{Metodi di calcolo}
+Approfondiamo ora i metodi che si occupano di calcolare i coefficienti della matrice di sistema.
+
+\begin{itemize}
+\item \texttt{Real ComputePhiPhi(const UInt\& j, const UInt\& k)}
+
+ $\int_{\gamma_x}\varphi_j(y,z)\varphi_k(y,x) \,dydz$
+
+\item \texttt{Real ComputeDyPhiPhi(const UInt\& j,const UInt\& k)} 
+
+$\int_{\gamma_x} \partial_y \varphi_j(y,z)\varphi_k(y,x) \,dydz$
+
+\item \texttt{Real ComputeDzPhiPhi(const UInt\& j,const UInt\& k)} 
+
+$\int_{\gamma_x} \partial_z \varphi_j(y,z)\varphi_k(y,x) \,dydz$
+
+\item \texttt{Real ComputeDyPhiDyPhi(const UInt\& j,const UInt\& k)} 
+
+$\int_{\gamma_x} \partial_y \varphi_j(y,z)\partial_y\varphi_k(y,x) \,dydz$
+
+\item \texttt{Real ComputeDzPhiDzPhi(const UInt\& j,const UInt\& k)} 
+
+$\int_{\gamma_x} \partial_z \varphi_j(y,z)\partial_z\varphi_k(y,x) \,dydz$
+
+\item \texttt{Real ComputePhi(const UInt\& k)} 
+
+$\int_{\gamma_x} \varphi_k(y,x) \,dydz$
+
+\item \texttt{Real Coeff\_fk (	const Real\& x,const function\_Type\& f,const UInt\& k ) const}
+
+\item \texttt{vector$<$Real$>$ FourierCoefficients (const function\_Type\& g) const}
+\end{itemize}
 
 
 
