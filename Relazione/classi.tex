@@ -5,16 +5,31 @@ Inizialmente ModalSpace \`e stata concepita per essere una classe base, dalla qu
 
 \subsection{I membri}
 ModalSpace conosce la geometria della sezione (Ly, Lz) e sicuramente deve conoscere il grado di precisione desiderato dall'utente, ovvero il numero di modi da utilizzare (mtot). 
-Un altro punto fondamentale del costruttore generico \`e senz'altro la regola di quadratura da utilizzare sulla slice. Si noti che le basi utilizzate necessitano regole di quadratura di alto ordine e il grado di esattezza \`e strettamente legato al numero di modi. Questo legame \`e evidente se si pensa che maggiore \`e il modo, maggiore sar\`a la frequenza della base modale e di conseguenza si avr\`a bisogno di una fitta successione di nodi di quadratura. Su una sezione quadrata una buona approssimazione dei nodi necessari su ciascun lato \`e $\sqrt{mtot}$. Il risultato non \`e valido nel caso di sezioni molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u nodi lungo la direzione maggiore e meno sull'altra (si porti qui ad esempio i conti che abbiamo fatto sulle basi, magari una piccola tabellina con gli errori). In definitiva non parliamo della regola di quadratura, ma piuttosto permettiamo all'utente di scegliere le regole di quadratura da adottare lungo i lati, sar\`a compito suo scegliere un grado di esattezza adeguato per il caso in oggetto.
-
-Nel caso di basi educate per procedere al passo successivo occorrono le condizioni sulla parete del vaso, tuttavia questa operazione \`e stata scorporta dal costruttore al fine di garantire una certa generalit\`a e seguendo l'ottica della separazione di variabili sono state create due funzioni pubbliche dedicate ad aggiungere le condizioni di bordo:
+Un altro punto fondamentale del costruttore generico \`e senz'altro la regola di quadratura da utilizzare sulla slice. Si noti che le basi utilizzate necessitano regole di quadratura di alto ordine e il grado di esattezza \`e strettamente legato al numero di modi. Questo legame \`e evidente se si pensa che maggiore \`e il modo, maggiore sar\`a la frequenza della base modale e di conseguenza si avr\`a bisogno di una fitta successione di nodi di quadratura. Su una sezione quadrata una buona approssimazione dei nodi necessari su ciascun lato \`e $\sqrt{mtot}$. Il risultato non \`e valido nel caso di sezioni molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u nodi lungo la direzione maggiore e meno sull'altra. Come esempio si osservi la seguente tabella dove sono riportati i check dei valori di normalit\`a di una base, fissata la regola di quadratura al variare della dimensione $L_y$.
+\begin{equation}
+\textcolor{red}{TABELLA}
+\end{equation}
+Una volta creato l'oggetto \texttt{ModalSpace} bisogna eseguire alcuni set importanti. Per prima cosa dobbiamo impostare i generatori di base lungo le direzioni trasversali. Nel caso di basi educate questa operazione viene eseguita assieme all'imposizione delle condizioni di parete tramite i metodi pubblici:
 \begin{itemize}
-\item AddSliceBCY(const string left, const string right, const Real mu = 1, const Real Chi =1);
-\item AddSliceBCZ(const string left, const string right, const Real mu = 1, const Real Chi =1)
+\item \texttt{void AddSliceBCY(const string left, const string right, const Real mu = 1, const Real Chi =1)};
+\item \texttt{void AddSliceBCZ(const string left, const string right, const Real mu = 1, const Real Chi =1)}
 \end{itemize}
-Queste  funzioni definiscono il generatore di basi, che nel caso di basi educate \`e strettamente legato alla condizione di parete. Nel caso di future generalizzazioni o aggiunte di nuove basi sar\`a in questo punto che occorrer\`a procedere.
-\textcolor{red}{Qua aprire il discorso della factory?}.
-Infine si conlude il seting della classe ModalSpace tramite la funzione membro pubblica EvaluateBasis(), che chiama le funzioni che si occupano di riempire le cinque strutture dati utili ai fini dei conti.
+
+\begin{lstlisting}[style = general]
+void ModalSpace::
+AddSliceBCY (const string& left, const string& right, const Real& mu, const Real& chi)
+{
+	M_genbasisY = Basis1DFactory::istance().createObject(left+right;)
+	M_genbasisY->setL(M_Ly);
+	M_genbasisY->setMu(M_mu);
+	M_genbasisY->setChi(chi)
+	
+	return;
+}
+\end{lstlisting}
+ Nel caso di future generalizzazioni o aggiunte di nuove basi sar\`a in questo punto che occorrer\`a procedere.
+\textcolor{red}{Qua aprire il discorso della factory?}. In pratica si occupano di assegnare il giusto generatore ai membri \texttt{M\_genbasisY} e \texttt{M\_genbasisZ}. Nel nostro codice questi membri sono dei puntatori ad oggetti di tipo \texttt{Basis1DAbstract}, vedremo nel dettaglio la loro implementazione nella prossima sezione. 
+Infine si conlude il seting della classe ModalSpace tramite la funzione membro pubblica EvaluateBasis(), che chiama le funzioni che si occupano di riempire le strutture dati.
 
 \begin{lstlisting}[style = general]
 boost::shared_ptr<ModalSpace> MB (new ModalSpace(Ly,Lz,mtot,quadY,quadZ));
@@ -24,7 +39,44 @@ MB ->EvaluateBasis();
 \end{lstlisting}
 
 \subsubsection{Strutture dati}
-Diamo un breve descrizione delle strutture dati possedute dalla classe ModalSpace:
+Diamo un breve descrizione delle strutture dati possedute dalla classe ModalSpace. Per prima cosa per\`o, occupiamoci aspetto fondamentale: le basi modali sono determinate sull'intervallo di riferimento. Per non incorrere in errori fra dominio reale e riferimento,  utilizzeremo la seguente notazione:
+\begin{equation}
+\label{eq: notazione}
+\begin{array}{l l l}
+\hat{\varphi}_j(\hat{y},\hat{z}) = \hat{\eta}_j(\hat{y}) \hat{\xi}_j(\hat{z}) & \hat{y} \in [0,1] & \hat{z} \in [0,1] 
+\\
+\\
+\int_0^1 \hat{\eta}^2_j\,d\hat{y} = 1 & \int_0^1 \hat{\xi}^2_j\,d\hat{z} = 1
+\end{array}
+\end{equation}
+Dove $\hat{\varphi_j}$ \`e la base modale ortonormale sul dominio di riferimento, risultato del prodotto delle basi ottenute tramite i generatori di basi.
+Vediamo ora come gestire il passaggio dalle basi definite sul riferimento a quelle invece sul dominio reale. L'ortogonalit\`a si conserva facilmente, ma lo stesso discorso non vale per la normalizzazione. Verifichiamo che un semplice cambio di coordinate non conserva la normalizzazione:
+
+\begin{equation}
+\label{eq: trasformazione}
+\begin{array}{l l }
+\int_0^{L_y}\int_0^{L_z} \varphi_j(y,z)^2 \,dydz 
+\\
+\\
+= \int_0^{L_y} \eta_j(y)^2 \,dy\int_0^{L_z} \xi_j(z)^2 \,dz 
+\\
+\\
+= \int_0^{1} \eta_j(L_y\hat{y})^2 L_y\,d\hat{y} \int_0^{1} \xi_j(L_z\hat{z})^2 L_z\,d\hat{z} 
+\\
+\\
+ = L_yL_z\int_0^{1} \hat{\eta}_j(\hat{y})^2 \,d\hat{y} \int_0^{1} \hat{\xi}_j(\hat{z})^2 \,d\hat{z} & \neq  1  
+\end{array}
+\end{equation}
+
+Da questi semplici passaggi deduciamo che per essere mantenere la normalizzazione, la base che stiamo cercando avr\`a la seguente forma:
+\begin{equation}
+\label{eq: base sul dominio corrente}
+\varphi_j(y,z) = (L_yL_z)^{-\frac{1}{2}}\hat{\eta}_j(yL_y^{-1})\hat{\xi}_j(zL_z^{-1})
+\end{equation}
+In conclusione, nei conti che verranno proposti si utilizzer\`a sempre questa forma della base modale.
+
+Procediamo con la descrizione delle strutture dati:
+
 \begin{itemize}
 
 \item \texttt{EigenContainer M\_eigenvalues}, contiene le sottofrequenze e gli indici corrispondenti, viene prodotta in fase di setting dello spazio modale tramite la funzione membro \texttt{EigensProvider()}, chiamata da \texttt{EvaluateBasis()}. Il tipo \`e un \texttt{vector$<$EigenMap$>$} dove:
@@ -50,150 +102,92 @@ struct EigenMap
 \end{lstlisting}
 L'ordinamento gerarchico degli autovalori e la corrispondenza delle sottofrequenze con i sottoindici \`e fondamentale, approfondiremo in seguito il metodo \texttt{EigensProvider()}.
 
-\item \textbf{MBMatrix\_type M\_phiy}, valutazione delle basi modali lungo la direzione Y sui nodi di quadratura, dimensioni della matrice $p_{max}\times nquadY$;
+\item \textbf{MBMatrix\_type M\_phiy}, \`e un \texttt{vector$<$vector$<$Real$>$ $>$} che raccoglie la valutazione di $\hat{\eta}_j(\hat{y})$ $\forall j$ e per ogni nodo di quadratura lungo $\hat{y}\in[0,1]$.
 
-\item \textbf{MBMatrix\_type M\_phiz}, valutazione delle basi modali lungo la direzione Z sui nodi di quadratura,dimensioni della matrice $q_{max}\times nquadZ$;
+\item \textbf{MBMatrix\_type M\_phiz}, \`e un \texttt{vector$<$vector$<$Real$>$ $>$} che raccoglie la valutazione di $\hat{\xi}_j(\hat{y})$ $\forall j$ e per ogni nodo di quadratura lungo $\hat{z}\in[0,1]$.
 
-\item \textbf{MBMatrix\_type M\_dphiy}, valutazione delle derivate delle basi modali lungo la direzione Y sui nodi di quadratura;
+\item \textbf{MBMatrix\_type M\_dphiy}, \`e un \texttt{vector$<$vector$<$Real$>$ $>$} che raccoglie la valutazione di $\frac{\partial\hat{\eta}_j}{\partial 	\hat{y}}$ $\forall j$ e per ogni nodo di quadratura lungo $\hat{y}\in[0,1]$.
 
-\item \textbf{MBMatrix\_type M\_dphiz}, valutazione delle derivate delle basi modali lungo la direzione Z sui nodi di quadratura;
+\item \textbf{MBMatrix\_type M\_dphiz}, \`e un \texttt{vector$<$vector$<$Real$>$ $>$} che raccoglie la valutazione di $\frac{\partial\hat{\xi}_j}{\partial 	\hat{z}}$ $\forall j$ e per ogni nodo di quadratura lungo $\hat{z}\in[0,1]$.
 
 \end{itemize}
+
 
 \subsubsection{Metodi di calcolo}
 Approfondiamo ora i metodi che si occupano di calcolare i coefficienti della matrice di sistema.
 
 \begin{itemize}
-\item \texttt{Real ComputePhiPhi(const UInt\& j, const UInt\& k)}
+\item \texttt{Real Compute\_PhiPhi(const UInt\& j, const UInt\& k)}
 
  $\int_{\gamma_x}\varphi_j(y,z)\varphi_k(y,x) \,dydz$
 
-\item \texttt{Real ComputeDyPhiPhi(const UInt\& j,const UInt\& k)} 
+\item \texttt{Real Compute\_DyPhiPhi(const UInt\& j,const UInt\& k)} 
 
 $\int_{\gamma_x} \partial_y \varphi_j(y,z)\varphi_k(y,x) \,dydz$
 
-\item \texttt{Real ComputeDzPhiPhi(const UInt\& j,const UInt\& k)} 
+\item \texttt{Real Compute\_DzPhiPhi(const UInt\& j,const UInt\& k)} 
 
 $\int_{\gamma_x} \partial_z \varphi_j(y,z)\varphi_k(y,x) \,dydz$
 
-\item \texttt{Real ComputeDyPhiDyPhi(const UInt\& j,const UInt\& k)} 
+\item \texttt{Real Compute\_DyPhiDyPhi(const UInt\& j,const UInt\& k)} 
 
 $\int_{\gamma_x} \partial_y \varphi_j(y,z)\partial_y\varphi_k(y,x) \,dydz$
 
-\item \texttt{Real ComputeDzPhiDzPhi(const UInt\& j,const UInt\& k)} 
+\item \texttt{Real Compute\_DzPhiDzPhi(const UInt\& j,const UInt\& k)} 
 
 $\int_{\gamma_x} \partial_z \varphi_j(y,z)\partial_z\varphi_k(y,x) \,dydz$
 
-\item \texttt{Real ComputePhi(const UInt\& k)} 
+\item \texttt{Real Compute\_Phi(const UInt\& k)} 
 
 $\int_{\gamma_x} \varphi_k(y,x) \,dydz$
 
-\item \texttt{Real Coeff\_fk (	const Real\& x,const function\_Type\& f,const UInt\& k ) const}
+\item \texttt{vector$<$Real$>$ FourierCoefficients (const function\_Type\& g) const},
 
-\item \texttt{vector$<$Real$>$ FourierCoefficients (const function\_Type\& g) const}
+data una funzione indipendente da $x$ questo metodo restituisce i coefficienti di Fourier (in numero pari ad \texttt{M\_mtot}) rispetto alla base modale scelta.
+
+\item \texttt{Real Coeff\_fk (	const Real\& x,const function\_Type\& f,const UInt\& k ) const},
+
+restituisce il $k$-esimo coefficiente di Fourier di una generica funzione 3D valutato nel punto $x$, rispetto alla base modale.
 \end{itemize}
 
+Date le premesse risulta ora semplice risolvere gli integrali scritti qui sopra, vediamo ad esempio che aspetto ha \texttt{Compute\_PhiPhi()}:
 
 
-
-Modalspace \'e una classe base da cui derivano le figlie di modalspace che nascono dal momento che tipo di condizioni al bordo di parete vengono scelte.
-
-Perch\'e si \'e scelto questo tipo di eredit\'a? Gli autovalori generati e le rispettive basi sono propriet\'a esclusiva del tipo di p roblema ai limiti che si intende istanziare. Dunque le classi figlie si preoccupano di calcolare l'appropriata successione di autovalori e inoltre registrano i valori nodali delle funzioni di base sulla griglia di quadratura scelta. I dati vengono raccolti nei membri:
-
-\begin{itemize}
-\item Eigenvalues
-\item Mphi
-\item Mdphi
-\end{itemize}
-
-Fissandoci sulla slice di riferimento $[0,1]\times[0,1]$, si osserva che l'unico parametro che occorre ad una figlia per generare i materiale elencato precedentemente è la specifica delle condizioni di bordo \textcolor{red}{anche mtot!!}.
-
-\textcolor{red}{Mi sta venendo un dubbio, il discorso della factory mi aveva intrigato, tuttavia mi stavo chiedendo, ma noi cosa registriamo di preciso?Un oggetto modalspace DDDD a cui per\'o vanno specificati mtot, gli autovalori e i valori delle basi?Dovrei registrare modalspaceDDDD per ogni possibile valore di mtot!!!Forse mi sfugge qualcosa....}
-
-
-Modalspace raccoglie gli elementi e le operazioni comuni a tutti i suoi figli tra questi vi sono sicuramente:
-\begin{itemize}
-\item Dimensioni della slice
-\item Numero modi utilizzato
-\item Regola di quadratura
-\item Calcolo coefficienti Fourier g(y,z) - vettore [g1 g2 ...]
-\item Calcolo del coefficiente Fuourier di g(x,y,z) - reale (g(x))
-\end{itemize}
-
-\textcolor{red}{In realt\'a Eigenvalues appartiene ancora a Modalspace sar\'a il caso di sposatarlo?Fare attenzione a findmyzmax() che è definito in Modalspace.cpp, lo teniamo perch\'e le funzioni comuni fanno usa di tale membro?Dovremmo costruire il getter nelle classi figlie secondo me sarebbe pi\'u coerente}
-
-Stabiliti infatti i valori nodali delle funzioni di base e delle loro derivate tutte le basi modali istruite possono essere trattate alla stessa maniera. Sono comuni infatti i seguenti metodi (con j si intende l'indice legato alla soluzione e con k quello legato alla funzione test):
-\begin{itemize}
-\item ComputePhiPhi $\int_{\gamma_x}\varphi_j(y,z)\varphi_k(y,x) \,dydz$
-\item ComputeDyPhiPhi $\int_{\gamma_x} \partial_y \varphi_j(y,z)\varphi_k(y,x) \,dydz$
-\item ComputeDzPhiPhi
-$\int_{\gamma_x} \partial_z \varphi_j(y,z)\varphi_k(y,x) \,dydz$
-\item ComputeDyPhiDyPhi $\int_{\gamma_x} \partial_y \varphi_j(y,z)\partial_y\varphi_k(y,x) \,dydz$
-\item ComputeDzPhiDzPhi
-$\int_{\gamma_x} \partial_z \varphi_j(y,z)\partial_z\varphi_k(y,x) \,dydz$
-\item ComputePhi
-$\int_{\gamma_x} \varphi_k(y,x) \,dydz$
-\end{itemize}
-
-L'elemento principale di questa classe \'e ConstructModalBasis. In realt\'a tale metodo non \'e altro che un wrappers che facilita l'istanziamento della classe da parte dell'utente. Infatti dietro tale metodo si nasconde una chiamata alla factory dove sono schedati i possibili figli di ModalSpace.
- \textcolor{red}{Qua possiamo aggiungere il codice di ConstructModalBasis cos\'i si capisce cosa nascondiamo.}
-
-
-\begin{lstlisting}
-boost::shared_ptr <ModalSpace> ModalSpace::
-ConstructModalBasis ( 	const Real & Ly,
- 			const Real & Lz, 
- 			const UInt & M, 
- 			const std::string & down, 
- 			const std::string & left, 
- 			const std::string & up, 
- 			const std::string & right )
+\begin{lstlisting}[style = general]
+Real ModalSpace::
+Compute_PhiPhi(const UInt& j, const UInt& k) const
 {
-	std::string bc = down + left + up + right;
-	std::string id;
-
-	if(bc == "dirdirdirdir")
+	Real coeff_y = 0.0;
+	Real coeff_z = 0.0;
+	UInt p_j = M_eigenvalues[j].p-1;
+	UInt p_k = M_eigenvalues[k].p-1;
+	UInt q_j = M_eigenvalues[j].q-1;
+	UInt q_k = M_eigenvalues[k].q-1;
+	
+	Real normy = 1.0 / sqrt(M_Ly);
+	Real normz = 1.0 / sqrt(M_Lz);
+	
+	for(UInt n = 0; n < M_quadruleY->nbQuadPt();++n)
 	{
-		id = "DDDD";
+		coeff_y +=	M_phiy[p_j][n] * normy *	
+							M_phiy[p_k][n] * normy *
+							M_Ly * M_quadruleY->weight(n);
 	}
-	else if (bc == "robrobrobrob")
+	
+		for(UInt n = 0; n < M_quadruleZ->nbQuadPt();++n)
 	{
-		id = "RRRR"
+		coeff_z +=	M_phiz[q_j][n] * normz *	
+							M_phiz[q_k][n] * normz *
+							M_Lz * M_quadruleZ->weight(n);
 	}
-	else
-	{
-		ERROR_MSG ("This kind of bc has not been implemented yet, please add it!");
-	}
+	
+	return coeff_y*coeff_z;
 }
-\end{lstlisting} 
- \textcolor{blue}{Mi sono convinto che l'approccio ereditariet\'a \'e quello migliore, tuttavia dovremmo vedere il reale utilizzo che facciamo di questa factory}
+\end{lstlisting}
  
-\section{HiModAssembler}
+ Gli ultimi due metodi citati sono indispendabili ed il loro impiego sar\`a noto una volta che tratteremo la classe \texttt{HiModAssembler}.
  
- Sono momentaneamente separate ma \'e chiaro che devono appartenere alla stessa classe, ovvero a quella che sintetizzer\'a insieme Modalspace e FESpace 1D (ovvero quello costruito sulla fibra di supporto).
- 
- \textcolor{red}{HiModView e HiModAssembler devono continuamente lavorare con gli elementi di Modalspace e FESpace 1D non sarebbe il caso di instaurare un legame pi\'u intimo?Magari specificando l'amicizia di HiMod con Modalspace e FESpace?Troppo incasinato?Si velocizza il tutto (non occorre infatti passare dai noiosi getters)?}
- 
-Gli unici membri di HiModAssembler e HiModView sono fespace e modalbasis (in HiModAssembler c'\'e anche etfespace ma direi che dobbiamo toglierlo e non farlo creare nel main, quella \'e sicuramente una questione interna di come abbiamo voluto implementare il calcolo dei coefficienti della matrice, inoltre aumentiamo in leggibilit\'a).
-
-Ecco le uilit\'a di HiModAssembler:
-\begin{itemize}
-\item AddADRProblem
-\item interpolate
-\item Addrhs (costante e functionType)
-\item Addrhsfunctor
-\item AddDirichletBCIn (Momentanemente via penalizzazione)
-\end{itemize}
-
-Ecco invece le utilit\'a di HiModView:
-\begin{itemize}
-\item funCoeff3D (genera i valori nodali su una griglia partendo dal vettore soluzione o da una funzione)
-\item normL2 (dato il vettore che sputa fuori funCoeff3D ne fa la normaL2)
-\item ConvergeFile (crea un file di output gestibile tramite getpot, utilizzo limitato al testconvergence)
-\end{itemize}
-
-
-\section{Basis1dAbstract}
+ \section{Basis1dAbstract}
 
 Le Educated Bases (E.B.) sono una scelta possibile da adottare nella risoluzione di un problema ADR con tecniche di riduzione gerarchica. Il concetto base si fonda sul teorema (citazione di Salsa) e sullipotesi di separabilit\`a delle variabili. Le E.B. vengono costruite "ad hoc" sulle condizioni di vaso del problema in oggetto. L'algoritmo che permette la generazione di queste basi \`e riassunto qui di seguito:
 
@@ -311,4 +305,31 @@ KyOld =
 		scarti.insert(KyOld,Check_eigen(2,j+1));
 }
 \end{lstlisting}
+
+\section{HiModAssembler}
+ 
+ Sono momentaneamente separate ma \'e chiaro che devono appartenere alla stessa classe, ovvero a quella che sintetizzer\'a insieme Modalspace e FESpace 1D (ovvero quello costruito sulla fibra di supporto).
+ 
+ \textcolor{red}{HiModView e HiModAssembler devono continuamente lavorare con gli elementi di Modalspace e FESpace 1D non sarebbe il caso di instaurare un legame pi\'u intimo?Magari specificando l'amicizia di HiMod con Modalspace e FESpace?Troppo incasinato?Si velocizza il tutto (non occorre infatti passare dai noiosi getters)?}
+ 
+Gli unici membri di HiModAssembler e HiModView sono fespace e modalbasis (in HiModAssembler c'\'e anche etfespace ma direi che dobbiamo toglierlo e non farlo creare nel main, quella \'e sicuramente una questione interna di come abbiamo voluto implementare il calcolo dei coefficienti della matrice, inoltre aumentiamo in leggibilit\'a).
+
+Ecco le uilit\'a di HiModAssembler:
+\begin{itemize}
+\item AddADRProblem
+\item interpolate
+\item Addrhs (costante e functionType)
+\item Addrhsfunctor
+\item AddDirichletBCIn (Momentanemente via penalizzazione)
+\end{itemize}
+
+Ecco invece le utilit\'a di HiModView:
+\begin{itemize}
+\item funCoeff3D (genera i valori nodali su una griglia partendo dal vettore soluzione o da una funzione)
+\item normL2 (dato il vettore che sputa fuori funCoeff3D ne fa la normaL2)
+\item ConvergeFile (crea un file di output gestibile tramite getpot, utilizzo limitato al testconvergence)
+\end{itemize}
+
+
+
 
