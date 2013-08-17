@@ -211,6 +211,30 @@ La soluzione \`e stata quella di procedere un passo alla volta, con l'accortezza
 ALBERO DELLE SCELTE
 \end{equation}
 
+\begin{center}
+\begin{tikzpicture}
+[scale=1.5]
+
+
+\tikzstyle{every node}=[draw,shape=ellipse];
+\path (5,0)   node (v1) {$p=1$ $q=1$};
+\path (3,-1) node (v2) {$p=2$ $q=1$};
+\path (7,-1) node (v3) {$p=1$ $q=2$};
+\path (2,-2) node (v4) {$p=3$ $q=1$};
+\path (4,-2) node (v5) {$p=2$ $q=2$};
+\path (6,-2) node (v6) {$p=2$ $q=2$};
+\path (8,-2) node (v7) {$p=1$ $q=3$};
+
+\draw (v1) -- (v2)
+(v1) -- (v3)
+(v2) -- (v4)
+(v2) -- (v5)
+(v3) -- (v6)
+(v3) -- (v7);
+
+\end{tikzpicture}
+\end{center}
+
 
  \section{Basis1dAbstract}
 
