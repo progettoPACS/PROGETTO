@@ -187,9 +187,34 @@ Compute_PhiPhi(const UInt& j, const UInt& k) const
  
  Gli ultimi due metodi citati sono indispendabili ed il loro impiego sar\`a noto una volta che tratteremo la classe \texttt{HiModAssembler}.
  
+ \subsubsection{\texttt{EigensProvider()}}
+ Abbiamo deciso di dedicare una sezione solamente a questo metodo, poich\'e la ricerca degli autovalori occupa un ruolo fondamentale nella struttura del codice.
+ Il metodo viene chiamato da \texttt{EvaluateBasis()} dunque dopo che sono stati settati i generatori di basi. La funzione deve preoccuparsi di definire la struttura dati \texttt{M\_eigenvalues}, tuttavia il procedimento non \`e scontato. 
+ Per comprendere le difficolt\`a occorre ragionare sulla struttura del problema. Separando le variabili della slice 2D si sono ottenuti due problemi agli autovalori 1D. Ognuno di questi genera una successione ordinata crescente di autovalori, determinata dalla ricerca degli zeri di una data funzione. Definiamo la successione di autovalori in $y$ con $\{K_y\}_p$ e quella in $z$ con $\{K_z\}_q$. Le precedenti successioni definiscono univocamente la successione degli autovalori del problema di partenza 2D e sono in relazione con essa nel seguente modo:
+
+\begin{equation}
+\label{eq: autovalori}
+ \lambda_j = (K_y^p)^2 + (K_z^q)^2
+\end{equation} 
+
+Anche $\{\lambda\}_j$ \`e una successione crescente di autovalori, ma il suo ordinamento, dato quello dei sottoautovalori, non \`e immediato. Due sono le difficolt\`a che si presentano:
+\begin{itemize}
+\item[1.] Ogni sottoautovalore \`e il risultato di una ricerca di zeri di una funzione non lineare.
+\item[2.] L'utente stabilisce il numero massimo di modi sul problema 2D e non sui sotto-problemi 1D.
+\end{itemize}
+
+Le due problematiche sono strettamente legate, difatti non siamo interessati a cercare pi\`u sottoautovalori del necessario. Si poteva partire calcolando ad esempio 10 sottoautovalori in $y$ e altrettanti in $z$, ordinare la succession 2D e procedere eventualmente nella ricerca. Questo metodo tuttavia presenta due difetti: \`e poco efficiente ed inoltre pu\`o cadere in errore. Infatti l'algoritmo si dovrebbe fermare una volta raggiunti un numero di autovalori 2D pari ad \texttt{M\_mtot}, ma cos\`i facendo nessuno ci assicura che nel gruppo successivo di 10 autovalori non vi sia almeno uno minore dell'ultimo autovalore calcolato.
+
+La soluzione \`e stata quella di procedere un passo alla volta, con l'accortezza di salvare i sotto-autovalori ancora non utlizzati. Per fare questo il metodo di ricerca degli zeri (\texttt{Next()} che approfondiremo nella sezione \texttt{Basis1DAbstract}) fornisce progressivamente uno zero alla volta. Infine abbiamo analizzato il seguente albero delle scelte:
+
+\begin{equation}
+ALBERO DELLE SCELTE
+\end{equation}
+
+
  \section{Basis1dAbstract}
 
-Le Educated Bases (E.B.) sono una scelta possibile da adottare nella risoluzione di un problema ADR con tecniche di riduzione gerarchica. Il concetto base si fonda sul teorema (citazione di Salsa) e sullipotesi di separabilit\`a delle variabili. Le E.B. vengono costruite "ad hoc" sulle condizioni di vaso del problema in oggetto. L'algoritmo che permette la generazione di queste basi \`e riassunto qui di seguito:
+Questa classe si occupa di definiere dei generatori di base seguendo la teoria delle Educated Basis (E.B.). Introduciamo con degli esempi l'algoritmo di ricerca delle basi ortonormali, senza entrare nel dettaglio della teoria (per riferimenti si guardi ....):
 
 \begin{itemize}
 \item[\textbf{1.}] \textbf{Costruzione di un problema ausiliario} che rispecchi la natura delle condizioni alle pareti del problema originale (devono essere omogenee) e passaggio ai relativi problemi agli autovalori.
@@ -248,7 +273,6 @@ f(w)= 2\mu w + tan(L_z w)\left(\chi - \frac{\mu ^2 w^2 }{\chi} \right)
 }{Esempio - RRRR}
 \end{itemize}
 
-Come presentato in breve nel capitolo (Nozioni base), HiMod si basa sulla riduzione dei gradi di libert\'a del sistema discreto, questo risultato si ottiene ordinando le basi scelte in maniera gerarchica ed utilizzando quelle legate alle frequenze pi\'u basse. Dunque il primo passo \'e capire, dato un numero di modi massimo che si vuole dedicare per la componente trasversale, qual'\'e il set di basi modali da utilizzare.
 \mybox{
 Nel caso di condizioni al bordo di Dirichlet il problema si semplifica. Infatti non occorre adottare l'algoritmo mostrato precedentemente, gli autovalori che si ottengono sono noti a priori e sono della forma:
 \begin{equation}
@@ -262,52 +286,22 @@ Dunque \'e nota la relazione $\lambda(K_y,K_z)$ a priori e risulta molto semplic
 }{Osservazione}
 
 
-\textcolor{red}{Possiamo discutere velocemente l'albero delle scelte (che poi sarebbe la funzione EigensProvider), che in realt\'a sar\'a utilizzato tale e quale per il caso generale delle educated basis, infatti se adesso il passaggio \'e semplicemente p = p +1, dopo il passaggio sar\'a p = Next().
-La ricerca degli autovalori rallenter\'a parecchio dato che si dovr\'a risolvere un problema non lineare ogni volta che si vuole aggiornare un nodo.}
-
-Esponiamo quindi lo pseudocodice che, dato il numero di modi da utilizzare, determina l'elenco delle frequenze e sotto frequenze:
-
-
-\begin{lstlisting}
-//Dichiarazione set di ritorno
-M_Eigenvalues;
-//Suggerisco di farlo un pair di pair visto che non possiamo fare la tupla, la prima pair sono i sotto autovalori, la seconda pair sono le coordinate (ovver p e q)
-
-//Dichiarazione set degli scarti
-scarti;
-
-//Inserimento delle prime sottofrequenze e prima coordinata (1,1)
-KzOld = M_EducatedBasisy->Next();
-kyOld = M_educated->BasiszNext();
-M_eigenvalues.insert(make_pair(KyOld,KzOld) );
-
-//Inizializzazione set degli scarti
-scarti.insert(make_pair(M_EducatedBasisy->Next(),KzOld));
-scarti.insert(make_pair(KyOld,M_EducatedBasisz->Next()));
-
-//Ciclo sul numero di modi scelto
-for(UInt i=1;i\M_mtot;++i)
-{
-	//Prendo il primo elemento del vettore degli scarti, che sono ordinati per lambda=Ky+Kz dal più piccolo al più grande e lo inserisco nel set di uscita
-	M_eigenvalues.insert(scarti.begin());
-
-//Inoltre registro le coordinate del nodo preso e i valori dei sottoautovalori
-i = prima coordinata;
-j = seconda coordinata;
-KzOld =  
-KyOld =
-
-//Mi occupo ora di branchare in maniera corretta e senza ricalcolare autovalori che già conosco
-	if(!Check_presence(i+1,j))
-		scarti.insert(Check_eigen(1,i+1),KzOld);
-
-	if(!Check_presence(i,j+1))		
-		scarti.insert(KyOld,Check_eigen(2,j+1));
-}
-\end{lstlisting}
-
 \section{HiModAssembler}
  
+ La classe HiModAssembler gestisce lo spazio ridotto presentato nella teoria e si occupa di assemblare la matrice a blocchi del sistema. 
+Analizziamo i membri di cui \`e composta:
+
+\begin{itemize}
+\item \texttt{modalbasis\_ptrType M\_modalbasis
+\item \texttt{fespace\_ptrType M\_fespace
+\item \texttt{etfespace\_ptrType M\_etfespace}}}
+\end{itemize}
+
+Chiaramente lo spazio ridotto \`e composto da uno spazio modale e da uno elementi finiti. Il terzo oggetto 
+
+
+
+
  Sono momentaneamente separate ma \'e chiaro che devono appartenere alla stessa classe, ovvero a quella che sintetizzer\'a insieme Modalspace e FESpace 1D (ovvero quello costruito sulla fibra di supporto).
  
  \textcolor{red}{HiModView e HiModAssembler devono continuamente lavorare con gli elementi di Modalspace e FESpace 1D non sarebbe il caso di instaurare un legame pi\'u intimo?Magari specificando l'amicizia di HiMod con Modalspace e FESpace?Troppo incasinato?Si velocizza il tutto (non occorre infatti passare dai noiosi getters)?}
