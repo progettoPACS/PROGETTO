@@ -238,7 +238,7 @@ ALBERO DELLE SCELTE
 
  \section{Basis1dAbstract}
 
-Questa classe si occupa di definiere dei generatori di base seguendo la teoria delle Educated Basis (E.B.). Introduciamo con degli esempi l'algoritmo di ricerca delle basi ortonormali, senza entrare nel dettaglio della teoria (per riferimenti si guardi ....):
+Questa classe si occupa di definire dei generatori di base seguendo la teoria delle Educated Basis (E.B.). Introduciamo con degli esempi l'algoritmo di ricerca delle basi ortonormali, senza entrare nel dettaglio della teoria (per riferimenti si guardi ....):
 
 \begin{itemize}
 \item[\textbf{1.}] \textbf{Costruzione di un problema ausiliario} che rispecchi la natura delle condizioni alle pareti del problema originale (devono essere omogenee) e passaggio ai relativi problemi agli autovalori.
@@ -309,6 +309,36 @@ K_z = \big( \frac{\pi q}{L_z}\big)^2 & q = 1, ... ,m_z\\
 Dunque \'e nota la relazione $\lambda(K_y,K_z)$ a priori e risulta molto semplice ordinare in modo crescente gli autovalori definendo quindi $m_y$ e $m_z$.
 }{Osservazione}
 
+\subsubsection{I metodi}
+
+La classe base \`e astratta, da essa derivano nove classi figlie, le quali corrispondono alle possibili combinazioni di condizioni di bordo omogenee di un problema 1D. Ogni classe figlia eredita pubblicamente da \texttt{Basis1DAbstract} ed implementa in modo proprio i seguenti metodi:
+
+\begin{itemize}
+\item \texttt{Real Next()} 
+\item \texttt{void EvaluateBasis()}
+\item \texttt{Real EvalSinglePoint()}
+\end{itemize}
+
+I primi due metodi sono usati nella fase di set dell'oggetto modalspace, mentre l'ultimo \`e un utilit\`a di ne vedremo l'applicazione nella fase di export posseduta da HiModAssembler. 
+
+Il membro principale di ogni classe figlia \`e \texttt{M\_ptrfunctor}. L'oggetto puntato da questo shared\_pointer  \`e un \texttt{EducatedBasisFunctor}. Abbiamo scelto di costruire un sistema di classe base e derivate ausiliario, simile strutturalmente a \texttt{Basis1DAbstract}: la classe base \`e costituita da \texttt{EducatedBasisFunctorAbastract} e vi \`e una classe figlia per ogni possibile combinazione di condizioni di bordo di un problema 1D, per ognuna di esse \`e implementato solamente l'operatore \texttt{()}. Dunque la funzioni non lineare, la cui ricerca degli zeri fornisce gli autovalori dei sottoproblemi, \`e contenuta in quesa gerarchia di classi ausiliarie. Si noti che il costruttore \`e comune a tutte le classi figlie, ed \`e quindi definito solamente nella classe base. Esso si occupa di settare in maniera corretta i parametri riferiti alle condizioni di bordo applicate ($\mu$ e $\chi$). 
+
+L'unica eccezione \`e il caso Dirichlet su entrambe i bordi, nell'osservazione abbiamo sottolineato la trivialit\`a di questo caso, che non necessita la definizione del funtore.
+
+I restanti membri hanno l'utilit\`a di memorizzare quale autovalore \`e stato calcolato per ultimo, in questo modo il metodo \texttt{Next()} \`e in grado di procedere al calcolo progressivo di tutti gli autovalori desiderati, senza tornare sui suoi passi. Per comprendere meglio la distribuzione degli autovalori, mostriamo nella seguente figura la forma della funzione non lineare nel caso Robin-Robin.
+
+\begin{equation}
+FIGURA
+\end{equation}
+
+Bench\`e simili, ogni combinazione di condizioni di bordo deve essere tratta separatamente. Inoltre lo studio sulla ricerca degli zeri ....
+
+\textcolor{red}{Quanto vogliamo entrare nel dettaglio in questo punto??}
+
+Abbiamo visto che \texttt{ModalSpace} possiede un metodo pubblico \texttt{EvaluateBasis()}, in realt\`a questa funzione chiama separatamente i metodi omonimi, di propriet\`a dei due generatori di basi. L'implementazione di \texttt{EvaluateBasis()} \`e semplice, l'obbiettivo \`e il completamento di una delle strutture dati matriciali possedute da \texttt{ModalSpace}. In particolare il generatore \texttt{M\_genbasisY} si occuper\`a di \texttt{M\_phiy} e \texttt{M\_dphiy}, mentre \texttt{M\_genbasisZ} completer\`a le restanti strutture.
+Facendo riferimento alla forma generica delle basi modali (\ref{eq: 1sottoproblema}), \`e chiaro che il compito di \texttt{EvaluateBasis()} \`e di calcolare i coefficienti A e B in modo tale che le basi rispettino le condizioni di bordo e risultino normali (ricordiamo che l'ortogonalit\`a \`e garantita dalla teoria).
+
+Ricordiamo che la base modale viene valutata solamente nei nodi di quadratura, dunque se siamo interessati a valori delle basi su una griglia pi\`u fitta non siamo in grado di calcolarli. Per questo motivo \`e stato scritto il metodo \texttt{EvalSinglePoint()} che dato un sotto autovalore e la coordinata, restituisce la valutazione della base modale in quel dato punto. Questa funzione si \`e resa necessaria dal momento che in fase di export desideravamo interpolare la funzione su una griglia con pi\`u nodi rispetto alla quadratura.
 
 \section{HiModAssembler}
  
