@@ -3,7 +3,7 @@
 
 Inizialmente ModalSpace \`e stata concepita per essere una classe base, dalla quale ereditasse ogni possibile scelta delle condizioni di bordo sulla parete del vaso. Facendo un rapido conto ci si accorge che comprendendo le condizioni di Dirichlet, Neumann e Robin su una sezione rettangolare arriviamo a 81 possibili combinazioni. Una grande quanti\`a di codice da scrivere, che comprende casistiche molto simili fra loro se non identiche. Questo \`e stato il primo motivo che ci ha portato a scorporare il trattamento delle condizioni di bordo dalla classe ModalSpace per poi includerlo in modo ottimale in Basis1DAbstract. Un secondo punto a favore di questa scelta riguarda la valutazione e la lettura delle basi modali. \`E chiaro che le basi modali sono contenute in ModalSpace, tuttavia ogni figlia avrebbe avuto un tipo di base differente e accedervi tramite la classe base ogni qual volta fosse necessario, non risultava essere efficiente. Infine abbiamo ottenuto maggiore generalit\`a, ModalSpace \`e pronta ad utilizzare nuovi metodi in grado di generare una corretta base modale, infatti la classe possiede esclusivamente le valutazioni delle basi modali su un'opportuna griglia e i generatori di basi.
 
-\subsection{I membri}
+\subsection{Costruzione e setting}
 ModalSpace conosce la geometria della sezione (Ly, Lz) e sicuramente deve conoscere il grado di precisione desiderato dall'utente, ovvero il numero di modi da utilizzare (mtot). 
 Un altro punto fondamentale del costruttore generico \`e senz'altro la regola di quadratura da utilizzare sulla slice. Si noti che le basi utilizzate necessitano regole di quadratura di alto ordine e il grado di esattezza \`e strettamente legato al numero di modi. Questo legame \`e evidente se si pensa che maggiore \`e il modo, maggiore sar\`a la frequenza della base modale e di conseguenza si avr\`a bisogno di una fitta successione di nodi di quadratura. Su una sezione quadrata una buona approssimazione dei nodi necessari su ciascun lato \`e $\sqrt{mtot}$. Il risultato non \`e valido nel caso di sezioni molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u nodi lungo la direzione maggiore e meno sull'altra. Come esempio si osservi la seguente tabella dove sono riportati i check dei valori di normalit\`a di una base, fissata la regola di quadratura al variare della dimensione $L_y$.
 \begin{equation}
@@ -113,7 +113,7 @@ L'ordinamento gerarchico degli autovalori e la corrispondenza delle sottofrequen
 \end{itemize}
 
 
-\subsubsection{Metodi di calcolo}
+\subsection{Metodi di calcolo}
 Approfondiamo ora i metodi che si occupano di calcolare i coefficienti della matrice di sistema.
 
 \begin{itemize}
@@ -187,7 +187,7 @@ Compute_PhiPhi(const UInt& j, const UInt& k) const
  
  Gli ultimi due metodi citati sono indispendabili ed il loro impiego sar\`a noto una volta che tratteremo la classe \texttt{HiModAssembler}.
  
- \subsubsection{\texttt{EigensProvider()}}
+ \subsection{\texttt{EigensProvider()}}
  Abbiamo deciso di dedicare una sezione solamente a questo metodo, poich\'e la ricerca degli autovalori occupa un ruolo fondamentale nella struttura del codice.
  Il metodo viene chiamato da \texttt{EvaluateBasis()} dunque dopo che sono stati settati i generatori di basi. La funzione deve preoccuparsi di definire la struttura dati \texttt{M\_eigenvalues}, tuttavia il procedimento non \`e scontato. 
  Per comprendere le difficolt\`a occorre ragionare sulla struttura del problema. Separando le variabili della slice 2D si sono ottenuti due problemi agli autovalori 1D. Ognuno di questi genera una successione ordinata crescente di autovalori, determinata dalla ricerca degli zeri di una data funzione. Definiamo la successione di autovalori in $y$ con $\{K_y\}_p$ e quella in $z$ con $\{K_z\}_q$. Le precedenti successioni definiscono univocamente la successione degli autovalori del problema di partenza 2D e sono in relazione con essa nel seguente modo:
@@ -392,8 +392,10 @@ La dichiarazione nel main \`e semplice, dato che il costruttore si occupa intern
  																
 \end{lstlisting}
 
-\subsubsection{I metodi}
-\begin{lstlisting}[style=general]
+\subsection{I metodi}
+\subsubsection{Assemblaggio}
+\begin{lstlisting}[style=general, frame = top]
+
 void AddADRProblem	( const matrix_ptrType& systemMatrix,
 											const Real& mu, 
 											const TreDvector_type& beta, 
@@ -402,18 +404,22 @@ void AddADRProblem	( const matrix_ptrType& systemMatrix,
 
 Si occupa dell'assemblaggio della matrice di sistema. Scorre \texttt{systemMatrix} per blocchi e in ognuno di esso computa tramite il metodo \texttt{integrate} del pacchetto \texttt{ETA} il corrispondente problema 1D. Questa operazione si ripete per ogni coppia di frequenze ovvero $\texttt{M\_mtot}^2$. Fissata la coppia di frequenza vengono calcolati i valori dei coefficienti della forma tramite i metodi di calcolo della classe  \texttt{ModalSpace}.
 
-\begin{lstlisting}[style=general]
+
+
+\begin{lstlisting}[style=general, frame = top]
+
 void Addrhs	(	const vector_ptrType& rhs,
 							const vector_ptrType& f_interpolated);
 \end{lstlisting}
 Per quanto riguarda l'assemblaggio del termine noto occorre prima interpolare la forzante, ottenuta l'interpolazione l'approccio non \`e differente da \texttt{AdADRProblem()}: il vettore \texttt{rhs} possiede \texttt{M\_mtot} blocchi di dimensione ciascuno pari ai gradi di libert\`a FEM.
 
-\begin{lstlisting}[style = general]
+\begin{lstlisting}[style = general, frame = top]
+
 void interpolate	( const function_Type& f,
 										const vector_ptrType& f_interpolated)
 \end{lstlisting}
 
-Data una forzante, questo metodo si occupa di calcolare, per ogni punto della griglia 1D, tutte le componenti di Fourier rispetto alle basi modali. Il risultato viene salvato nel vettore strutturato passato negli argomenti.
+Data una forzante, questo metodo si occupa di calcolare, per ogni punto della griglia 1D, tutte le componenti di Fourier rispetto alle basi modali. Il risultato viene salvato nel vettore strutturato passato negli argomenti. \`E in questo punto che ricopre un ruolo fondamentale il metodo \texttt{Coeff\_fk()} posseduto da \texttt{ModalSpace.}
 
 \mybox{
 Mostriamo in breve le operazioni eseguite nel main per definire ed assemblere il termine noto:
@@ -429,4 +435,98 @@ boost::shared_ptr<vector_Type> f_interpolated
 
 HM.interpolate ( f,f_interpolated );
 HM.Addrhs (rhs,f_interpolated);
+\end{lstlisting}
+
+
+\begin{lstlisting}[style = general,frame = top]
+
+void AddDirichletBC_In (	const matrix_ptrType& systemMatrix,
+													const vector_ptrType& rhs,
+													const function_Type& g)
+\end{lstlisting}
+
+L'applicazione delle condizioni di inflow ed outflow sono un aspetto secondario di questo lavoro, tuttavia non possono certo essere esenti da un'adeguata trattazione. Per quanto riguarda le condizioni naturali del problema \`e sufficiente intervenire nella forma variazionale, nel caso invece di condizioni essenziali quali quelle di Dirichlet, abbiamo deciso di intervenire con una penalizzazione algebrica. Per capire dove intervenire dobbiamo rifarci all'interpretazione data nei cenni teorici, ricordiamo infatti che la matrice di sistema del metodo HiMod \`e costituita da $\texttt{M\_mtot}^2$ problemi 1D correlati fra loro. Dunque se ogni sottoblocco rappresenta la classica matrice di stiffness di un problema agli elementi finiti 1D, \`e chiaro che sar\`a sufficiente intervenire sul primo elemento (nel caso di Dirichlet all'inflow) moltiplicandolo per un numero molto grande ($10^{30}$) . Adottando questa tecnica siamo costretti ad intervenire anche sul termine noto, infatti approfittiamo di questo metodo per interpolare il dato in ingresso ed assegnare la corretta penalizzazione anche al rhs. Anche nel caso del termine forzante dobbiamo tenere conto delle struttura a blocchi del problema: di fatto \`e sufficiente intervenire sul primo elemento di ogni blocco del rhs. A questo punto \`e chiaro il ruolo che ricopre il metodo \texttt{FourierCoefficients()} contenuto in \texttt{ModalSpace}.
+
+\begin{lstlisting}[style = general]
+
+ template<typename mesh_type,typename matrix_type,typename vector_type>
+ void HiModAssembler<mesh_type, matrix_type,vector_type>::
+ AddDirichletBC_In (	const matrix_ptrType& systemMatrix,
+ 											const vector_ptrType& rhs,
+ 											const function_Type& g)
+ {
+ 	vector<Real> FCoefficients_g;
+ 	FCoefficients_g = M_modalbasis->FourierCoefficients (g);
+ 	UInt dof = M_etfespace->dof().numTotalDof();
+ 	for( UInt j(0); j<M_modalbasis->mtot(); ++j)
+ 	{
+		systemMatrix->setCoefficient(j*dof,j*dof,1e+30);
+		rhs->setCoefficient(j*dof,1e+30*FCoefficients_g[j]) ;
+ 	}
+ 	
+ 	return;
+ }
+\end{lstlisting}
+
+\subsubsection{Analisi}
+
+\textcolor{red}{Le funzioni funCoeff\_3D non fanno altro che valutare la soluzione o la proiezione di un eventuale funzione lungo le basi modali su una griglia 3D composta dai nodi FEM e quelli di quadratura 2D. Valutare la norma su tale griglia non \`e sbagliato, ma valutarlo su una griglia pi\`u fitta?Ha senso farlo?Non ha senso perch\`e quanto vado a valutare l'errore in normaL2 devo calcolare un'integrale, dunque non disponendo i pesi di una griglia pi\`u fitta non sarei in grado di valutare l'errore.}
+
+Dato che abbiamo un metodo che dato un punto 3D e un vettore HiMod valuta il valore di tale funzione in quel punto possiamo utilizzare questo metodo e rendere funcoeff3D pi\`u leggibile.
+Tuttavia evaluateHiModFunc si appoggia ai generatori di base e dunque richiamare tale metodo implica una chiamata pi\`u lunga e inoltre la valutazione di una funzione.
+Invece funcoeff3D si appoggia solamente ai valori calcolati e registrati nelle strutture dati di ModalSpace, chiamata breve e inoltre solo il tempo di un assegnamento.Dato che funcoeff3D deve ciclare su tutti i nodi di quadratura 2D e sui nodi FEM 1D questa differenza di tempo si fa sentire a mio parere....LA FACCIAMO VEDERE?LA VENDIAMO COME SCOPERTA????
+
+\begin{lstlisting}[style = general]
+
+vector_type evaluateBase3DGrid (const function_Type& fun)
+
+vector_type evaluateBase3DGrid (const vector_type& fun)
+
+\end{lstlisting}
+
+\begin{lstlisting}[style = general]
+
+Real normL2 (const vector_type& fun)
+
+\end{lstlisting}
+
+\begin{lstlisting}[style = general, frame = top]
+
+Real evaluateHiModFunc(const vector_ptrType& fun, const Real$ x, const Real& y, const Real& z)
+\end{lstlisting}
+
+Dato il vettore dei coefficienti di una funzione HiMod la valuta nel punto di coordinate passate.
+
+
+\subsubsection{Export}
+
+Particolare attenzione meritano i metodi dedicati all'export. Ci siamo occupati di esportare in formato VTK considerando due situazioni differenti:
+\begin{itemize}
+\item[1.] Griglia strutturata.
+\item[2.] Griglia non strutturata.
+\end{itemize}
+
+\begin{lstlisting}[style = general]
+void ExporterStructuredVTK (	const UInt& nx,
+															const UInt& ny,
+															const UInt& nz,
+															const vector_ptrType& fun,
+															const GetPot& dfile, 
+															string prefix)
+\end{lstlisting}
+
+Ricordiamo che:
+\begin{equation}
+u(x,y,z) = \sum_{j,s}^{m,n}u_{js}\psi_s(x)\varphi_j(y,z) = \sum_{j,s}^{m,n}u_{js}\psi_s(x)\eta_p(y)\xi_q(z)
+\end{equation}
+
+Vi sono due modi di procedere, o fissiamo il modo e calcoliamo tutti i contributi o lo facciamo per la funzione FEM.
+Noi abbiamo scelto di farlo sui modi, quindi il ciclo pi\`u esterno \`e sui modi.
+\textcolor{red}{Sarebbe interessante provare a fare l'altro modo per vedere se ci si mette di meno}
+
+\begin{lstlisting}[style = general]
+void ExporterGeneralVTK (	const export_mesh_Type& mesh,
+													const vector_ptrType& fun,
+													const GetPot& dfile,
+													string prefix)
 \end{lstlisting}
