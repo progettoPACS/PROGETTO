@@ -342,8 +342,20 @@ Ricordiamo che la base modale viene valutata solamente nei nodi di quadratura, d
 
 \section{HiModAssembler}
  
- La classe HiModAssembler gestisce lo spazio ridotto presentato nella teoria e si occupa di assemblare la matrice a blocchi del sistema. 
-Analizziamo i membri di cui \`e composta:
+ In questa classe viene gestita la fase di assemblaggio del problema e quella di export. Si tratta di una classe template:
+ \begin{lstlisting}[style = general]
+ template<typename mesh_type,typename matrix_type,typename vector_type>
+ class HiModAssembler
+ {
+	... 
+ };
+ \end{lstlisting}
+ Il primo paramentro si riferisce alla mesh che verr\`a passata allo spazio elementi finiti 1D, costruito sulla fibra di supporto. I restanti due paramentri sono riferiti alle strutture utilizzate per la matrice si sistema e il vettore termine noto. Ricordiamo che la struttura della matrice di sistema \`e ben nota (vedi figura \textcolor{red}{aggiungere figura}), formata da un numero di blocchi pari ad $\texttt{M\_mtot}^2$, ognuno dei quali di dimensione pari al quadrato dei gradi di libert\`a FEM spesi lungo la fibra di supporto.
+ Momentanemante il codice funziona solamente con elementi del tipo EpetraStructured, tuttavia occorrerebbe ripensare attentamente questa parte, soprattutto in visione di una possibile parallelizzazione.
+Un codice HiMod ottimizzato dovr\`a possedere delle proprie strutture, adeguate alla conformazione della matrice di sistema.
+
+\subsubsection{I membri}
+La classe HiModAssembler posside tre membri privati:
 
 \begin{itemize}
 \item \texttt{modalbasis\_ptrType M\_modalbasis
@@ -351,33 +363,70 @@ Analizziamo i membri di cui \`e composta:
 \item \texttt{etfespace\_ptrType M\_etfespace}}}
 \end{itemize}
 
-Chiaramente lo spazio ridotto \`e composto da uno spazio modale e da uno elementi finiti. Il terzo oggetto 
-
-
-
-
- Sono momentaneamente separate ma \'e chiaro che devono appartenere alla stessa classe, ovvero a quella che sintetizzer\'a insieme Modalspace e FESpace 1D (ovvero quello costruito sulla fibra di supporto).
- 
- \textcolor{red}{HiModView e HiModAssembler devono continuamente lavorare con gli elementi di Modalspace e FESpace 1D non sarebbe il caso di instaurare un legame pi\'u intimo?Magari specificando l'amicizia di HiMod con Modalspace e FESpace?Troppo incasinato?Si velocizza il tutto (non occorre infatti passare dai noiosi getters)?}
- 
-Gli unici membri di HiModAssembler e HiModView sono fespace e modalbasis (in HiModAssembler c'\'e anche etfespace ma direi che dobbiamo toglierlo e non farlo creare nel main, quella \'e sicuramente una questione interna di come abbiamo voluto implementare il calcolo dei coefficienti della matrice, inoltre aumentiamo in leggibilit\'a).
-
-Ecco le uilit\'a di HiModAssembler:
+Nota la teoria era chiaro che la classe dovesse possedere lo spazio modale 2D e lo spazio elementi finiti 1D.
+Il restante oggetto esiste per una scelta di programmazione. Infatti abbiamo deciso di ricorrere all'utilizzo del pacchetto \texttt{ETA}, piuttosto che del \texttt{GeneralAssembler}. Due sono le motivazioni che hanno condotto a questa scelta:
 \begin{itemize}
-\item AddADRProblem
-\item interpolate
-\item Addrhs (costante e functionType)
-\item Addrhsfunctor
-\item AddDirichletBCIn (Momentanemente via penalizzazione)
+\item[1.] Semplicit\`a di scrittura della forma variazionale.
+\item[2.] Possibilit\`a di scrivere pi\`u parti di forma variazionale.
 \end{itemize}
 
-Ecco invece le utilit\'a di HiModView:
-\begin{itemize}
-\item funCoeff3D (genera i valori nodali su una griglia partendo dal vettore soluzione o da una funzione)
-\item normL2 (dato il vettore che sputa fuori funCoeff3D ne fa la normaL2)
-\item ConvergeFile (crea un file di output gestibile tramite getpot, utilizzo limitato al testconvergence)
-\end{itemize}
+Entrambe le motivazioni sono legate in realt\`a ad una futura estensione del codice. Generalizzando il problema ad una qualunque sezione 2D, occorre introdurre una mappa, i conti fatti (vedi \textcolor{red}{citazione}) mostrano che alla forma variazionale si aggiungono numerosi pezzi aggiuntivi e inoltre vi sono casi non gestiti dal pacchetto \texttt{GeneralAssembler}.
 
+\textcolor{red}{Dobbiamo dare due dritte sulla mappa?O la lasciamo per ultima come possibile lavoro futuro esprimendo qualche ragionamento fatto?}
 
+La dichiarazione nel main \`e semplice, dato che il costruttore si occupa internamente della costruzione dello spazio \texttt{ETA}, \`e necessario tuttavia passare un comunicatore \textcolor{red}{Non era possibile prenderlo da FESpace???}:
 
+\begin{lstlisting}[style=general]
+ template<typename mesh_type,typename matrix_type,typename vector_type>
+ HiModAssembler<mesh_type, matrix_type,vector_type>::
+ HiModAssembler(	const fespace_ptrType& fespace,
+ 									const modalbasis_ptrType& modalbasis,
+ 									commPtr_Type& Comm):
+ 		M_Modalbasis	( modalbasis),
+ 		M_etfespace 	( new etfespace_type (fespace->mesh(),
+ 																 &(fespace->refFE()),
+ 																 &(fespace->fe().geoMap()),
+ 																 Comm))
+		M_fespace		( fespace)
+{} 																 
+ 																
+\end{lstlisting}
 
+\subsubsection{I metodi}
+\begin{lstlisting}[style=general]
+void AddADRProblem	( const matrix_ptrType& systemMatrix,
+											const Real& mu, 
+											const TreDvector_type& beta, 
+											const Real& sigma)
+\end{lstlisting}
+
+Si occupa dell'assemblaggio della matrice di sistema. Scorre \texttt{systemMatrix} per blocchi e in ognuno di esso computa tramite il metodo \texttt{integrate} del pacchetto \texttt{ETA} il corrispondente problema 1D. Questa operazione si ripete per ogni coppia di frequenze ovvero $\texttt{M\_mtot}^2$. Fissata la coppia di frequenza vengono calcolati i valori dei coefficienti della forma tramite i metodi di calcolo della classe  \texttt{ModalSpace}.
+
+\begin{lstlisting}[style=general]
+void Addrhs	(	const vector_ptrType& rhs,
+							const vector_ptrType& f_interpolated);
+\end{lstlisting}
+Per quanto riguarda l'assemblaggio del termine noto occorre prima interpolare la forzante, ottenuta l'interpolazione l'approccio non \`e differente da \texttt{AdADRProblem()}: il vettore \texttt{rhs} possiede \texttt{M\_mtot} blocchi di dimensione ciascuno pari ai gradi di libert\`a FEM.
+
+\begin{lstlisting}[style = general]
+void interpolate	( const function_Type& f,
+										const vector_ptrType& f_interpolated)
+\end{lstlisting}
+
+Data una forzante, questo metodo si occupa di calcolare, per ogni punto della griglia 1D, tutte le componenti di Fourier rispetto alle basi modali. Il risultato viene salvato nel vettore strutturato passato negli argomenti.
+
+\mybox{
+Mostriamo in breve le operazioni eseguite nel main per definire ed assemblere il termine noto:
+}{Osservazione}
+\begin{lstlisting}[style = general]
+boost::shared_ptr<vector_Type> rhs 
+		(new vector_Typer (Map,Repated));
+*rhs *= 0.0;
+rhs -> setBlockStructure(block_row);
+
+boost::shared_ptr<vector_Type> f_interpolated 
+		(new vector_Type (Map,Repeated));
+
+HM.interpolate ( f,f_interpolated );
+HM.Addrhs (rhs,f_interpolated);
+\end{lstlisting}
