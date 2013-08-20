@@ -1,8 +1,7 @@
 \chapter{Introduzione}
 \section{Nozioni base}
 
-L'obbiettivo primale del progetto \`e stato di implementare in LifeV un risolutore ADR 3D, basato sulla tecnica di Riduzione Gerarchica di Modello.
-Il problema trattato \`e il seguente:
+L'obbiettivo di questo progetto \`e l'implementazione in \texttt{LifeV} di un risolutore ADR 3D, basato sulla tecnica di Riduzione Gerarchica di Modello (Hierarchical Model Reducation - HiMod). Consideriamo il seguente problema stazionario ai limiti:
 
 \begin{equation}
 \label{eq: problema forte}
@@ -45,36 +44,33 @@ u=0 & \text{su $\Gamma _{vaso}$} \\
 \end{tikzpicture}
 \end{center}
 
+Immaginiamo di suddividere il dominio $\Omega$ in slice poste trasversalmente alla direzione longitudinale. Ognuna di queste slice verr\`a indicata con $\Omega_{1D}$.
 
-Si consideri il dominio $\Omega$, come l'unione di slice poste trasversalmente alla direzione longitudinale del tubo a sezione rettangolare, la quale verr\`a indicata d'ora in poi con $\Omega_{1D}$:
-
-
-
-Lungo le slice $\gamma_x$ vengono utilizzate funzioni spaziali differenti rispetto a quelle utilizzate lungo $\Omega_{1D}$. Si consideri infatti per $\Omega_{1D}$, lo spazio funzionale $V_{1D}=H^1_{\Gamma_{in}}(\Omega_{1D})$, mentre sulla generica $\gamma_x$ si introducano le basi modali $\left\{ \varphi_k(y,z) \right\}$ ortonormali in $L^2(\gamma_x)$, con $k \in \mathbb{N}$.
+Lungo $\gamma_x$ vengono utilizzate funzioni spaziali differenti rispetto a quelle utilizzate lungo $\Omega_{1D}$. Si consideri infatti per $\Omega_{1D}$, lo spazio funzionale $V_{1D}=H^1_{\Gamma_{in}}(\Omega_{1D})$, mentre sulla generica $\gamma_x$ si introducano le basi modali $\left\{ \varphi_k(y,z) \right\}$ ortonormali in $L^2(\gamma_x)$, con $k \in \mathbb{N}$.
 Quest'ultime definiscono su $\gamma_x$ lo spazio funzionale $V_{\gamma_x}:=span\{\varphi_k\}$.
-Definiamo ora il sottospazio generato solo dai primi m modi ovvero  $V^m_{\gamma_x}:=span\{\varphi_1,...,\varphi_m\}$ e combiniamolo con $V_{1D}$, ottenendo il seguente spazio ridotto:
+
+Definiamo ora il sottospazio generato solo dai primi m modi ovvero  $V^m_{\gamma_x}:=span\{\varphi_1,...,\varphi_m\}$ e combiniamolo con $V_{1D}$, il risultato di tale operazione \`e il seguente spazio ridotto:
 \begin{equation}
 \label{spazio: ridotto}
 V_m:=\left\{v_m(x,y,z)=\sum^m_{k=1}\varphi_k(y,z)\tilde{v}_k(x) ,\:\:con\:\:\tilde{v}_k\in V_{1D}\right\}
 \end{equation}
 
+Questo \`e l'ambiente funzionale in cui opera il metodo HiMod.
 L'ortogonalit\'a in $L^2(\gamma_x)$ implica che i coefficienti  $\tilde{v}_k$ in (\ref{spazio: ridotto}) sono il risultato del seguente prodotto scalare per $k=1,...,m$:
 \begin{displaymath}
 \tilde{v}_k(x)=\int_{\gamma_x}\varphi_k(y,z)v_m(x,y,z)\,dydz
 \end{displaymath}
-La convergenza di una soluzione $u_m$ tale che soddisfi il problema \eqref{eq: problema forte} \`e garantita osservando che:
+La convergenza di una soluzione $u_m$ tale che soddisfi il problema \eqref{eq: problema forte} \`e stata dimostrata (\textcolor{red}{citazione}). Valgono inoltre le seguenti propriet\`a:
 \begin{itemize}
-\item $V_m \subset V$ $\forall m\in \mathbb{N}$, ossia che lo spazio ridotto $V_m$ \`e conforme in $V$;
-\item $\displaystyle \lim_{x\to +\infty} \left(\inf_{v_m\in V_m}\mid\mid v-v_m\mid\mid\right)=0$ 
-per ogni $v \in V$, ossia che vale la propriet\`a di approssimazione di $V_m$ rispetto a $V$;
+\item[-] $V_m \subset V$ $\forall m\in \mathbb{N}$, ossia che lo spazio ridotto $V_m$ \`e \textbf{conforme} in $V$;
+\item[-] $\displaystyle \lim_{x\to +\infty} \left(\inf_{v_m\in V_m}\mid\mid v-v_m\mid\mid\right)=0$ 
+per ogni $v \in V$, ossia che vale la \textbf{propriet\`a di approssimazione} di $V_m$ rispetto a $V$;
 \end{itemize}
-\`E possibile dimostrare che le ipotesi di conformit\`a e approssimazione sono ancora valide in una trattazione con dato di Dirichlet non omogeneo sulle pareti del tubo
-(\cite{perotto:2009}).
-\clearpage
+Le propriet\`a continuano a valere anche nel caso di dato di Dirichlet non omogeneo sulle pareti del vaso (\cite{perotto:2009}).
+
 \section{Forma matriciale}
 
-La risoluzione del problema ADR pu\`o avvenire quindi sullo spazio ridotto $V_m$.
-Dunque, per ogni $m\in\mathbb{N}$ si riconosca il seguente problema ridotto del problema originale \eqref{eq: problema forte}, 
+Per ogni $m\in\mathbb{N}$ consideriamo il seguente problema ridotto di \eqref{eq: problema forte}, 
 trovare $u_m\in V_m$ tale che $\forall v_m\in V_m$:
 
 \begin{multline}
@@ -82,11 +78,12 @@ trovare $u_m\in V_m$ tale che $\forall v_m\in V_m$:
 =\int_\Omega fv \,dxdy
 \end{multline}
 
-Si adoperi l'espansione tramite i coefficienti di Fourier della $u_m(x,y,z)=\sum_{j=k}^m\tilde{u}_j(x)\varphi _j(y,z)$ dove:
+Adoperiamo l'espansione tramite i coefficienti di Fourier della $u_m(x,y,z)=\sum_{j=k}^m\tilde{u}_j(x)\varphi _j(y,z)$ dove:
 \begin{displaymath}
 \tilde{u}_j(x)=\int_{\gamma(x)}u_m(x,y,z) \varphi_j(y,z)\,dydz
 \end{displaymath}
-e si considerino le funzioni test $v_m=\vartheta(x)\varphi _k(y,z)$ con $\vartheta(x)\in V_{1D}$ e $k=1,...m$. Il problema assume la seguente forma:
+consideriamo inoltre le funzioni test $v_m=\vartheta(x)\varphi _k(y,z)$ con $\vartheta(x)\in V_{1D}$ e $k=1,...m$. Il problema assume la seguente forma:
+
 \begin{multline}
 \sum_{j=1}^m \Bigg[
 \int_\Omega\mu\nabla (\tilde{u}_j(x)\varphi _j(y,z))\nabla (\vartheta(x)\varphi _k(y,z))\,dxdydz\\
@@ -96,6 +93,7 @@ e si considerino le funzioni test $v_m=\vartheta(x)\varphi _k(y,z)$ con $\varthe
 \end{multline}
 
 Svolgendo l'operatore gradiente si ottiene:
+
 \begin{multline}
 \sum_{j=1}^m \Bigg[
 \int_\Omega\mu( \partial_x\tilde{u}_j \partial_x\vartheta\varphi _j\varphi _k + \tilde{u}_j \vartheta \partial_y\varphi _j\partial_y\varphi _k + \tilde{u}_j \vartheta \partial_z\varphi _j\partial_z\varphi _k)\,dxdydz \\
@@ -105,15 +103,23 @@ Svolgendo l'operatore gradiente si ottiene:
 \end{multline}
 
 
-Definito N il numero di nodi scelti uniformemente distribuiti lungo $\Omega_{1D}$, si determina una partizione $T_h$, dove $h=\vert \Omega_{1D}\vert / (N-1)$ \`e il passo spaziale. Introduciamo lo spazio agli elementi finiti lungo $\Omega_{1D}$ definito come segue
+Definiamo con N il numero di nodi scelti, uniformemente distribuiti lungo $\Omega_{1D}$. La partizione $T_h$, costruita lungo la fibra di supporto 1D, avr\`a un passo spaziale $h=\vert \Omega_{1D}\vert / (N-1)$. Introduciamo lo spazio agli elementi finiti lungo $\Omega_{1D}$ definito come segue
 
-\begin{displaymath}
-X_h^r= \left\{\psi_h \in C^0(\Omega_{1D}): \psi_h \vert_K  \in \mathbb{P}_r,\forall K\in T_h \right\}
-\end{displaymath}
+\begin{equation}
+\label{eq: spazio polinomiale}
+X_h^r= \left\{\psi_h \in C^0(\Omega_{1D}): \psi_h \vert_K  \in \mathbb{P}_r,\forall K\in T_h \right\}\footnotemark
+\end{equation}
 
- Nella successiva implementazione del metodo si \`e considerato per semplicit\`a, una base F.E.M. di primo grado. Possiamo quindi esprimere i coefficienti di Fuorier nel seguente modo: $\tilde{u}_j(x)=\sum_{s=1}^Nu_{js}\psi_s(x)$. 
+\footnotetext{Il codice \`e stato scritto in modo da utilizzare polinomi di primo grado, la generalizzazione non rientrava negli obbiettivi primali del progetto}
+
+Possiamo quindi esprimere i coefficienti di Fuorier nel seguente modo: 
+\begin{equation}
+\label{eq: coeff fourier espansi}
+\tilde{u}_j(x)=\sum_{s=1}^Nu_{js}\psi_s(x)
+\end{equation}
+
  
- Si ottiene dunque la formulazione matriciale del nostro problema, trovare $\vect{u} \in \mathbb{R}^{N*m}$ tale che $\forall \psi_l$ e $\forall \varphi_k$, con $l=1,...N$ e $k=1,...m$ si ha che:
+ Otteniamo la formulazione matriciale del nostro problema ovvero, trovare $\vect{u} \in \mathbb{R}^{N*m}$ tale che $\forall \psi_l$ e $\forall \varphi_k$, con $l=1,...N$ e $k=1,...m$ si ha che:
 
 \begin{multline}
 \sum_{j=1}^m \sum_{s=1}^N
@@ -123,27 +129,25 @@ u_{js} \Bigg[ \int_\Omega\mu( \partial_x\psi_s \partial_x\psi_l\varphi _j\varphi
 =\int_\Omega f\psi_l\varphi _k\,dxdydz
 \end{multline}
 
- Si osservi che il doppio indice $"js"$, in realt\`a scorre un vettore, la rimappatura in un solo indice pu\`o 
+ Osserviamo che il doppio indice $"js"$, in realt\`a scorre un vettore, la rimappatura in un solo indice pu\`o 
  facilmente essere dedotta ottenenedo che $[\vect{u}]_{js}=\vect{u}[(j-1)N+s]$. 
- La matrice generata ha quindi dimensioni $(mN)^2$, tuttavia fissata la frequenza delle soluzione e della funzione test \`e 
+ 
+ La matrice generata ha dimensioni $(mN)^2$, tuttavia fissata la frequenza delle soluzione e della funzione test \`e 
  possibile identificare un blocco che corrisponde ad un problema monodimensionale.
- Se utilizziamo, in direzione x, gli elementi finiti di grado 1, il blocco risulta tridiagonale e, in questo caso, la matrice ha un numero 
- di elementi non zero pari a $m^2(3N-2)$. Il pattern di sparsit\`a per un caso con m=3 e N=14 \`e riportato in figura \ref{fig:pattern}.
- La matrice dei coefficienti \`e dunque sparsa ed inoltre il pattern \`e noto a priori, queste 
+ Se utilizziamo, in direzione x, gli elementi finiti di grado 1, il blocco risulta tridiagonale e, in questo caso, la matrice ha un numero di elementi non zero pari a $m^2(3N-2)$. Il pattern\footnotemark di sparsit\`a per un caso con m=3 e N=14 \`e riportato in figura \ref{fig:pattern}.
+ 
+ \begin{figure}[h]
+    \centering
+    \includegraphics[scale = 0.45]{spy_14elem3modes}
+    \caption{Pattern di sparsit\`a per un caso con 14 elementi P1 e 3 modi.}
+    \label{fig:pattern}
+\end{figure}
+
+\footnotetext{La matrice dei coefficienti \`e dunque sparsa ed inoltre il pattern \`e noto a priori, queste 
  informazioni hanno permesso un assemblaggio pi\`u veloce in sede implementativa. 
+}
 
-In generale il problema che si porrebbe ora sarebbe la scelta della base modale. Esistono svariati metodi al fine di determinare la natura della base modale, tuttavia questa problematica va al di fuori degli scopi di questo elaborato. Seguendo le linee guida in (e qua ci autocitiamo!!!!) scegliamo la base modale in grado di garantire le condizioni di parete:
-
-\begin{equation}
-\label{eq:base modale}
-\begin{array}{c c}
-\varphi_j(y,z)=sin\left(\frac{\alpha}{\pi L_y}y\right)sin\left(\frac{\beta}{\pi L_z}z\right)
-&
-\lambda_j=\alpha^2+\beta^2
-\end{array}
-\end{equation}
-
-
+\section{Educated Basis}
 \section{Implementazione integrali}
 
 Nel caso i coefficienti del problema ADR siano dipendenti dalla sola coordinata $x$ o risultino fattorizabili lungo la direzione $x$ e il piano ortogonale, il risultato finale di HiMod \`e la trasformazione di un problema ADR full 3D a $m^2$ problemi ADR 1D accoppiati con coefficienti modificati opportunatamente dalle funzioni modali a seconda della coppia di frequenze considerata. Nel caso non ricadiamo in tale ipotesi vale comunque la scomposizione in problemi 1D ma risulta pi\`u delicata l'integrazione.
