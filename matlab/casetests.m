@@ -24,10 +24,10 @@ Mu=sym('Mu');
 
 f=(-Mu*LAPLues+Bx*dxues+By*dyues+Bz*dzues+S*ues);
 
-s=3;
-bx=5;
-by=1;
-bz=1;
+s=0;
+bx=0;
+by=0;
+bz=0;
 mu=1;
 
 f=subs(subs(subs(subs(subs(f,'S',s),'Bx',bx),'By',by),'Mu',mu),'Bz',bz)
