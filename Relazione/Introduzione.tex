@@ -147,21 +147,81 @@ u_{js} \Bigg[ \int_\Omega\mu( \partial_x\psi_s \partial_x\psi_l\varphi _j\varphi
  informazioni hanno permesso un assemblaggio pi\`u veloce in sede implementativa. 
 }
 
-\section{Educated Basis}
-\section{Implementazione integrali}
+\section{Educated Basis}\label{sec: educated basis}
+\
 
-Nel caso i coefficienti del problema ADR siano dipendenti dalla sola coordinata $x$ o risultino fattorizabili lungo la direzione $x$ e il piano ortogonale, il risultato finale di HiMod \`e la trasformazione di un problema ADR full 3D a $m^2$ problemi ADR 1D accoppiati con coefficienti modificati opportunatamente dalle funzioni modali a seconda della coppia di frequenze considerata. Nel caso non ricadiamo in tale ipotesi vale comunque la scomposizione in problemi 1D ma risulta pi\`u delicata l'integrazione.
-\textcolor{red}{Nel caso si fattorizza anche $\mu$ proiettandola sulle basi modali, non penso che dia dei buoni risultati, tuttavia \`e fattibile}
+Introduciamo con degli esempi l'algoritmo di ricerca delle basi ortonormali, senza entrare nel dettaglio della teoria;
 
+\begin{itemize}
+\item[\textbf{1.}] \textbf{Costruzione di un problema ausiliario} che rispecchi la natura delle condizioni alle pareti del problema originale (devono essere omogenee) e passaggio ai relativi problemi agli autovalori.
+\mybox{
+Nel caso si abbiano condizioni di robin uguali sull'intera parete del vaso, dovremo considerare il seguente problema ausiliario:
 \begin{equation}
-\begin{array}{l r}
-\partial_x\psi_s\partial_x\psi_l & \int_{\gamma_x} \mu\varphi_j\varphi_k\,dydz \\
-\partial_x\psi_s\psi_l & \int_{\gamma_x}\varphi_j\varphi_k\,dydz\\
-\psi_s\psi_l & \int_{\gamma_x}(\mu\partial_y\varphi _j\partial_y\varphi _k + \mu\partial_z\varphi _j\partial_z\varphi _k + b_2\partial_y\varphi_j\varphi_k +b_3\partial_z\varphi_j\varphi_k + \sigma\varphi_j\varphi_k)\,dydz
+\label{eq: problema RRRR}
+\begin{cases}
+-\Delta u(y,z)= 0 & \text{in $\gamma_x$}\\
+\mu \nabla u(y,z) \cdot \vect{n}_{\gamma_x} +\chi u(y,z)=0 & \text{su $\Gamma_{vaso}$} \\
+\end{cases}
+\end{equation}
+Si passi ora al problema agli autovalori associato al precedente sistema e ipotizzando la separazione di variabili per $u(y,z)=\varphi(y)\vartheta(z)$, si arrivano facilmente ad ottenere i seguenti sottoproblemi agli autovalori:
+\begin{equation}
+\label{eq: problema RR1}
+\begin{cases}
+-\varphi(y)'' = K_y\varphi(y) & \\
+\mu \varphi(y)' +\chi \varphi(y) = 0 & \text{per $y=L_y$} \\
+-\mu \varphi(y)'+\chi \varphi(y)=0 & \text{per $y=0$} \\
+\end{cases}
+\end{equation}
+\begin{equation}
+\label{eq: problema RR2}
+\begin{cases}
+-\vartheta(z)'' = K_z\vartheta(z) & \\
+\mu \vartheta(z)' +\chi \vartheta(z) = 0 & \text{per $z=L_z$} \\
+-\mu \vartheta(z)'+\chi \vartheta(z)=0 & \text{per $z=0$} \\
+\end{cases}
+\end{equation}
+}{Esempio - RRRR}
+
+\item[\textbf{2.}] \textbf{Identificazione del tipo di soluzione} dei problemi agli autovalori associati.
+
+\mybox{
+Per i sottoproblemi ottenuti i generi di soluzione sono i seguenti:
+\begin{equation}
+\label{eq: 1sottoproblema}
+\begin{array}{c}
+\varphi (y)=Asin(\sqrt{K_y}y)+Bcos(\sqrt{K_y}y) \\ \\
+\vartheta (z)=Asin(\sqrt{K_z}z)+Bcos(\sqrt{K_z}z)
 \end{array}
 \end{equation}
 
-\section{Ipotesi}
+}{Esempio - RRRR}
+
+\item[\textbf{3.}] \textbf{Ricerca degli autovalori di un sottoproblema} tramite risoluzione dell'equazione non lineare associata ad esso, ottenuta risolvendo le condizioni di bordo.
+\mybox{
+Nel caso trattato in esempio le equazioni che si ottengono sono le seguenti ($x = \sqrt{K_y}$ e $w= \sqrt{K_z}$):
+\begin{equation}
+\label{eq: funzione autovalori}
+\begin{array}{c}
+f(x)= 2\mu x + tan(L_y x)\left(\chi - \frac{\mu ^2 x^2 }{\chi} \right) \\ \\
+f(w)= 2\mu w + tan(L_z w)\left(\chi - \frac{\mu ^2 w^2 }{\chi} \right)
+\end{array}
+\end{equation}
+}{Esempio - RRRR}
+\end{itemize}
+
+\mybox{
+Nel caso di condizioni al bordo di Dirichlet il problema si semplifica. Infatti non occorre adottare l'algoritmo mostrato precedentemente, gli autovalori che si ottengono sono noti a priori e sono della forma:
+\begin{equation}
+\label{eq: problema agli autovalori dirichlet}
+\begin{array}{c l}
+K_y = \big( \frac{\pi p}{L_y}\big)^2 & p = 1, ... ,m_y\\
+K_z = \big( \frac{\pi q}{L_z}\big)^2 & q = 1, ... ,m_z\\
+\end{array}
+\end{equation}
+Dunque \'e nota la relazione $\lambda(K_y,K_z)$ a priori e risulta molto semplice ordinare in modo crescente gli autovalori definendo quindi $m_y$ e $m_z$.
+}{Osservazione}
+
+\section{Ipotesi}\label{sec: ipotesi}
 
 Le ipotesi alla base di questo progetto sono le seguenti:
 
