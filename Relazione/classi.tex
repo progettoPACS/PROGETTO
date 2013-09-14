@@ -11,9 +11,24 @@ Inizialmente ModalSpace \`e stata concepita per essere una classe base, dalla qu
 ModalSpace conosce la geometria della sezione (Ly, Lz) e sicuramente deve conoscere il grado di accuratezza desiderato dall'utente, ovvero il numero di modi da utilizzare (mtot). 
 Un altro punto fondamentale del costruttore generico \`e senz'altro la regola di quadratura da utilizzare sulla slice. Si noti che le basi utilizzate necessitano regole di quadratura di alto ordine e il grado di esattezza \`e strettamente legato al numero di modi. Questo legame \`e evidente se si pensa che maggiore \`e il modo, maggiore sar\`a la frequenza della base modale e conseguentemente si avr\`a bisogno di una fitta successione di nodi di quadratura. Su una sezione quadrata una buona approssimazione dei nodi necessari su ciascun lato \`e $\sqrt{mtot}$. Il risultato non \`e valido nel caso di sezioni molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u nodi lungo la direzione maggiore e meno sull'altra. Come esempio si osservi la seguente tabella dove sono riportati i check dei valori di normalit\`a di una base, fissata la regola di quadratura al variare della dimensione $L_y$.
 
-\begin{equation}
-\textcolor{red}{TABELLA}
-\end{equation}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Lx&Ly & Max(p,q) &  $\parallel err32 \parallel_{L_{\inf}}$ &  $\parallel err64 \parallel_{L_{\inf}}$ \\
+\hline
+1.0&2.0 & 12 & 1.85391e-9 & 9.54883e-14 \\
+\hline
+1.0&4.0 & 16 & 8.7809e-4 & 1.51567e-13 \\
+\hline
+1.0&8.0 & 23 & 7.87756 & 2.70061e-13 \\
+\hline
+1.0&16.0 & 33 & 54.7566 & 7.91844e-6 \\
+\hline
+1.0&32.0 & 50 & 185.541 & 32.7153 \\
+\hline
+\end{tabular}
+\end{center}
+
 
 Una volta creato l'oggetto \texttt{ModalSpace} bisogna eseguire alcuni set importanti. Per prima cosa dobbiamo impostare i generatori di base lungo le direzioni trasversali. Nel caso di basi educate questa operazione viene eseguita assieme all'imposizione delle condizioni di parete tramite i metodi pubblici:
 \begin{itemize}
@@ -313,6 +328,13 @@ Abbiamo visto che \texttt{ModalSpace} possiede il metodo \texttt{EvaluateBasis()
 Facendo riferimento alla forma generica delle basi modali \referenzaeq{eq: 1sottoproblema}, \`e chiaro che il compito di \texttt{EvaluateBasis()} \`e di calcolare i coefficienti A e B in modo tale che le basi rispettino le condizioni di bordo e risultino normali (ricordiamo che l'ortogonalit\`a \`e garantita dalla teoria).
 
 La registrazione delle valutazioni della base modale nei nodi di quadratura \`e un'operazione necessaria al fine di velocizzare le operazioni di integrazione. Tuttavia come procediamo se siamo interessati a valori delle basi su una griglia pi\`u fitta di quella di quadratura? Per risolvere questo problema \`e stato scritto il metodo \texttt{EvalSinglePoint()} che dato un sotto autovalore e la coordinata, restituisce la valutazione della base modale in quel dato punto. Questa funzione si \`e resa necessaria dal momento che in fase di export desideravamo interpolare la funzione su una griglia con pi\`u nodi rispetto alla quadratura.
+
+\begin{figure}[!htbp]
+        \centering%
+          {\label{fig: slice9}\includegraphics[scale=0.33]{UML/Basis1DAbstract.eps}}\qquad
+        \caption{Classi Basis1DAbstract e EducatedBasisFunctor}
+        \label{fig: UMLBasis}
+\end{figure}
 
 \section{HiModAssembler}
  

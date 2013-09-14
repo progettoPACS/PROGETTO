@@ -1,0 +1,12 @@
+FEM.eps
+FEMslice.eps
+Forceterm.eps
+Forceterm2.eps
+Forceterm3.eps
+ForcetermTrasport.eps
+ForcetermTrasportlight.eps
+HiMod16slice.eps
+HiMod25slice.eps
+HiMod50.eps
+HiMod50slice.eps
+HiMod9slice.eps
