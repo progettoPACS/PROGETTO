@@ -1,4 +1,5 @@
 ConfrontoDOF.png
+Confronto_tempi.png
 DDDD.png
 DDDD_ADR.png
 DDDD_Adv.png

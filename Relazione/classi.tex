@@ -3,10 +3,6 @@
 
 Inizialmente ModalSpace \`e stata concepita per essere una classe base, dalla quale ereditasse ogni possibile scelta delle condizioni di bordo sulla parete del vaso. Facendo un rapido conto ci si accorge che comprendendo le condizioni di Dirichlet, Neumann e Robin su una sezione rettangolare arriviamo a 81 possibili combinazioni, una grande quanti\`a di codice da scrivere, che comprende casistiche molto simili fra loro se non identiche. Questo \`e stato il primo motivo che ci ha portato a scorporare il trattamento delle condizioni di bordo dalla classe ModalSpace, per poi includerlo in modo ottimale in Basis1DAbstract (classe che si occupa della gestione delle basi educate). Un secondo punto a favore di questa scelta riguarda la valutazione e la lettura delle basi modali. Se avessimo scelto di adottare l'ereditariet\`a in ModalSpace, ogni eventuale figlia avrebbe avuto un tipo di base differente e accedervi tramite la classe base ogni qual volta fosse necessario, non risultava essere efficiente. Dunque la struttura di ModalSpace \`e composta dalle valutazioni delle basi modali su un'opportuna griglia e i generatori di basi (oltre ai metodi di calcolo necessari), questo design attribuisce maggiore generalit\`a: ModalSpace \`e pronta ad utilizzare nuovi metodi in grado di generare una corretta base modale.
 
-\begin{equation}
-\textcolor{red}{Grafico UML stringato di modalspace e basis1dAbstract}
-\end{equation}
-
 \subsection{Costruzione e setting}
 ModalSpace conosce la geometria della sezione (Ly, Lz) e sicuramente deve conoscere il grado di accuratezza desiderato dall'utente, ovvero il numero di modi da utilizzare (mtot). 
 Un altro punto fondamentale del costruttore generico \`e senz'altro la regola di quadratura da utilizzare sulla slice. Si noti che le basi utilizzate necessitano regole di quadratura di alto ordine e il grado di esattezza \`e strettamente legato al numero di modi. Questo legame \`e evidente se si pensa che maggiore \`e il modo, maggiore sar\`a la frequenza della base modale e conseguentemente si avr\`a bisogno di una fitta successione di nodi di quadratura. Su una sezione quadrata una buona approssimazione dei nodi necessari su ciascun lato \`e $\sqrt{mtot}$. Il risultato non \`e valido nel caso di sezioni molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u nodi lungo la direzione maggiore e meno sull'altra. Come esempio si osservi la seguente tabella dove sono riportati i check dei valori di normalit\`a di una base, fissata la regola di quadratura al variare della dimensione $L_y$.
@@ -232,6 +228,7 @@ Le due problematiche sono strettamente legate, difatti non siamo interessati a c
 
 La soluzione \`e stata quella di procedere un passo alla volta, con l'accortezza di salvare i sotto-autovalori ancora non utlizzati. Per fare questo il metodo di ricerca degli zeri (\texttt{Next()} che approfondiremo nella sezione \texttt{Basis1DAbstract}) fornisce progressivamente uno zero alla volta. Infine abbiamo analizzato il seguente albero delle scelte:
 
+
 \begin{lstlisting}[style = general,frame = top]
 Ky_1 = NextY();
 Kz_1 = Nextz();
@@ -243,13 +240,45 @@ Kz_1 = Nextz();
 -> Inserisco nella mappa la coppia di sottoautovalori minore
 -> Registro i sottoautovalori non inseriti
 \end{lstlisting}
-\begin{tikzpicture}
-[scale=1.5]
-\tikzstyle{every node}=[draw,shape=rectangle];
-\path (5,0)   node (v1) {$Ky^{(1)},Kz^{(1)}$};
-\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
-\draw (v1) -- (v2);
+\begin{tikzpicture}[stack/.style={
+  rectangle split, rectangle split parts=5, draw, anchor=center},
+  myarrow/.style={single arrow, draw=none}]
+
+\node [stack] (prima)  {\nodepart{two}
+\nodepart{three}\nodepart{four}
+\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
+
+\node [stack,right=of prima] (seconda) {\nodepart{two}
+  \nodepart{three}\nodepart{four}$Ky^{(1)},Kz^{(2)}$
+  \nodepart{five}$Ky^{(2)},Kz^{(1)}$};
+
+\node [stack,right=of seconda] (terza) {{\nodepart{two}
+\nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(1)}$
+\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
+
+\node [stack,right=of terza] (quarta) {\nodepart{two}
+  \nodepart{three}\nodepart{four}
+  \nodepart{five}$Ky^{(1)},Kz^{(2)}$};
+  
+\node [above=of prima,anchor=north,align=left] {Eigenvalues};
+\node [above=of seconda,anchor=north,align=left] {Tmp};
+
+\node [myarrow,draw,anchor=west] at ($(seconda.east)+(2.5pt,0)$) {\phantom{te}} ;
+
+%\node [myarrow,draw,anchor=west] at ($(mid.east)+(2.5pt,0)$) %{\phantom{te}} ;
+\draw [red,ultra thick,->] ($(seconda.west)+(-0.1,-1.0)$) -- ($(prima.east)+(0.1,-0.4)$);
+\draw [red,thick] ($(seconda.south)+(-1.4,-0.2)$)--($(seconda.south)+(1.4,0.8)$);
+\draw [red,thick] ($(seconda.south)+(-1.4,0.8)$)--($(seconda.south)+(1.4,-0.2)$);
+
+ % {instruction 0;\\ instruction 1;\\$\ldots$\\instruction $n$;};
 \end{tikzpicture}
+%\begin{tikzpicture}
+%[scale=1.5]
+%\tikzstyle{every node}=[draw,shape=rectangle];
+%\path (5,0)   node (v1) {$Ky^{(1)},Kz^{(1)}$};
+%\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
+%\draw (v1) -- (v2);
+%\end{tikzpicture}
 
 
 \begin{lstlisting}[style = general,frame = top]
@@ -260,19 +289,48 @@ Kz_1 = Nextz();
 -> Inserisco nella mappa la coppia di sottoautovalori minore rispetto anche a quelli nel registro
 -> Registro i sottoautovalori non inseriti
 \end{lstlisting}
-\begin{tikzpicture}
-[scale=1.5]
-\tikzstyle{every node}=[draw,shape=rectangle];
-\path (5,0)   node (v1) {$Ky^{(1)},Kz^{(1)}$};
-\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
-\path (7,-1) node (v3) {$Ky^{(1)},Kz^{(2)}$};
-\draw (v1) -- (v2)
-(v1) -- (v3);
+\begin{tikzpicture}[stack/.style={
+  rectangle split, rectangle split parts=5, draw, anchor=center},
+  myarrow/.style={single arrow, draw=none}]
+
+\node [stack] (prima) {{\nodepart{two}
+\nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(1)}$
+\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
+
+\node [stack,right=of prima] (seconda) {\nodepart{two}
+  \nodepart{three}$Ky^{(2)},Kz^{(2)}$\nodepart{four}$Ky^{(3)},Kz^{(1)}$
+  \nodepart{five}$Ky^{(1)},Kz^{(2)}$};
+  
+  \node [stack,right=of seconda] (terza)  {\nodepart{two}
+\nodepart{three}$Ky^{(1)},Kz^{(2)}$\nodepart{four}$Ky^{(2)},Kz^{(1)}$
+\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
+
+\node [stack,right=of terza] (quarta) {\nodepart{two}
+  \nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(2)}$
+  \nodepart{five}$Ky^{(3)},Kz^{(1)}$};
+  
+\node [above=of prima,anchor=north,align=left] {Eigenvalues};
+\node [above=of seconda,anchor=north,align=left] {Tmp};
+
+\node [myarrow,draw,anchor=west] at ($(seconda.east)+(2.5pt,0)$) {\phantom{te}} ;
+
+%\node [myarrow,draw,anchor=west] at ($(mid.east)+(2.5pt,0)$) %{\phantom{te}} ;
+%\node [draw,rectangle,align=left,right=of ini,label=above:%{Computer Program}] (mid)
+ % {instruction 0;\\ instruction 1;\\$\ldots$\\instruction $n$;};
 \end{tikzpicture}
+%\begin{tikzpicture}
+%[scale=1.5]
+%\tikzstyle{every node}=[draw,shape=rectangle];
+%\path (5,0)   node (v1) {$Ky^{(1)},Kz^{(1)}$};
+%\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
+%\path (7,-1) node (v3) {$Ky^{(1)},Kz^{(2)}$};
+%\draw (v1) -- (v2)
+%(v1) -- (v3);
+%\end{tikzpicture}
 
 
 \begin{lstlisting}[style = general,frame=top]
--> inserimento di copie evitato per unicità degli oggetti nella struttura scelta
+-> inserimento di copie evitato per unicita' degli oggetti nella struttura scelta
 (Ky_2,Kz_2) già esistente non viene inserito nella mappa
 \end{lstlisting}
 \begin{tikzpicture}
