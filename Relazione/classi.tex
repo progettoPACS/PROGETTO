@@ -497,7 +497,7 @@ void AddDirichletBC_In (	const matrix_ptrType& systemMatrix,
 													const function_Type& g)
 \end{lstlisting}
 
-L'applicazione delle condizioni di inflow ed outflow sono un aspetto secondario di questo lavoro, tuttavia non possono certo essere esenti da un'adeguata trattazione. Per quanto riguarda le condizioni naturali del problema \`e sufficiente intervenire nella forma variazionale, nel caso invece di condizioni essenziali quali quelle di Dirichlet, abbiamo deciso di intervenire con una penalizzazione algebrica, molto simile al trattamento delle BC fatto fa FreeFem++. Per capire dove intervenire dobbiamo rifarci all'interpretazione data nei cenni teorici, ricordiamo infatti che la matrice di sistema del metodo HiMod \`e costituita da $\texttt{M\_mtot}^2$ problemi 1D correlati fra loro. Dunque se ogni sottoblocco rappresenta la matrice di sistema di un problema ADR agli elementi finiti 1D, \`e chiaro che sar\`a sufficiente intervenire sul primo elemento (nel caso di Dirichlet all'inflow). Analogamente l'intervento sul termine noto, viene eseguito sostituendo al primo elemento di ogni sottoblocco, il coefficiente dell'interpolazione del dato in ingresso, moltiplicato per il medesimo coefficiente di penalizzazione usato nella matrice di sistema.
+L'applicazione delle condizioni di inflow ed outflow sono un aspetto secondario di questo lavoro, tuttavia non possono certo essere esenti da un'adeguata trattazione. Per quanto riguarda le condizioni naturali del problema \`e sufficiente intervenire nella forma variazionale, nel caso invece di condizioni essenziali quali quelle di Dirichlet, abbiamo deciso di intervenire con una penalizzazione algebrica, molto simile al trattamento delle BC fatto da FreeFem++. Per capire dove intervenire dobbiamo rifarci all'interpretazione data nei cenni teorici, ricordiamo infatti che la matrice di sistema del metodo HiMod \`e costituita da $\texttt{M\_mtot}^2$ problemi 1D correlati fra loro. Dunque se ogni sottoblocco rappresenta la matrice di sistema di un problema ADR agli elementi finiti 1D, \`e chiaro che sar\`a sufficiente intervenire sul primo elemento (nel caso di Dirichlet all'inflow). Analogamente l'intervento sul termine noto, viene eseguito sostituendo al primo elemento di ogni sottoblocco, il coefficiente dell'interpolazione del dato in ingresso, moltiplicato per il medesimo coefficiente di penalizzazione usato nella matrice di sistema.
 
 Nel caso dell'interpolazione del dato in ingresso, si tratta di una sitazione pi\`e semplice dell'interpolazione 3D, dunque \`e stato sviluppato il metodo \texttt{FourierCoefficients()} contenuto in \texttt{ModalSpace}.
 \begin{lstlisting}[style = general]
@@ -524,7 +524,7 @@ Nel caso dell'interpolazione del dato in ingresso, si tratta di una sitazione pi
 \subsubsection{Analisi}
 
 I seguenti metodi si occupano di manipolare le informazioni contenute nel vettore soluzione o in un gerico vettore che raccoglie i coefficienti relativi all'interpolazione nello spazio HiMod. Il nostro primo interesse \`e poter ricostruire i valori della soluzione nei punti della griglia 3D costituita dai nodi di quadratura e i nodi FEM. Il vettore ottenuto sar\`a poi utilizzato per eventuali operazioni o analisi quali computo della norma L2.
-Per eseguire confronti con generiche funzioni abbiamo implementato anche una specializzazine nel caso l'argomento di ingresso risulti essere una generica funzoine spaziale.
+Per eseguire confronti con generiche funzioni, abbiamo implementato anche una specializzazione nel caso l'argomento di ingresso risulti essere una generica funzione spaziale.
 
 Ai fini di proporre confronti e grafici di convergenza \`e stata implementato il computo della norma L2, spazio principale in cui la teoria ha dimostrato stime di convergenza.
 
@@ -546,6 +546,7 @@ Real evaluateHiModFunc(const vector_ptrType& fun, const Real& x, const Real& y, 
 
 \subsubsection{Export}
 
+Nella fase di export risulta necessaria la presenza del metodo \texttt{evaluateHiModFunc()}, infatti abbiamo ritenuto opportuno permettere all'utente la valutazione e successivamente l'export, su di una griglia pi\`u fitta rispetto al prodotto cartesiano fra nodi di quadratura e nodi di mesh FEM. 
 Particolare attenzione meritano i metodi dedicati all'export. Ci siamo occupati di esportare in formato VTK considerando due situazioni differenti:
 \begin{itemize}
 \item[1.] Griglia strutturata.
