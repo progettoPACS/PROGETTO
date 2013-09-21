@@ -1,48 +1,65 @@
-This is BibTeX, Version 0.99d (TeX Live 2012)
-Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
 The top-level auxiliary file: relazione.aux
 The style file: plainnat.bst
+Illegal, another \bibdata command---line 106 of file relazione.aux
+ : \bibdata
+ :         {pacs}
+I'm skipping whatever remains of this command
+Illegal, another \bibstyle command---line 107 of file relazione.aux
+ : \bibstyle
+ :          {plainnat}
+I'm skipping whatever remains of this command
 Database file #1: pacs.bib
+Warning--I didn't find a database entry for "repo08"
+Warning--I didn't find a database entry for "repo09"
+Warning--I didn't find a database entry for "repo12"
+Warning--I didn't find a database entry for "tesizilio"
+Warning--I didn't find a database entry for "paperseriohimod"
+Warning--I didn't find a database entry for "salsaedp"
+Warning--empty school in perotto:2008
+Warning--empty school in perotto:2012
 Warning--empty school in perotto:2009
-You've used 1 entry,
+Warning--empty school in velevilla:krpo
+Warning--empty school in zilio:himod
+You've used 11 entries,
             2773 wiz_defined-function locations,
-            598 strings with 5033 characters,
-and the built_in function-call counts, 427 in all, are:
-= -- 34
-> -- 30
-< -- 0
-+ -- 10
-- -- 9
-* -- 39
-:= -- 77
-add.period$ -- 3
-call.type$ -- 1
-change.case$ -- 6
-chr.to.int$ -- 1
-cite$ -- 3
-duplicate$ -- 17
-empty$ -- 24
-format.name$ -- 10
-if$ -- 76
+            669 strings with 6978 characters,
+and the built_in function-call counts, 4650 in all, are:
+= -- 434
+> -- 243
+< -- 11
++ -- 83
+- -- 72
+* -- 369
+:= -- 747
+add.period$ -- 49
+call.type$ -- 11
+change.case$ -- 53
+chr.to.int$ -- 11
+cite$ -- 27
+duplicate$ -- 234
+empty$ -- 353
+format.name$ -- 89
+if$ -- 964
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 0
-newline$ -- 13
-num.names$ -- 4
-pop$ -- 11
+missing$ -- 10
+newline$ -- 74
+num.names$ -- 44
+pop$ -- 110
 preamble$ -- 1
-purify$ -- 5
+purify$ -- 46
 quote$ -- 0
-skip$ -- 14
+skip$ -- 171
 stack$ -- 0
-substring$ -- 2
-swap$ -- 1
-text.length$ -- 0
+substring$ -- 86
+swap$ -- 35
+text.length$ -- 5
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 11
-warning$ -- 1
-while$ -- 3
+type$ -- 101
+warning$ -- 5
+while$ -- 39
 width$ -- 0
-write$ -- 19
-(There was 1 warning)
+write$ -- 171
+(There were 2 error messages)

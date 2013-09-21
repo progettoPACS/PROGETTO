@@ -1,4 +1,5 @@
 ConfrontoDOF.eps
+Confronto_tempi.eps
 DDDD.eps
 DDDD_ADR.eps
 DDDD_Adv.eps

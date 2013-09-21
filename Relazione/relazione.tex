@@ -1,4 +1,5 @@
-\documentclass[a4paper,11pt,notitlepage,fleqn]{report}
+\documentclass[a4paper,11pt,notitlepage]{report}
+%fleqn
 
 \usepackage[italian]{babel}
 \usepackage{amsmath, amssymb}
@@ -14,7 +15,7 @@
 
 %%%%%%%%%%%%%%PER IL BOX
 \usepackage{tikz}
-\usetikzlibrary{shapes,shadows}
+\usetikzlibrary{shapes,positioning,arrows,calc,shadows}
 \tikzstyle{abstractbox} = [draw=black, fill=white, rectangle, 
   inner sep=11pt, style=rounded corners]%, drop shadow={fill=black,
   %opacity=1}]
@@ -99,7 +100,7 @@
 
 \lstset{escapechar=@,style=customc}
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\usepackage{enumitem}
 \usetikzlibrary{patterns}
 \newcommand{\vect}[1]{\mathbf{#1}}
 \newcommand{\referenza}[1]{[\ref{#1}]}
@@ -109,6 +110,7 @@
 \newtheorem{teorema}{Teorema}
 \graphicspath{{img/}}
 
+\usetikzlibrary{calc,decorations.markings,positioning}
 
 \begin{document}
 
@@ -117,12 +119,12 @@
 \tableofcontents
 \input{Introduzione}
 \clearpage
-\input{Classi}
+\input{classi}
 \clearpage
 \input{Risultati}
 \clearpage
-%\bibliography{pacs}
-%\bibliographystyle{plainnat}
-%\input{bib}
+\bibliography{pacs}
+\bibliographystyle{plainnat}
+\input{bib}
 
 \end{document}
