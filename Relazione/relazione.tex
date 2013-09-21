@@ -100,9 +100,11 @@
 
 \lstset{escapechar=@,style=customc}
 %%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{booktabs}
 \usepackage{enumitem}
 \usetikzlibrary{patterns}
 \newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\classe}[1]{\emph{#1}}
 \newcommand{\referenza}[1]{[\ref{#1}]}
 \newcommand{\referenzaeq}[1]{(\ref{#1})}
 \newcommand{\figref}[1]{( Fig.\ref{#1} )}
@@ -123,8 +125,6 @@
 \clearpage
 \input{Risultati}
 \clearpage
-\bibliography{pacs}
-\bibliographystyle{plainnat}
 \input{bib}
 
 \end{document}
