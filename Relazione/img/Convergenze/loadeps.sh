@@ -15,9 +15,10 @@ if [ "$ORDINE" == "$CREA" ]; then
 	#Determino il numero di file
 	NFILE=`find *.png -type f | wc -l`
 	for((i=1;i<=$NFILE;i++));do convert `sed -n "$i"p files_png.txt` `sed -n "$i"p files_eps.txt`; done
+	git add .
 else if [ "$ORDINE" == "$RIMUOVI" ]; then
-	rm -f files*
-	rm -f *.eps
+	git rm -f files*
+	git rm -f *.eps
 else if [ "$ORDINE" == "$CONTA" ]; then
 	echo "Numero file png"
 	find *.png -type f | wc -l
