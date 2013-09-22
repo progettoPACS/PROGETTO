@@ -118,6 +118,7 @@ Riportiamo nella seguente tabelle le funzioni utilizzate
 
 \vspace{0.2cm}
 \noindent
+\begin{table}[!h]
 \begin{tabular}{l l l l l l l l }
 \toprule
 a	&b	&c		&d	&Type		&$\lambda$ 					 				&A&B\\
@@ -129,63 +130,85 @@ $\sigma$&$\mu$	&$\sigma$	&$\mu$	&Rob-Rob		&$\tan{(\sqrt{\lambda})}
 1	&0	&$\sigma$	&$\mu$	&Dir-Rob	&$\tan{(\sqrt{\lambda})}+\frac{\mu\sqrt{\lambda}}{\sigma}=0$	&1&$-\tan{(\sqrt{\lambda})}$  \\
 \bottomrule
 \end{tabular}
-\vspace{0.2cm} 
-Nei casi Dirichlet o Neumann su entrambe i bordi vediamo dalla tabella come, per il calcolo degli autovalori non sia necessario memorizzare alcuna funzione.
+\caption{Differenti tipi di basi istruite}
+\label{tab}
+\end{table}
+\vspace{0.2cm}
+
+Nei casi Dirichlet o Neumann su entrambe i bordi vediamo dalla tabella come, 
+per il calcolo degli autovalori, non sia necessario memorizzare alcuna funzione.
 
 Il metodo \texttt{Next()} calcola, in successione e uno alla volta, gli autovalori del problema risolvendo un problema di 
 ricerca degli zeri.
 \begin{figure}[!h]
         \centering%
-        \includegraphics[scale=0.2]{Varie/ricercazeri}
+        \includegraphics[scale=0.3]{Varie/ricercazeri}
 \end{figure}
 Esso sar\`a utilizzato da \texttt{EigensProvider()}, un complicato metodo della classe \classe{ModalSpace} che verr\`a descritto in seguito.
 
-Abbiamo visto che \texttt{ModalSpace} possiede il metodo \texttt{EvaluateBasis()}, in realt\`a questa funzione chiama separatamente i metodi 
-omonimi, di propriet\`a dei due generatori di basi, poich\'e sono loro a conoscere la forma delle funzioni di base. L'implementazione di \texttt
-{EvaluateBasis()} \`e semplice, l'obbiettivo \`e il completamento di una delle strutture dati matriciali possedute da \texttt{ModalSpace}. In 
-particolare il generatore \texttt{M\_genbasisY} si occuper\`a di \texttt{M\_phiy} e \texttt{M\_dphiy}, mentre \texttt{M\_genbasisZ} completer\`a 
-le restanti strutture.
-Facendo riferimento alla forma generica delle basi modali \referenzaeq{eq: 1sottoproblema}, \`e chiaro che il compito di \texttt{EvaluateBasis
-()} \`e di calcolare i coefficienti A e B in modo tale che le basi rispettino le condizioni di bordo e risultino normali (ricordiamo che 
-l'ortogonalit\`a \`e garantita dalla teoria).
+Vedremo che \classe{ModalSpace} possiede delle matrici per contenere la valutazione delle funzioni di base e delle loro derivate
+nei nodi di quadratura sul quadrato riferimento.
+Per riempire queste matrici \classe{ModalSpace} chiama i due metodi \texttt{EvaluateBasis()} dei generatori di base in direzione $y$ e $z$:
+sono quelli infatti gli oggetti che conoscono la forma delle funzioni di base. 
+Facendo riferimento alla forma generica delle basi modali \eqref{eq: 1sottoproblema} e alla tabella \ref{tab}, il compito di \texttt{EvaluateBasis()}
+\`e di calcolare i coefficienti A e B in modo tale che le basi rispettino le condizioni di bordo e risultino normali ( ricordiamo che 
+l'ortogonalit\`a \`e garantita dalla teoria ).
 
-La registrazione delle valutazioni della base modale nei nodi di quadratura \`e un'operazione necessaria al fine di velocizzare le operazioni di 
-integrazione. Tuttavia come procediamo se siamo interessati a valori delle basi su una griglia pi\`u fitta di quella di quadratura? Per 
-risolvere questo problema \`e stato scritto il metodo \texttt{EvalSinglePoint()} che dato un sotto autovalore e la coordinata, restituisce la 
-valutazione della base modale in quel dato punto. Questa funzione si \`e resa necessaria dal momento che in fase di export desideravamo 
-interpolare la funzione su una griglia con pi\`u nodi rispetto alla quadratura.
-
+La registrazione delle valutazioni della base modale nei nodi di quadratura \`e necessaria per velocizzare le operazioni di 
+integrazione evitando di valutarle ogni volta nuovamente.
+Il metodo \texttt{EvalSinglePoint()} \`e stato aggiunto per valutare la funzione di base in un singolo punto.
+Questa funzione si \`e resa necessaria in fase di export quanto desideravamo 
+valutare la soluzione su una griglia 3D diversa da quella di quadratura.
 \begin{figure}[!htbp]
         \centering%
-          {\label{fig: slice9}\includegraphics[scale=0.33]{UML/Basis1DAbstract.eps}}\qquad
+        {\includegraphics[scale=0.33]{UML/Basis1DAbstract.eps}}\qquad
         \caption{Classi Basis1DAbstract e EducatedBasisFunctor}
         \label{fig: UMLBasis}
 \end{figure}
+In figura \ref{fig: UMLBasis} riportiamo una descrizione grafica delle strutture dati appena presentate.
 
 \section{Modalspace}
-Inizialmente ModalSpace \`e stata concepita per essere una classe base, dalla quale ereditasse ogni possibile scelta delle condizioni di bordo sulla parete del vaso. Facendo un rapido conto ci si accorge
- che comprendendo le condizioni di Dirichlet, Neumann e Robin su una sezione rettangolare arriviamo a 81 possibili combinazioni, 
-una grande quanti\`a di codice da scrivere, che comprende casistiche molto simili fra loro se non identiche. Questo \`e stato il primo motivo che ci ha portato a scorporare il trattamento delle condizioni di bordo dalla classe ModalSpace, per poi includerlo in modo ottimale in Basis1DAbstract (classe che si occupa della gestione
-delle basi educate). Un secondo punto a favore di questa scelta riguarda la valutazione e la lettura delle basi modali. Se avessimo scelto di adottare l'ereditariet\`a in ModalSpace, ogni eventuale 
-figlia avrebbe avuto un tipo di base differente e accedervi tramite la classe base ogni qual volta fosse necessario, non risultava essere efficiente. Dunque la 
-struttura di ModalSpace \`e composta dalle valutazioni delle basi modali su un'opportuna griglia e i generatori di basi (oltre ai metodi di calcolo necessari), questo design attribuisce maggiore 
-generalit\`a: ModalSpace \`e pronta ad utilizzare nuovi metodi in grado di generare una corretta base modale.
+\classe{ModalSpace} \`e la classe che si occupa di utilizzare i due puntatori a \classe{Basis1DAbstract}.
+Tramite questi oggetti \`e in grado di calcolare gli autovalori del problema 2D e, successivamente,
+fornisce diversi metodi per l'integrazione sulla slice e per il calcolo dei coefficienti di Fourier.
+Inizialmente \classe{ModalSpace} era stata concepita per essere una classe base, 
+dalla quale fosse possibile ereditare ogni possibile scelta delle condizioni al bordo laterale, senza utilizzare \classe{Basis1DAbstract}. 
+Tuttavia facendo un rapido conto ci siamo resi conto che, per implementare tutte le diverse combinazioni di condizioni 
+di Dirichlet, Neumann e Robin sui lati della sezione rettangolare, arriviamo a ottantuno possibili combinazioni, 
+una grande quantit\`a di codice da scrivere, che comprende casistiche molto simili fra loro se non identiche. 
+Abbiamo dunque deciso di scorporare la gestione delle condizioni di bordo dalla classe \classe{ModalSpace}, 
+per poi includerlo in modo ottimale in \classe{Basis1DAbstract}. 
+Un secondo punto a favore di questa scelta riguarda la valutazione e la lettura delle basi modali.
+Se avessimo scelto di adottare l'ereditariet\`a in ModalSpace, ogni eventuale 
+figlia avrebbe avuto un tipo di base differente e accedervi tramite la classe base ogni qual volta 
+fosse necessario, poteva essere inefficiente. \classe{ModalSpace} contiene le valutazioni delle basi modali e delle derivate 
+su un'opportuna griglia di quadratura, i generatori di basi, diversi metodi di integrazione sulle slice oltre all'algoritmo e alle strutture dati necessarie
+per la gestione degli autovalori. Questo design, rispetto alla nostra scelta iniziale, attribuisce maggiore 
+generalit\`a: \classe{ModalSpace} \`e pronta ad utilizzare qualunque tipo di base modale nella forma \classe{Basis1DAbstract}.
 
 \subsection{Costruzione e setting}
-ModalSpace conosce la geometria della sezione (Ly, Lz) e sicuramente deve conoscere il grado di accuratezza desiderato dall'utente, ovvero il numero di modi da utilizzare (mtot). 
-Un altro punto fondamentale del costruttore generico
- \`e senz'altro la regola di quadratura da utilizzare sulla slice. Si noti che le basi utilizzate necessitano regole di quadratura di alto
- ordine e il grado di esattezza \`e strettamente legato al numero di modi. Questo legame \`e evidente se si pensa che maggiore \`e il modo, 
-maggiore sar\`a la frequenza della base modale e conseguentemente si avr\`a bisogno di una fitta successione di nodi di quadratura. Su una 
-sezione quadrata una buona approssimazione dei nodi necessari su ciascun lato \`e $\sqrt{mtot}$. Il risultato non \`e valido nel caso di sezioni 
-molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u nodi lungo la direzione maggiore e meno 
-sull'altra. Come esempio si osservi la seguente tabella dove sono riportati i check dei valori di normalit\`a di una base, fissata la regola di 
-quadratura al variare della dimensione $L_y$.
+\classe{ModalSpace} conosce la geometria della sezione (Ly, Lz) e deve conoscere il grado di accuratezza desiderato 
+dall'utente, ovvero il numero di modi da utilizzare, ossia il numero di funzioni di base sulla slice trasversale (mtot). 
+Un altro parametro che si pu\`o settare nel costruttore \`e la regola di quadratura da utilizzare sulla slice. 
+Si noti che le basi utilizzate necessitano regole di quadratura di alto ordine e il numero di nodi di quadratura necessario
+\`e strettamente legato al numero di modi\footnote{Per chi fosse interessato a esplorare questo aspetto c'\`e un tutorial che approfondisce questa
+tematica e consente di fare qualche test}.
+Questo legame \`e evidente se si pensa che maggiore \`e il modo, 
+maggiore sar\`a la frequenza della base modale e il numero delle sue oscillazioni. 
 
-\begin{center}
+Nella sezione quadrata una buona approssimazione del numero di modi in ciascuna direzione \`e $\sqrt{mtot}$. Il risultato non \`e valido nel caso di sezioni 
+molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u nodi lungo la direzione maggiore e meno 
+sull'altra. Per testare qualitativamente la precisione dell'integrazione abbiamo calcolato $$\sum_{j=1}^m\sum_{i=1}^m 
+(\varphi_j\varphi_i)_{numerico}- \delta_{ji}$$ e abbiamo riportato i valori nella tabella \ref{quad}.
+Nella seconda colonna della tabella \`e riportato il massimo tra tutti i valori di $p,q$. Vediamo come questo valore cresce 
+al crescere dell'aspect ratio del dominio, infatti quando il dominio \`e molto lungo in una direzione tutti i modi verranno spesi
+per approssimare il fenomeno in quella direzione, nell'altra direzione, invece, si user\`a solo la prima funzione di base.
+In casi come questo la frequenza massima \`e altissima ed \`e dunque meglio utilizzare una regolar di quadratura appropriata.
+\begin{table}[h]
+\centering
 \begin{tabular}{|c|c|c|c|c|}
 \hline
-Lx&Ly & Max(p,q) &  $\parallel err32 \parallel_{L_{\inf}}$ &  $\parallel err64 \parallel_{L_{\inf}}$ \\
+Lx&Ly & Max(p,q) &  32 nodi &  64 nodi \\
 \hline
 1.0&2.0 & 12 & 1.85391e-9 & 9.54883e-14 \\
 \hline
@@ -198,15 +221,16 @@ Lx&Ly & Max(p,q) &  $\parallel err32 \parallel_{L_{\inf}}$ &  $\parallel err64 \
 1.0&32.0 & 50 & 185.541 & 32.7153 \\
 \hline
 \end{tabular}
-\end{center}
+\caption{Come cambia la qualit\`a dell'integrazione al variare della quadratura}
+\label{quad}
+\end{table}
 
-
-Una volta creato l'oggetto \texttt{ModalSpace} bisogna eseguire alcuni set importanti. Per prima cosa dobbiamo impostare i generatori di base 
-lungo le direzioni trasversali. Nel caso di basi educate questa operazione viene eseguita assieme all'imposizione delle condizioni di parete 
-tramite i metodi pubblici:
+Una volta creato l'oggetto \texttt{ModalSpace} bisogna eseguire alcuni set importanti. Per prima cosa dobbiamo settare i generatori di base 
+lungo le direzioni trasversali. Nel caso di basi istruite questa operazione viene imponendo le condizioni al bordo laterale
+tramite i metodi
 \begin{itemize}
-\item \texttt{void AddSliceBCY(const string left, const string right, const Real mu = 1, const Real Chi =1)};
-\item \texttt{void AddSliceBCZ(const string left, const string right, const Real mu = 1, const Real Chi =1)}
+\item \texttt{void AddSliceBCY(const string\& left, const string\& right, const Real\& mu = 1, const Real\& Chi =1)};
+\item \texttt{void AddSliceBCZ(const string\& left, const string\& right, const Real\& mu = 1, const Real\& Chi =1)}
 \end{itemize}
 
 \begin{lstlisting}[style = general]
@@ -215,21 +239,27 @@ AddSliceBCY (const string& left, const string& right, const Real& mu, const Real
 {
 	M_genbasisY = Basis1DFactory::istance().createObject(left+right;)
 	M_genbasisY->setL(M_Ly);
-	M_genbasisY->setMu(M_mu);
+	M_genbasisY->setMu(mu);
 	M_genbasisY->setChi(chi)
 	
 	return;
 }
 \end{lstlisting}
- Nel caso si desideri aggiungere nuove tipologie di basi, queste dovranno essere ereditate dall'oggetto \texttt{Basis1DAbstract}, il quale 
-conferisce una struttura generale al generatore di basi, osservando le ipotesi descritte nella sezione \referenza{sec: ipotesi}.
- 
- \begin{equation}
-\textcolor{red}{Aprire il discorso della factory, meglio farlo insieme} 
- \end{equation}
+Questo metodo si preoccupa di costruire il generatore di base corretto a seconda delle richieste sulle condizioni al bordo.
+In particolare abbiamo deciso di utilizzare una factory per gestire questo passaggio.
+Tutte le classi figlie di \classe{Basis1DAbstract} devono essere caricate in una factory con un ID ragionevole.
+Per le basi istruite gli ID hanno la forma $bc_sinistra$ + $bc_destra$, in questo modo
+quando l'utente assegna le condizioni al bordo pu\`o essere completamente all'oscuro della struttura della basi monodimensionali,
+della factory: \`e necessario solamente specificare la natura delle condizioni al bordo. Per utilizzare
+il codice in versione 2D invece che 3D, basta specificare per una delle slice \emph{fake + basis}.
+Dopodich\`e il metodo setta opportunamente i parametri, nel caso di condizioni che non necessitino la definizione di $\chi$ o $\mu$
+si pu\`o lasciare il default.
 
-Infine si conlude il seting della classe ModalSpace tramite la funzione membro pubblica EvaluateBasis(), che chiama le funzioni adibite a riempire le strutture dati, che mostriamo nella seguente sezione.
+Infine si conlude il setting della classe \classe{ModalSpace} tramite la funzione membro pubblica \texttt{EvaluateBasis()}, 
+che chiama le funzioni adibite a riempire le strutture dati che descriveremo successivamente.
 
+Concludendo la parte relativa al setting, riportiamo le uniche linee di codice che l'utente dovr\`a scrivere nel 
+main.
 \begin{lstlisting}[style = general]
 boost::shared_ptr<ModalSpace> MB (new ModalSpace(Ly,Lz,mtot,quadY,quadZ));
 MB ->AddSliceBCY("dir","dir");
@@ -238,8 +268,8 @@ MB ->EvaluateBasis();
 \end{lstlisting}
 
 \subsubsection{Strutture dati}
-Diamo un breve descrizione delle strutture dati possedute dalla classe ModalSpace. Per prima cosa per\`o, occupiamoci di un aspetto 
-fondamentale. Le basi modali sono determinate sull'intervallo di riferimento, per non incorrere in errori fra dominio reale e riferimento,  
+Diamo un breve descrizione delle strutture dati possedute dalla classe \classe{ModalSpace}. Prima di cominciare vorremmo 
+ricordare che le basi modali sono calcolate sul quadrato di riferimento, per non incorrere in errori fra dominio reale e riferimento,  
 utilizzeremo la seguente notazione:
 \begin{equation}
 \label{eq: notazione}
@@ -272,20 +302,20 @@ normalizzazione:
 \end{array}
 \end{equation}
 
-Da questi semplici passaggi deduciamo che per essere mantenere la normalizzazione, la base che stiamo cercando avr\`a la seguente forma:
+Da questi passaggi deduciamo che per conservare la normalizzazione, la base che stiamo cercando avr\`a la seguente forma:
 \begin{equation}
 \label{eq: base sul dominio corrente}
 \varphi_j(y,z) = (L_yL_z)^{-\frac{1}{2}}\hat{\eta}_j(yL_y^{-1})\hat{\xi}_j(zL_z^{-1})
 \end{equation}
-In conclusione, nei conti che verranno proposti si faccia sempre riferimento all'equazione \referenzaeq{eq: base sul dominio corrente}.
+In conclusione, nei conti che verranno proposti si faccia sempre riferimento all'equazione \eqref{eq: base sul dominio corrente}.
 
 Riconosciamo cinque strutture dati fondamentali per la classe \texttt{ModalSpace}:
 
 \begin{itemize}
 
-\item \texttt{EigenContainer M\_eigenvalues}, contiene le sottofrequenze e gli indici corrispondenti, viene prodotta in fase di setting dello 
+\item \texttt{M\_eigenvalues} contiene la mappa fra $k$ e le sottofrequenze e gli indici corrispondenti, viene prodotta in fase di setting dello 
 spazio modale tramite la funzione membro \texttt{EigensProvider()}, chiamata da \texttt{EvaluateBasis()}. Il tipo \`e un \texttt{vector$<
-$EigenMap$>$} dove:
+$EigenMap$>$}.
  
 \begin{lstlisting}[style = general]
 struct EigenMap
@@ -306,6 +336,8 @@ struct EigenMap
 	}
 };
 \end{lstlisting}
+La componente k-esima del vettore contiene gli indici delle basi modali monodimensionali e le relative frequenze che sono associate agli autovalori
+dei problemi monodimensionali.
 L'ordinamento gerarchico degli autovalori e la corrispondenza delle sottofrequenze con i sottoindici \`e fondamentale, approfondiremo in seguito 
 il metodo \texttt{EigensProvider()}.
 
@@ -318,7 +350,181 @@ il metodo \texttt{EigensProvider()}.
 \item \textbf{MBMatrix\_type M\_dphiz}, \`e un \texttt{vector$<$vector$<$Real$>$ $>$} che raccoglie la valutazione di $\frac{\partial\hat{\xi}_j}{\partial 	\hat{z}}$ $\forall j$ e per ogni nodo di quadratura lungo $\hat{z}\in[0,1]$.
 
 \end{itemize}
+\subsection{\classe{EigensProvider()}}
+ Abbiamo deciso di dedicare una sezione solamente a questo metodo, poich\'e la ricerca degli autovalori occupa un ruolo fondamentale nella 
+struttura del codice.
+ Il metodo viene chiamato da \texttt{EvaluateBasis()} dunque dopo che sono stati settati i generatori di basi. La funzione deve preoccuparsi di 
+riempire la struttura dati \texttt{M\_eigenvalues}, tuttavia il procedimento non \`e semplice. 
+ Per comprendere le difficolt\`a occorre ragionare sulla struttura del problema: separando le variabili lungo la slice 2D abbiamo ottenuto due 
+problemi agli autovalori 1D (sezione \ref{sec: educated basis}). Ognuno di questi genera una successione ordinata crescente di autovalori, 
+determinata dalla risoluzione del problema agli autovalori, che nel caso di basi istruite si traduce nella ricerca degli zeri di una data 
+funzione, spesso, non lineare. Definiamo la successione di autovalori in $y$ con $\{K_y\}_p$ e quella in $z$ con $\{K_z\}_q$. Esse 
+definiscono univocamente la successione degli autovalori del problema di partenza 2D e sono in relazione con essa nel seguente modo:
 
+\begin{equation}
+\label{eq: autovalori}
+ \lambda_j = (K_y^p)^2 + (K_z^q)^2
+\end{equation} 
+
+Anche $\{\lambda\}_j$ \`e una successione crescente di autovalori, ma il suo ordinamento, dato quello dei sottoautovalori, non \`e immediato. 
+Due sono le difficolt\`a che si presentano:
+\begin{itemize}
+\item[1.] Ogni sottoautovalore \`e il risultato di una ricerca di zeri di una funzione, spesso, non lineare.
+\item[2.] L'utente stabilisce il numero massimo di modi sul problema 2D e non sui sotto-problemi 1D.
+\end{itemize}
+
+Le due problematiche sono strettamente legate, difatti non siamo interessati a cercare pi\`u sottoautovalori del necessario. Si poteva partire 
+calcolando ad esempio 10 sottoautovalori in $y$ e altrettanti in $z$, combinarli in tutti i modi possibile ottenendo cento autovalori 2D
+e poi ordinarli. Questo metodo ha due difetti: \`e poco efficiente ed inoltre pu\`o cadere in errore. Infatti l'algoritmo si dovrebbe fermare una volta 
+raggiunti un numero di autovalori 2D pari ad \texttt{M\_mtot}, ma cos\`i facendo nessuno ci assicura che nel gruppo successivo di sottoautovalori,
+una volta combinati a formare autovalori 2D, non se ne trovi uno minore dell'ultimo autovalore calcolato.
+
+La soluzione \`e stata quella di procedere un passo alla volta, con l'accortezza di salvare i sotto-autovalori ancora non utlizzati. 
+Il metodo \texttt{Next()} dei generatori fornisce progressivamente uno 
+zero alla volta.
+
+L'algoritmo \`e il seguente
+\begin{enumerate}
+ \item Inserire in fondo al vettore degli autovalori 2D (Eigenvalues), al primo posto, la coppia fatta dal pi\`u piccolo autovalore di entrambi i sottoproblemi ( $p=1,q=1$ )
+ \item Calcolare gli autovalori 1D successivi  per entrambi i sottoproblemi e inserire gli autovalori 2D associati alle coppie $(p=2,q=1)$,$(p=1,q=2)$
+ in un \texttt{set} (tmp) ordinato secondo un'opportuna relazione d'ordine che ci consente di evitare doppioni e di avere sempre in cima il pi\`u 
+ piccolo autovalore 2D.
+ \item Estrarre da tmp la coppietta $(\bar p,\bar q)$ in testa ( associata dunque all'autovalore 2D pi\`u piccolo) e inserirla nella lista degli autovalori 2D.
+ \item Calcolare gli autovalori 1D associati $\bar p +1$ e a $\bar q+1$, inserire i due nuovi autovalori 2D associati a $(\bar p+1,\bar q)$ e $(\bar p,\bar q+1)$ in tmp.
+ \item Ripetere il punto 3.
+\end{enumerate}
+
+Alcune accortezze sono state prese per evitare di calcolare pi\`u volte gli stessi autovalori e, la relazione d'ordine \`e stata scelta con estrema
+cura per poter considerare autovalori 2D con molteplicit\`a algebrica maggiore di uno, questi autovalori infatti devono essere inseriti in tmp perch\'e
+non sono doppioni.
+\begin{lstlisting}[style = general]
+bool Comparison::
+operator() (const EigenMap& a, const EigenMap& b) const
+{
+//Se le coppiette non sono associate allo stesso autovalore 2D
+if ( ( pow (a.wp, 2) + pow (a.wq, 2) ) != ( pow (b.wp, 2) + pow (b.wq, 2) ) ) 
+{
+  //Restituisci la coppietta associata all'autovalore 2D piu' piccolo
+  return (pow (a.wp, 2) + pow (a.wq, 2) ) < (pow (b.wp, 2) + pow (b.wq, 2) ); 
+}
+else
+{
+  //Se l'autovalore 2D e' lo stesso restituisci quello con la frequenza in direzione y minore, in questo modo se e' un doppione verra' riconosciuto in quanto ne maggiore ne minore
+  return a.wp < b.wp ; 
+}
+}
+\end{lstlisting}
+\clearpage
+Proviamo a dare una visualizzazione dell'algoritmo.
+
+\begin{tikzpicture}[stack/.style={
+  rectangle split, rectangle split parts=5, draw, anchor=center},
+  myarrow/.style={single arrow, draw=none}]
+
+\node [stack] (prima)  {\nodepart{two}
+\nodepart{three}\nodepart{four}
+\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
+
+\node [stack,right=of prima] (seconda) {\nodepart{two}
+  \nodepart{three}\nodepart{four}$Ky^{(1)},Kz^{(2)}$
+  \nodepart{five}$Ky^{(2)},Kz^{(1)}$};
+
+\node [stack,right=of seconda] (terza) {{\nodepart{two}
+\nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(1)}$
+\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
+
+\node [stack,right=of terza] (quarta) {\nodepart{two}
+  \nodepart{three}\nodepart{four}
+  \nodepart{five}$Ky^{(1)},Kz^{(2)}$};
+  
+\node [above=of prima,anchor=north,align=left] {Eigenvalues};
+\node [above=of seconda,anchor=north,align=left] {Tmp};
+\node [above=of terza,anchor=north,align=left] {Eigenvalues};
+\node [above=of quarta,anchor=north,align=left] {Tmp};
+
+\node [myarrow,draw,anchor=west] at ($(seconda.east)+(2.5pt,0)$) {\phantom{te}} ;
+
+%\node [myarrow,draw,anchor=west] at ($(mid.east)+(2.5pt,0)$) %{\phantom{te}} ;
+\draw [red,ultra thick,->] ($(seconda.west)+(-0.1,-1.0)$) -- ($(prima.east)+(0.1,-0.4)$);
+\draw [red,thick] ($(seconda.south)+(-1.4,-0.2)$)--($(seconda.south)+(1.4,0.8)$);
+\draw [red,thick] ($(seconda.south)+(-1.4,0.8)$)--($(seconda.south)+(1.4,-0.2)$);
+ % {instruction 0;\\ instruction 1;\\$\ldots$\\instruction $n$;};
+\end{tikzpicture}
+%\begin{tikzpicture}
+%[scale=1.5]
+%\tikzstyle{every node}=[draw,shape=rectangle];
+%\path (5,0)   node (v1) {$Ky^{(1)},Kz^{(1)}$};
+%\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
+%\draw (v1) -- (v2);
+%\end{tikzpicture}
+
+\begin{tikzpicture}[stack/.style={
+  rectangle split, rectangle split parts=5, draw, anchor=center},
+  myarrow/.style={single arrow, draw=none}]
+
+\node [stack] (prima) {{\nodepart{two}
+  \nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(1)}$
+  \nodepart{five}$Ky^{(1)},Kz^{(1)}$};
+
+\node [stack,right=of prima] (seconda) {\nodepart{two}
+  \nodepart{three}$Ky^{(2)},Kz^{(2)}$\nodepart{four}$Ky^{(3)},Kz^{(1)}$
+  \nodepart{five}$Ky^{(1)},Kz^{(2)}$};
+  
+  \node [stack,right=of seconda] (terza)  {\nodepart{two}
+\nodepart{three}$Ky^{(1)},Kz^{(2)}$\nodepart{four}$Ky^{(2)},Kz^{(1)}$
+\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
+
+\node [stack,right=of terza] (quarta) {\nodepart{two}
+  \nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(2)}$
+  \nodepart{five}$Ky^{(3)},Kz^{(1)}$};
+  
+\node [above=of prima,anchor=north,align=left] {Eigenvalues};
+\node [above=of seconda,anchor=north,align=left] {Tmp};
+\node [above=of terza,anchor=north,align=left] {Eigenvalues};
+\node [above=of quarta,anchor=north,align=left] {Tmp};
+
+\node [myarrow,draw,anchor=west] at ($(seconda.east)+(2.5pt,0)$) {\phantom{te}} ;
+
+%\node [myarrow,draw,anchor=west] at ($(mid.east)+(2.5pt,0)$) %{\phantom{te}} ;
+%\node [draw,rectangle,align=left,right=of ini,label=above:%{Computer Program}] (mid)
+ % {instruction 0;\\ instruction 1;\\$\ldots$\\instruction $n$;};
+\end{tikzpicture}
+%\begin{tikzpicture}
+%[scale=1.5]
+%\tikzstyle{every node}=[draw,shape=rectangle];
+%\path (5,0)   node (v1) {$Ky^{(1)},Kz^{(1)}$};
+%\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
+%\path (7,-1) node (v3) {$Ky^{(1)},Kz^{(2)}$};
+%\draw (v1) -- (v2)
+%(v1) -- (v3);
+%\end{tikzpicture}
+
+In questo albero rappresentiamo come si effettua la ricerca e vediamo che il nodo con la x rossa \`e stato
+cancellato perch\'e \`e un doppione.
+Ogni nodo rappresenta un coppietta di sotto autovalori. Ogni volta che un nuovo autovalore viene
+inserito nella lista di eigenvalues, i suoi due nodi figli vengono inseriti nell'albero.
+A ogni iterazione tmp contiene tutte le foglie, ordinate in base al valore dell'autovalore 2D associato, e si 
+occupa anche di non inserire nell'albero i doppioni.
+
+\begin{tikzpicture}
+[scale=1.5]
+\tikzstyle{every node}=[draw,shape=rectangle];
+\path (5,0)  node (v1) {$Ky^{(1)},Kz^{(1)}$};
+\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
+\path (7,-1) node (v3) {$Ky^{(1)},Kz^{(2)}$};
+\path (2,-2) node (v4) {$Ky^{(3)},Kz^{(1)}$};
+\path (4,-2) node (v5) {$Ky^{(2)},Kz^{(2)}$};
+\path (6,-2) node (v6) {$Ky^{(2)},Kz^{(2)}$};
+\path (8,-2) node (v7) {$Ky^{(1)},Kz^{(3)}$};
+\draw (v1) -- (v2)
+(v1) -- (v3)
+(v2) -- (v4)
+(v2) -- (v5)
+(v3) -- (v6)
+(v3) -- (v7);
+\draw [thick,red, -] (5.5,-1.5)--(6.5,-2.5);
+\draw [thick,red, -] (6.5,-1.5)--(5.5,-2.5);
+\end{tikzpicture}
 
 \subsection{Metodi di calcolo}
 Approfondiamo ora i metodi che si occupano di calcolare i coefficienti della matrice di sistema.
@@ -326,27 +532,27 @@ Approfondiamo ora i metodi che si occupano di calcolare i coefficienti della mat
 \begin{itemize}
 \item \texttt{Real Compute\_PhiPhi(const UInt\& j, const UInt\& k)}
 
- $\int_{\gamma_x}\varphi_j(y,z)\varphi_k(y,x) \,dydz$
+ $\int_{\gamma}\varphi_j(y,z)\varphi_k(y,x) \,dydz$
 
 \item \texttt{Real Compute\_DyPhiPhi(const UInt\& j,const UInt\& k)} 
 
-$\int_{\gamma_x} \partial_y \varphi_j(y,z)\varphi_k(y,x) \,dydz$
+$\int_{\gamma} \partial_y \varphi_j(y,z)\varphi_k(y,x) \,dydz$
 
 \item \texttt{Real Compute\_DzPhiPhi(const UInt\& j,const UInt\& k)} 
 
-$\int_{\gamma_x} \partial_z \varphi_j(y,z)\varphi_k(y,x) \,dydz$
+$\int_{\gamma} \partial_z \varphi_j(y,z)\varphi_k(y,x) \,dydz$
 
 \item \texttt{Real Compute\_DyPhiDyPhi(const UInt\& j,const UInt\& k)} 
 
-$\int_{\gamma_x} \partial_y \varphi_j(y,z)\partial_y\varphi_k(y,x) \,dydz$
+$\int_{\gamma} \partial_y \varphi_j(y,z)\partial_y\varphi_k(y,x) \,dydz$
 
 \item \texttt{Real Compute\_DzPhiDzPhi(const UInt\& j,const UInt\& k)} 
 
-$\int_{\gamma_x} \partial_z \varphi_j(y,z)\partial_z\varphi_k(y,x) \,dydz$
+$\int_{\gamma} \partial_z \varphi_j(y,z)\partial_z\varphi_k(y,x) \,dydz$
 
 \item \texttt{Real Compute\_Phi(const UInt\& k)} 
 
-$\int_{\gamma_x} \varphi_k(y,x) \,dydz$
+$\int_{\gamma} \varphi_k(y,x) \,dydz$
 
 \item \texttt{vector$<$Real$>$ FourierCoefficients (const function\_Type\& g) const},
 
@@ -354,11 +560,10 @@ data una funzione indipendente da $x$ questo metodo restituisce i coefficienti d
 
 \item \texttt{Real Coeff\_fk (	const Real\& x,const function\_Type\& f,const UInt\& k ) const},
 
-restituisce il $k$-esimo coefficiente di Fourier di una generica funzione 3D valutato nel punto $x$, rispetto alla base modale.
+restituisce il $k$-esimo coefficiente di Fourier di una generica funzione 3D rispetto alla base modale una volta fissato un punto $x$.
 \end{itemize}
 
-Date le premesse risulta ora semplice risolvere gli integrali scritti qui sopra, vediamo ad esempio che aspetto ha \texttt{Compute\_PhiPhi()}:
-
+Vediamo come esempio l'implementazione di \texttt{Compute\_PhiPhi()}:
 
 \begin{lstlisting}[style = general]
 Real ModalSpace::
@@ -391,170 +596,11 @@ Compute_PhiPhi(const UInt& j, const UInt& k) const
 	return coeff_y*coeff_z;
 }
 \end{lstlisting}
+ L'implementazione \`e basata sulla separazione di variabili, nel caso della mappa o di coefficienti non costanti bisogner\`a cambiare
+ questa implementazione.
+ I metodi per calcolare i coefficienti di Fourier sono indispendabili 
+ ed il loro impiego sar\`a pi\`u una volta vista la classe \classe{HiModAssembler}.
  
- Gli ultimi due metodi citati sono indispendabili ed il loro impiego sar\`a noto una volta che tratteremo la classe \texttt{HiModAssembler}.
- 
- \subsection{\texttt{EigensProvider()}}
- Abbiamo deciso di dedicare una sezione solamente a questo metodo, poich\'e la ricerca degli autovalori occupa un ruolo fondamentale nella 
-struttura del codice.
- Il metodo viene chiamato da \texttt{EvaluateBasis()} dunque dopo che sono stati settati i generatori di basi. La funzione deve preoccuparsi di 
-definire la struttura dati \texttt{M\_eigenvalues}, tuttavia il procedimento non \`e scontato. 
- Per comprendere le difficolt\`a occorre ragionare sulla struttura del problema. Separando le variabili della slice 2D si sono ottenuti due 
-problemi agli autovalori 1D (sezione \referenza{sec: ipotesi}). Ognuno di questi genera una successione ordinata crescente di autovalori, 
-determinata dalla risoluzione del problema agli autovalori, che nel caso di basi educate si traduce nella ricerca degli zeri di una data 
-funzione non lineare. Definiamo la successione di autovalori in $y$ con $\{K_y\}_p$ e quella in $z$ con $\{K_z\}_q$. Le precedenti successioni 
-definiscono univocamente la successione degli autovalori del problema di partenza 2D e sono in relazione con essa nel seguente modo:
-
-\begin{equation}
-\label{eq: autovalori}
- \lambda_j = (K_y^p)^2 + (K_z^q)^2
-\end{equation} 
-
-Anche $\{\lambda\}_j$ \`e una successione crescente di autovalori, ma il suo ordinamento, dato quello dei sottoautovalori, non \`e immediato. 
-Due sono le difficolt\`a che si presentano:
-\begin{itemize}
-\item[1.] Ogni sottoautovalore \`e il risultato di una ricerca di zeri di una funzione non lineare.
-\item[2.] L'utente stabilisce il numero massimo di modi sul problema 2D e non sui sotto-problemi 1D.
-\end{itemize}
-
-Le due problematiche sono strettamente legate, difatti non siamo interessati a cercare pi\`u sottoautovalori del necessario. Si poteva partire 
-calcolando ad esempio 10 sottoautovalori in $y$ e altrettanti in $z$, ordinare la succession 2D e procedere eventualmente nella ricerca. Questo 
-metodo tuttavia presenta due difetti: \`e poco efficiente ed inoltre pu\`o cadere in errore. Infatti l'algoritmo si dovrebbe fermare una volta 
-raggiunti un numero di autovalori 2D pari ad \texttt{M\_mtot}, ma cos\`i facendo nessuno ci assicura che nel gruppo successivo di 10 autovalori 
-non vi sia almeno uno minore dell'ultimo autovalore calcolato.
-
-La soluzione \`e stata quella di procedere un passo alla volta, con l'accortezza di salvare i sotto-autovalori ancora non utlizzati. Per fare 
-questo il metodo di ricerca degli zeri (\texttt{Next()} che approfondiremo nella sezione \texttt{Basis1DAbstract}) fornisce progressivamente uno 
-zero alla volta. Infine abbiamo analizzato il seguente albero delle scelte:
-
-
-\begin{lstlisting}[style = general,frame = top]
-Ky_1 = NextY();
-Kz_1 = Nextz();
--> La prima coppia viene sempre inserita nella mappa
--> Cerco Ky_2 e Kz_2 nella mappa o nel registro
-		if(trovati) -> li assegno a Ky_2 Kz_2;
-		else		Ky_2 = NextY();
-						Kz_2 = Nextz();
--> Inserisco nella mappa la coppia di sottoautovalori minore
--> Registro i sottoautovalori non inseriti
-\end{lstlisting}
-\begin{tikzpicture}[stack/.style={
-  rectangle split, rectangle split parts=5, draw, anchor=center},
-  myarrow/.style={single arrow, draw=none}]
-
-\node [stack] (prima)  {\nodepart{two}
-\nodepart{three}\nodepart{four}
-\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
-
-\node [stack,right=of prima] (seconda) {\nodepart{two}
-  \nodepart{three}\nodepart{four}$Ky^{(1)},Kz^{(2)}$
-  \nodepart{five}$Ky^{(2)},Kz^{(1)}$};
-
-\node [stack,right=of seconda] (terza) {{\nodepart{two}
-\nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(1)}$
-\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
-
-\node [stack,right=of terza] (quarta) {\nodepart{two}
-  \nodepart{three}\nodepart{four}
-  \nodepart{five}$Ky^{(1)},Kz^{(2)}$};
-  
-\node [above=of prima,anchor=north,align=left] {Eigenvalues};
-\node [above=of seconda,anchor=north,align=left] {Tmp};
-
-\node [myarrow,draw,anchor=west] at ($(seconda.east)+(2.5pt,0)$) {\phantom{te}} ;
-
-%\node [myarrow,draw,anchor=west] at ($(mid.east)+(2.5pt,0)$) %{\phantom{te}} ;
-\draw [red,ultra thick,->] ($(seconda.west)+(-0.1,-1.0)$) -- ($(prima.east)+(0.1,-0.4)$);
-\draw [red,thick] ($(seconda.south)+(-1.4,-0.2)$)--($(seconda.south)+(1.4,0.8)$);
-\draw [red,thick] ($(seconda.south)+(-1.4,0.8)$)--($(seconda.south)+(1.4,-0.2)$);
-
- % {instruction 0;\\ instruction 1;\\$\ldots$\\instruction $n$;};
-\end{tikzpicture}
-%\begin{tikzpicture}
-%[scale=1.5]
-%\tikzstyle{every node}=[draw,shape=rectangle];
-%\path (5,0)   node (v1) {$Ky^{(1)},Kz^{(1)}$};
-%\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
-%\draw (v1) -- (v2);
-%\end{tikzpicture}
-
-
-\begin{lstlisting}[style = general,frame = top]
--> Cerco Ky_3 e Kz_2 nella mappa o nel registro
-		if(trovati) -> li assegno a Ky_3 Kz_2;
-		else		Ky_2 = NextY();
-						Kz_2 = Nextz();
--> Inserisco nella mappa la coppia di sottoautovalori minore rispetto anche a quelli nel registro
--> Registro i sottoautovalori non inseriti
-\end{lstlisting}
-\begin{tikzpicture}[stack/.style={
-  rectangle split, rectangle split parts=5, draw, anchor=center},
-  myarrow/.style={single arrow, draw=none}]
-
-\node [stack] (prima) {{\nodepart{two}
-\nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(1)}$
-\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
-
-\node [stack,right=of prima] (seconda) {\nodepart{two}
-  \nodepart{three}$Ky^{(2)},Kz^{(2)}$\nodepart{four}$Ky^{(3)},Kz^{(1)}$
-  \nodepart{five}$Ky^{(1)},Kz^{(2)}$};
-  
-  \node [stack,right=of seconda] (terza)  {\nodepart{two}
-\nodepart{three}$Ky^{(1)},Kz^{(2)}$\nodepart{four}$Ky^{(2)},Kz^{(1)}$
-\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
-
-\node [stack,right=of terza] (quarta) {\nodepart{two}
-  \nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(2)}$
-  \nodepart{five}$Ky^{(3)},Kz^{(1)}$};
-  
-\node [above=of prima,anchor=north,align=left] {Eigenvalues};
-\node [above=of seconda,anchor=north,align=left] {Tmp};
-
-\node [myarrow,draw,anchor=west] at ($(seconda.east)+(2.5pt,0)$) {\phantom{te}} ;
-
-%\node [myarrow,draw,anchor=west] at ($(mid.east)+(2.5pt,0)$) %{\phantom{te}} ;
-%\node [draw,rectangle,align=left,right=of ini,label=above:%{Computer Program}] (mid)
- % {instruction 0;\\ instruction 1;\\$\ldots$\\instruction $n$;};
-\end{tikzpicture}
-%\begin{tikzpicture}
-%[scale=1.5]
-%\tikzstyle{every node}=[draw,shape=rectangle];
-%\path (5,0)   node (v1) {$Ky^{(1)},Kz^{(1)}$};
-%\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
-%\path (7,-1) node (v3) {$Ky^{(1)},Kz^{(2)}$};
-%\draw (v1) -- (v2)
-%(v1) -- (v3);
-%\end{tikzpicture}
-
-
-\begin{lstlisting}[style = general,frame=top]
--> inserimento di copie evitato per unicita' degli oggetti nella struttura scelta
-(Ky_2,Kz_2) già esistente non viene inserito nella mappa
-\end{lstlisting}
-\begin{tikzpicture}
-[scale=1.5]
-\tikzstyle{every node}=[draw,shape=rectangle];
-\path (5,0)   node (v1) {$Ky^{(1)},Kz^{(1)}$};
-\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
-\path (7,-1) node (v3) {$Ky^{(1)},Kz^{(2)}$};
-\path (2,-2) node (v4) {$Ky^{(3)},Kz^{(1)}$};
-\path (4,-2) node (v5) {$Ky^{(2)},Kz^{(2)}$};
-\path (6,-2) node (v6) {$Ky^{(2)},Kz^{(2)}$};
-\path (8,-2) node (v7) {$Ky^{(1)},Kz^{(3)}$};
-\draw (v1) -- (v2)
-(v1) -- (v3)
-(v2) -- (v4)
-(v2) -- (v5)
-(v3) -- (v6)
-(v3) -- (v7);
-\draw [thick,red, -] (5.5,-1.5)--(6.5,-2.5);
-\draw [thick,red, -] (6.5,-1.5)--(5.5,-2.5);
-\end{tikzpicture}
-
-
-
-
 \section{HiModAssembler}
  
  In questa classe viene gestita la fase di assemblaggio del problema e quella di export. Abbiamo cercato di seguire la linea della classe 
@@ -562,7 +608,7 @@ FESpace, infatti \texttt{HiModAssembler} \`e templetizzata sugli stessi argoment
 spazio agli elementi finiti, la scelta di templetizzare le matrici e i vettori, manipolati da tale classe, prevede una possibile implementazione 
 futura di strutture algebriche pi\`u adatte al metodo di riduzione gerarchica. Ricordiamo infatti che la struttura della matrice di sistema \`e 
 ben nota \figref{fig:pattern} , formata da un numero di blocchi pari ad $\texttt{M\_mtot}^2$, ognuno dei quali di dimensione pari al quadrato 
-dei gradi di libert\`a FEM spesi lungo la fibra di supporto.
+dei gradi di libert\`a FEM spesi lungo la fibra di supporto. 
  
 
  

@@ -1,0 +1,120 @@
+@book{salsa2004equazioni,
+  title={Equazioni a Derivate Parziali: Metodi, Modelli E Applicazioni},
+  author={Salsa, S.},
+  isbn={9788847002593},
+  series={Unitext / La Matematica Per Il 3+2},
+  url={http://books.google.it/books?id=SWti0G\_ijM8C},
+  year={2004},
+  publisher={Springer}
+}
+
+@incollection{quarteroni:multiscale,
+    		
+    AUTHOR = {Formaggia, Luca and Quarteroni, Alfio and Veneziani, Alessandro},
+     TITLE = {Multiscale models of the vascular system},
+ BOOKTITLE = {Cardiovascular mathematics},
+    SERIES = {MS{\&}A. Model. Simul. Appl.},
+    VOLUME = {1},
+     PAGES = {395--446},
+ PUBLISHER = {Springer Italia, Milan},
+      YEAR = {2009},
+   MRCLASS = {92C35 (74F10 74L15 76Z05 92C30 92C50)},
+  MRNUMBER = {2500549},
+       DOI = {10.1007/978-88-470-1152-6_11},
+       URL = {http://dx.doi.org/10.1007/978-88-470-1152-6_11},
+}
+
+@incollection {veneziani:modelliridotti,
+    AUTHOR = {Peir{\'o}, Joaquim and Veneziani, Alessandro},
+     TITLE = {Reduced models of the cardiovascular system},
+ BOOKTITLE = {Cardiovascular mathematics},
+    SERIES = {MS{\&}A. Model. Simul. Appl.},
+    VOLUME = {1},
+     PAGES = {347--394},
+ PUBLISHER = {Springer Italia, Milan},
+      YEAR = {2009},
+   MRCLASS = {92C30 (76Z05 92-08 92C35 92C50)},
+  MRNUMBER = {2500548},
+       DOI = {10.1007/978-88-470-1152-6_10},
+       URL = {http://dx.doi.org/10.1007/978-88-470-1152-6_10},
+}
+
+%e' una tesi magistrale..
+@phdthesis{velevilla:krpo,
+     AUTHOR = {Vele, Stefania and Villa, Umberto Emanuele}, 
+      TITLE = {Modelli 1D per la dinamica del flusso ematico e dei suoi soluti},
+       TYPE = {Laurea Magistrale},
+INSTITUTION = {Politecnico di Milano},
+       YEAR = {A.A. 2004/2005},
+}
+
+%e' una tesi magistrale..
+@phdthesis{zilio:himod,
+     AUTHOR = {Zilio, Alessandro},
+      TITLE = {Modelli anisotropi: analisi ed approssimazione numerica},
+       TYPE = {Laurea Magistrale},
+INSTITUTION = {Politecnico di Milano},
+       YEAR = {A.A. 2009/2010},
+}
+
+%e' un report..
+@phdthesis{perotto:2012,
+     AUTHOR = {Perotto, Simona and Zilio, Alessandro},
+      TITLE = {Hierarchical model reduction: three different approaches},
+       TYPE = {MOX--Report},
+INSTITUTION = {Politecnico di Milano},
+       YEAR = {2012},
+}
+
+%e' un report..
+@phdthesis{perotto:2008,
+     AUTHOR = {Ern, Alexandre and Perotto, Simona and Veneziani, Alessandro},
+      TITLE = {Hierarchical model reduction for advection-diffusion-reaction problems},
+       TYPE = {MOX--Report},
+INSTITUTION = {Politecnico di Milano},
+       YEAR = {2008},
+}
+
+%e' un report..
+@phdthesis{perotto:2009,
+     AUTHOR = {Perotto, Simona and Ern, Alexandre and Veneziani, Alessandro},
+      TITLE = {Hierarchical local model reduction for elliptic problems I: a domain decomposition approach},
+       TYPE = {MOX--Report},
+INSTITUTION = {Politecnico di Milano},
+       YEAR = {2009},
+}
+
+@book{quarteroni2008modellistica,
+  title={Modellistica Numerica Per Problemi Differenziali},
+  author={Quarteroni, A.},
+  isbn={9788847008427},
+  series={Unitext (En ligne)},
+  url={http://books.google.it/books?id=DCZiCZ95RmUC},
+  year={2008},
+  publisher={Springer Milan},
+}
+
+@book{canuto2006spectral,
+  title={Spectral Methods: Fundamentals in Single Domains},
+  author={Canuto, C. and Hussaini, Y. and Quarteroni, A.},
+  isbn={9783540307266},
+  series={Scientific Computation},
+  url={http://books.google.it/books?id=DFJB0kiq0CQC},
+  year={2006},
+  publisher={Deutsches MAB-Nationalkomitee beim Bundesministerium f{\"u}r Umwelt, Naturschutz und Reaktorsicherheit}
+}
+
+@book{veneziani:eserciziario,
+    AUTHOR = {Formaggia, L. and Saleri, F. and Veneziani, A.},
+     TITLE = {Applicazioni ed esercizi di modellistica numerica per problemi
+              differenziali},
+    SERIES = {Unitext},
+    VOLUME = {17},
+ PUBLISHER = {Springer-Verlag Italia, Milan},
+      YEAR = {2005},
+     PAGES = {viii+395},
+      ISBN = {978-88-470-0257-9; 88-470-0257-5},
+   MRCLASS = {65-02 (65Mxx 65Nxx 74Sxx 76Mxx)},
+  MRNUMBER = {2195341 (2006m:65005)},
+MRREVIEWER = {Alberto Valli},
+}

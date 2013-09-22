@@ -1,8 +1,8 @@
 ConfrontoDOF.png
 Confronto_tempi.png
-DDDD.png
 DDDD_ADR.png
 DDDD_Adv.png
+DDDD.png
 DRDR.png
 RRRR.png
 spy_14elem3modes.png
