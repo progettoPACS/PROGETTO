@@ -1,2 +1,4 @@
 logo-polimi.png
+ricercazeri.png
 spy_14elem3modes.png
+spy.png

@@ -1,0 +1,8 @@
+ConfrontoDOF.eps
+Confronto_tempi.eps
+DDDD_ADR.eps
+DDDD_Adv.eps
+DDDD.eps
+DRDR.eps
+RRRR.eps
+spy_14elem3modes.eps

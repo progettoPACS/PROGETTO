@@ -1,2 +1,4 @@
 logo-polimi.eps
+ricercazeri.eps
 spy_14elem3modes.eps
+spy.eps
