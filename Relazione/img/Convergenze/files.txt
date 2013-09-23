@@ -1,8 +1,8 @@
 ConfrontoDOF
 Confronto_tempi
-DDDD_ADR
-DDDD_Adv
 DDDD
+DDDD_ADR
 DRDR
 RRRR
+TIMEHimodVsFemNOLOG
 spy_14elem3modes
