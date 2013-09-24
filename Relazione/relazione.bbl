@@ -1,10 +1,4 @@
-\begin{thebibliography}{CHQ06}
-
-\bibitem[CHQ06]{canuto2006spectral}
-C.~Canuto, Y.~Hussaini, and A.~Quarteroni.
-\newblock {\em Spectral Methods: Fundamentals in Single Domains}.
-\newblock Scientific Computation. Deutsches MAB-Nationalkomitee beim
-  Bundesministerium f{\"u}r Umwelt, Naturschutz und Reaktorsicherheit, 2006.
+\begin{thebibliography}{PEV09}
 
 \bibitem[EPV08]{perotto:2008}
 Alexandre Ern, Simona Perotto, and Alessandro Veneziani.
@@ -12,50 +6,21 @@ Alexandre Ern, Simona Perotto, and Alessandro Veneziani.
   problems}.
 \newblock Mox--report, 2008.
 
-\bibitem[FQV09]{quarteroni:multiscale}
-Luca Formaggia, Alfio Quarteroni, and Alessandro Veneziani.
-\newblock Multiscale models of the vascular system.
-\newblock In {\em Cardiovascular mathematics}, volume~1 of {\em MS{\&}A. Model.
-  Simul. Appl.}, pages 395--446. Springer Italia, Milan, 2009.
-
-\bibitem[FSV05]{veneziani:eserciziario}
-L.~Formaggia, F.~Saleri, and A.~Veneziani.
-\newblock {\em Applicazioni ed esercizi di modellistica numerica per problemi
-  differenziali}, volume~17 of {\em Unitext}.
-\newblock Springer-Verlag Italia, Milan, 2005.
-
 \bibitem[PEV09]{perotto:2009}
 Simona Perotto, Alexandre Ern, and Alessandro Veneziani.
 \newblock {\em Hierarchical local model reduction for elliptic problems I: a
   domain decomposition approach}.
 \newblock Mox--report, 2009.
 
-\bibitem[PV09]{veneziani:modelliridotti}
-Joaquim Peir{\'o} and Alessandro Veneziani.
-\newblock Reduced models of the cardiovascular system.
-\newblock In {\em Cardiovascular mathematics}, volume~1 of {\em MS{\&}A. Model.
-  Simul. Appl.}, pages 347--394. Springer Italia, Milan, 2009.
-
 \bibitem[PZ12]{perotto:2012}
 Simona Perotto and Alessandro Zilio.
 \newblock {\em Hierarchical model reduction: three different approaches}.
 \newblock Mox--report, 2012.
 
-\bibitem[Qua08]{quarteroni2008modellistica}
-A.~Quarteroni.
-\newblock {\em Modellistica Numerica Per Problemi Differenziali}.
-\newblock Unitext (En ligne). Springer Milan, 2008.
-
 \bibitem[Sal04]{salsa2004equazioni}
 S.~Salsa.
 \newblock {\em Equazioni a Derivate Parziali: Metodi, Modelli E Applicazioni}.
 \newblock Unitext / La Matematica Per Il 3+2. Springer, 2004.
-
-\bibitem[VV05]{velevilla:krpo}
-Stefania Vele and Umberto~Emanuele Villa.
-\newblock {\em Modelli 1D per la dinamica del flusso ematico e dei suoi
-  soluti}.
-\newblock Laurea magistrale, A.A. 2004/2005.
 
 \bibitem[Zil10]{zilio:himod}
 Alessandro Zilio.
