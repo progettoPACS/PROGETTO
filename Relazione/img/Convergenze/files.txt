@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 CfrDOF
 DDDD_ADR
+=======
+ConfrontoDOF
+Confronto_tempi
+>>>>>>> 75b3d56489c6da946e25bcc6b7302f31bf4340ca
 DDDD
+DDDD_ADR
 DRDR
 RRRR
+TIMEHimodVsFemNOLOG
 spy_14elem3modes
 TIMEHimodVsFemNOLOG
 TIMEHimodVsFem

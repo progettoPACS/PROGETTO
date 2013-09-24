@@ -187,23 +187,22 @@ per la gestione degli autovalori. Questo design, rispetto alla nostra scelta ini
 generalit\`a: \classe{ModalSpace} \`e pronta ad utilizzare qualunque tipo di base modale nella forma \classe{Basis1DAbstract}.
 
 \subsection{Costruzione e setting}
-\classe{ModalSpace} conosce la geometria della sezione (Ly, Lz) e deve conoscere il grado di accuratezza desiderato 
-dall'utente, ovvero il numero di modi da utilizzare, ossia il numero di funzioni di base sulla slice trasversale (mtot). 
+\classe{ModalSpace} conosce la geometria della sezione (Ly, Lz) e deve conoscere il numero di modi da utilizzare, ossia il numero di funzioni di base sulla slice trasversale (mtot). 
 Un altro parametro che si pu\`o settare nel costruttore \`e la regola di quadratura da utilizzare sulla slice. 
 Si noti che le basi utilizzate necessitano regole di quadratura di alto ordine e il numero di nodi di quadratura necessario
-\`e strettamente legato al numero di modi\footnote{Per chi fosse interessato a esplorare questo aspetto c'\`e un tutorial che approfondisce questa
+\`e strettamente legato al numero di modi\footnote{Per chi fosse interessato a esplorare questo aspetto c'\`e un tutorial (\texttt{2\_check\_basis}) che approfondisce questa
 tematica e consente di fare qualche test}.
 Questo legame \`e evidente se si pensa che maggiore \`e il modo, 
 maggiore sar\`a la frequenza della base modale e il numero delle sue oscillazioni. 
 
 Nella sezione quadrata una buona approssimazione del numero di modi in ciascuna direzione \`e $\sqrt{mtot}$. Il risultato non \`e valido nel caso di sezioni 
-molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u nodi lungo la direzione maggiore e meno 
+molto asimmetriche, infatti rettangoli molto allungati in una direzione avranno bisogno di pi\`u modi lungo la direzione maggiore e meno 
 sull'altra. Per testare qualitativamente la precisione dell'integrazione abbiamo calcolato $$\sum_{j=1}^m\sum_{i=1}^m 
-(\varphi_j\varphi_i)_{numerico}- \delta_{ji}$$ e abbiamo riportato i valori nella tabella \ref{quad}.
-Nella seconda colonna della tabella \`e riportato il massimo tra tutti i valori di $p,q$. Vediamo come questo valore cresce 
-al crescere dell'aspect ratio del dominio, infatti quando il dominio \`e molto lungo in una direzione tutti i modi verranno spesi
-per approssimare il fenomeno in quella direzione, nell'altra direzione, invece, si user\`a solo la prima funzione di base.
-In casi come questo la frequenza massima \`e altissima ed \`e dunque meglio utilizzare una regolar di quadratura appropriata.
+\left|(\varphi_j\varphi_i)_{numerico}- \delta_{ji}\right|$$ e abbiamo riportato i valori nella tabella \ref{quad}.
+Nella seconda colonna della tabella \`e riportato il massimo tra tutti i valori di $p,q$. Vediamo come questo valore cresca 
+al crescere dello stretching della sezione: quando il dominio \`e molto allungato in una direzione tutti i modi vengono spesi
+per approssimare il fenomeno in quella direzione, mentre nell'altra si user\`a solo la prima funzione di base (ad esempio q=1 p=$1\div mtot$).
+In casi come questo la frequenza massima \`e altissima ed \`e dunque meglio utilizzare una regola di quadratura appropriata.
 \begin{table}[h]
 \centering
 \begin{tabular}{|c|c|c|c|c|}
@@ -221,12 +220,12 @@ Lx&Ly & Max(p,q) &  32 nodi &  64 nodi \\
 1.0&32.0 & 50 & 185.541 & 32.7153 \\
 \hline
 \end{tabular}
-\caption{Come cambia la qualit\`a dell'integrazione al variare della quadratura}
+\caption{Qualit\`a dell'integrazione al variare della quadratura (mtot=50)}
 \label{quad}
 \end{table}
 
 Una volta creato l'oggetto \texttt{ModalSpace} bisogna eseguire alcuni set importanti. Per prima cosa dobbiamo settare i generatori di base 
-lungo le direzioni trasversali. Nel caso di basi istruite questa operazione viene imponendo le condizioni al bordo laterale
+lungo le direzioni trasversali. Nel caso di basi istruite questa operazione viene fatta imponendo le condizioni al bordo laterale
 tramite i metodi
 \begin{itemize}
 \item \texttt{void AddSliceBCY(const string\& left, const string\& right, const Real\& mu = 1, const Real\& Chi =1)};
@@ -241,19 +240,18 @@ AddSliceBCY (const string& left, const string& right, const Real& mu, const Real
 	M_genbasisY->setL(M_Ly);
 	M_genbasisY->setMu(mu);
 	M_genbasisY->setChi(chi)
-	
 	return;
 }
 \end{lstlisting}
 Questo metodo si preoccupa di costruire il generatore di base corretto a seconda delle richieste sulle condizioni al bordo.
-In particolare abbiamo deciso di utilizzare una factory per gestire questo passaggio.
+In particolare abbiamo deciso di utilizzare una factory per gestire questo passaggio in maniera dinamica.
 Tutte le classi figlie di \classe{Basis1DAbstract} devono essere caricate in una factory con un ID ragionevole.
-Per le basi istruite gli ID hanno la forma $bc_sinistra$ + $bc_destra$, in questo modo
-quando l'utente assegna le condizioni al bordo pu\`o essere completamente all'oscuro della struttura della basi monodimensionali,
-della factory: \`e necessario solamente specificare la natura delle condizioni al bordo. Per utilizzare
+Per le basi istruite gli ID hanno la forma $bc_{sinistra}$ + $bc_{destra}$, in questo modo
+quando l'utente assegna le condizioni al bordo pu\`o essere completamente all'oscuro della struttura della basi monodimensionali e
+della factory: \`e necessario solamente specificare la natura delle condizioni al bordo. Dopodich\`e il metodo setta opportunamente i parametri, nel caso di condizioni che non necessitino la definizione di $\chi$ o $\mu$
+si pu\`o lasciare il default. Per utilizzare
 il codice in versione 2D invece che 3D, basta specificare per una delle slice \emph{fake + basis}.
-Dopodich\`e il metodo setta opportunamente i parametri, nel caso di condizioni che non necessitino la definizione di $\chi$ o $\mu$
-si pu\`o lasciare il default.
+
 
 Infine si conlude il setting della classe \classe{ModalSpace} tramite la funzione membro pubblica \texttt{EvaluateBasis()}, 
 che chiama le funzioni adibite a riempire le strutture dati che descriveremo successivamente.
@@ -268,8 +266,8 @@ MB ->EvaluateBasis();
 \end{lstlisting}
 
 \subsubsection{Strutture dati}
-Diamo un breve descrizione delle strutture dati possedute dalla classe \classe{ModalSpace}. Prima di cominciare vorremmo 
-ricordare che le basi modali sono calcolate sul quadrato di riferimento, per non incorrere in errori fra dominio reale e riferimento,  
+Diamo una breve descrizione delle strutture dati possedute dalla classe \classe{ModalSpace}. Prima di cominciare vorremmo 
+ricordare che le basi modali sono calcolate sul quadrato di riferimento. Per non incorrere in errori fra dominio reale e riferimento,  
 utilizzeremo la seguente notazione:
 \begin{equation}
 \label{eq: notazione}
@@ -313,7 +311,7 @@ Riconosciamo cinque strutture dati fondamentali per la classe \texttt{ModalSpace
 
 \begin{itemize}
 
-\item \texttt{M\_eigenvalues} contiene la mappa fra $k$ e le sottofrequenze e gli indici corrispondenti, viene prodotta in fase di setting dello 
+\item \texttt{M\_eigenvalues} contiene la mappa fra l'indice della base modale ($k$) e le sottofrequenze ($wp$ e $wq$) e i sottoindici corrispondenti ($p$ e $q$), viene prodotta in fase di setting dello 
 spazio modale tramite la funzione membro \texttt{EigensProvider()}, chiamata da \texttt{EvaluateBasis()}. Il tipo \`e un \texttt{vector$<
 $EigenMap$>$}.
  
@@ -338,7 +336,7 @@ struct EigenMap
 \end{lstlisting}
 La componente k-esima del vettore contiene gli indici delle basi modali monodimensionali e le relative frequenze che sono associate agli autovalori
 dei problemi monodimensionali.
-L'ordinamento gerarchico degli autovalori e la corrispondenza delle sottofrequenze con i sottoindici \`e fondamentale, approfondiremo in seguito 
+L'ordinamento gerarchico degli autovalori e la corrispondenza delle sottofrequenze con i sottoindici sono fondamentali, approfondiremo in seguito 
 il metodo \texttt{EigensProvider()}.
 
 \item \textbf{MBMatrix\_type M\_phiy}, \`e un \texttt{vector$<$vector$<$Real$>$ $>$} che raccoglie la valutazione di $\hat{\eta}_j(\hat{y})$ $\forall j$ e per ogni nodo di quadratura lungo $\hat{y}\in[0,1]$.
@@ -391,10 +389,10 @@ L'algoritmo \`e il seguente
  piccolo autovalore 2D.
  \item Estrarre da tmp la coppietta $(\bar p,\bar q)$ in testa ( associata dunque all'autovalore 2D pi\`u piccolo) e inserirla nella lista degli autovalori 2D.
  \item Calcolare gli autovalori 1D associati $\bar p +1$ e a $\bar q+1$, inserire i due nuovi autovalori 2D associati a $(\bar p+1,\bar q)$ e $(\bar p,\bar q+1)$ in tmp.
- \item Ripetere il punto 3.
+ \item Ripetere il punto 3 fino a trovare \texttt{M\_mtot} autovalori 2D.
 \end{enumerate}
 
-Alcune accortezze sono state prese per evitare di calcolare pi\`u volte gli stessi autovalori e, la relazione d'ordine \`e stata scelta con estrema
+Alcune accortezze sono state prese per evitare di calcolare pi\`u volte gli stessi autovalori. La relazione d'ordine \`e stata scelta con estrema
 cura per poter considerare autovalori 2D con molteplicit\`a algebrica maggiore di uno, questi autovalori infatti devono essere inseriti in tmp perch\'e
 non sono doppioni.
 \begin{lstlisting}[style = general]
@@ -409,12 +407,11 @@ if ( ( pow (a.wp, 2) + pow (a.wq, 2) ) != ( pow (b.wp, 2) + pow (b.wq, 2) ) )
 }
 else
 {
-  //Se l'autovalore 2D e' lo stesso restituisci quello con la frequenza in direzione y minore, in questo modo se e' un doppione verra' riconosciuto in quanto ne maggiore ne minore
+  //Se l'autovalore 2D e' lo stesso restituisci quello con la frequenza in direzione y minore, in questo modo, se e' un doppione, verra' riconosciuto in quanto ne maggiore ne minore
   return a.wp < b.wp ; 
 }
 }
 \end{lstlisting}
-\clearpage
 Proviamo a dare una visualizzazione dell'algoritmo.
 
 \begin{tikzpicture}[stack/.style={
@@ -466,7 +463,7 @@ Proviamo a dare una visualizzazione dell'algoritmo.
   \nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(1)}$
   \nodepart{five}$Ky^{(1)},Kz^{(1)}$};
 
-\node [stack,right=of prima] (seconda) {\nodepart{two}
+\node [stack,right=of prima,rectangle split part fill={white,white,blue!20,blue!20,white}] (seconda) {\nodepart{two}\textcolor{blue!100}{New}
   \nodepart{three}$Ky^{(2)},Kz^{(2)}$\nodepart{four}$Ky^{(3)},Kz^{(1)}$
   \nodepart{five}$Ky^{(1)},Kz^{(2)}$};
   
@@ -485,8 +482,13 @@ Proviamo a dare una visualizzazione dell'algoritmo.
 
 \node [myarrow,draw,anchor=west] at ($(seconda.east)+(2.5pt,0)$) {\phantom{te}} ;
 
+\draw [red,ultra thick,->] ($(seconda.west)+(-0.1,-1.0)$) -- ($(prima.east)+(0.1,+0.1)$);
+\draw [blue,dashed,ultra thick,->] ($(prima.east)+(0.1,-0.3)$) -- ($(seconda.west)+(-0.1,+0.1)$);
+\draw [blue,dashed,ultra thick,->] ($(prima.east)+(0.1,-0.3)$) -- ($(seconda.west)+(-0.1,-0.5)$);
+\draw [red,thick] ($(seconda.south)+(-1.4,-0.2)$)--($(seconda.south)+(1.4,0.8)$);
+\draw [red,thick] ($(seconda.south)+(-1.4,0.8)$)--($(seconda.south)+(1.4,-0.2)$);
 %\node [myarrow,draw,anchor=west] at ($(mid.east)+(2.5pt,0)$) %{\phantom{te}} ;
-%\node [draw,rectangle,align=left,right=of ini,label=above:%{Computer Program}] (mid)
+%\draw [align=left,above=of seconda,label=above:{New}] ($(seconda.south)+(-1.2,0.8)$) rectangle ($(seconda.south)+(1.2,2)$);
  % {instruction 0;\\ instruction 1;\\$\ldots$\\instruction $n$;};
 \end{tikzpicture}
 %\begin{tikzpicture}
@@ -499,12 +501,7 @@ Proviamo a dare una visualizzazione dell'algoritmo.
 %(v1) -- (v3);
 %\end{tikzpicture}
 
-In questo albero rappresentiamo come si effettua la ricerca e vediamo che il nodo con la x rossa \`e stato
-cancellato perch\'e \`e un doppione.
-Ogni nodo rappresenta un coppietta di sotto autovalori. Ogni volta che un nuovo autovalore viene
-inserito nella lista di eigenvalues, i suoi due nodi figli vengono inseriti nell'albero.
-A ogni iterazione tmp contiene tutte le foglie, ordinate in base al valore dell'autovalore 2D associato, e si 
-occupa anche di non inserire nell'albero i doppioni.
+\vspace{1cm}
 
 \begin{tikzpicture}
 [scale=1.5]
@@ -525,6 +522,15 @@ occupa anche di non inserire nell'albero i doppioni.
 \draw [thick,red, -] (5.5,-1.5)--(6.5,-2.5);
 \draw [thick,red, -] (6.5,-1.5)--(5.5,-2.5);
 \end{tikzpicture}
+
+In questo albero rappresentiamo come si effettua la ricerca e vediamo che il nodo con la x rossa \`e stato
+cancellato perch\'e \`e un doppione.
+Ogni nodo rappresenta un coppietta di sotto autovalori. Ogni volta che un nuovo autovalore viene
+inserito nella lista di eigenvalues, i suoi due nodi figli vengono inseriti nell'albero.
+A ogni iterazione tmp contiene tutte le foglie, ordinate in base al valore dell'autovalore 2D associato, e si 
+occupa anche di non inserire nell'albero i doppioni.
+
+
 
 \subsection{Metodi di calcolo}
 Approfondiamo ora i metodi che si occupano di calcolare i coefficienti della matrice di sistema.
@@ -558,7 +564,7 @@ $\int_{\gamma} \varphi_k(y,x) \,dydz$
 
 data una funzione indipendente da $x$ questo metodo restituisce i coefficienti di Fourier (in numero pari ad \texttt{M\_mtot}) rispetto alla base modale scelta.
 
-\item \texttt{Real Coeff\_fk (	const Real\& x,const function\_Type\& f,const UInt\& k ) const},
+\item \texttt{Real FourierCoeffPointWise (	const Real\& x,const function\_Type\& f,const UInt\& k ) const},
 
 restituisce il $k$-esimo coefficiente di Fourier di una generica funzione 3D rispetto alla base modale una volta fissato un punto $x$.
 \end{itemize}
@@ -596,27 +602,15 @@ Compute_PhiPhi(const UInt& j, const UInt& k) const
 	return coeff_y*coeff_z;
 }
 \end{lstlisting}
- L'implementazione \`e basata sulla separazione di variabili, nel caso della mappa o di coefficienti non costanti bisogner\`a cambiare
+ L'implementazione \`e basata sulla separazione di variabili, nel caso di coefficienti non costanti bisogner\`a cambiare
  questa implementazione.
  I metodi per calcolare i coefficienti di Fourier sono indispendabili 
- ed il loro impiego sar\`a pi\`u una volta vista la classe \classe{HiModAssembler}.
+ ed il loro impiego sar\`a pi\`u chiaro una volta vista la classe \classe{HiModAssembler}.
  
 \section{HiModAssembler}
  
  In questa classe viene gestita la fase di assemblaggio del problema e quella di export. Abbiamo cercato di seguire la linea della classe 
-FESpace, infatti \texttt{HiModAssembler} \`e templetizzata sugli stessi argomenti. Oltre a mantenere una struttura di base coerente con lo 
-spazio agli elementi finiti, la scelta di templetizzare le matrici e i vettori, manipolati da tale classe, prevede una possibile implementazione 
-futura di strutture algebriche pi\`u adatte al metodo di riduzione gerarchica. Ricordiamo infatti che la struttura della matrice di sistema \`e 
-ben nota \figref{fig:pattern} , formata da un numero di blocchi pari ad $\texttt{M\_mtot}^2$, ognuno dei quali di dimensione pari al quadrato 
-dei gradi di libert\`a FEM spesi lungo la fibra di supporto. 
- 
-
- 
- Viene templetizzata anche la mesh, ma questo parametro si riferisce discretizzazione della fibra di supporto, dunque siamo vincolati a 
-trattarlo in questo modo.
- Momentanemante il codice funziona solamente con elementi del tipo EpetraStructured, tuttavia occorrerebbe ripensare attentamente questa parte, 
-soprattutto in visione di una possibile parallelizzazione.
-Un codice HiMod ottimizzato dovr\`a possedere delle proprie strutture, adeguate alla conformazione della matrice di sistema.
+FESpace, infatti \texttt{HiModAssembler} \`e templetizzata sugli stessi argomenti. 
 
  \begin{lstlisting}[style = general]
  template<typename mesh_type,typename matrix_type,typename vector_type>
@@ -624,7 +618,17 @@ Un codice HiMod ottimizzato dovr\`a possedere delle proprie strutture, adeguate 
  {
 	... 
  };
- \end{lstlisting}
+ \end{lstlisting} 
+Oltre a mantenere una struttura di base coerente con lo 
+spazio agli elementi finiti, la scelta di templetizzare le matrici e i vettori, manipolati da tale classe, prevede una possibile estensione a strutture algebriche pi\`u adatte al metodo di riduzione gerarchica. 
+ 
+ Viene templetizzata anche la mesh, ma questo parametro si riferisce discretizzazione della fibra di supporto, dunque siamo vincolati a 
+trattarlo in questo modo.
+ Momentanemante il codice funziona solamente con strutture algebriche del tipo EpetraStructured, tuttavia occorrerebbe ripensare attentamente questa parte, 
+soprattutto in vista di una possibile parallelizzazione.
+Un codice HiMod ottimizzato dovr\`a possedere delle proprie strutture, adeguate al pattern della matrice di sistema.
+
+
  
 \subsubsection{I membri}
 La classe HiModAssembler posside tre membri privati:
@@ -644,12 +648,12 @@ piuttosto che del \texttt{GeneralAssembler}. Due sono le motivazioni che hanno c
 \end{itemize}
 
 Entrambe le motivazioni sono legate in realt\`a a possibili future estensioni del codice. Se pensiamo al problema generalizzato ad una qualunque 
-sezione 2D, siamo costretti ad adottare una mappa che leghi lo spazio reale e lo spazio di riferimento (dove viene risolto il problema). I conti 
-mostrano che alla forma variazionale si aggiungono numerosi casi non gestiti dal pacchetto \texttt{GeneralAssembler}.
+sezione 2D, siamo costretti ad adottare una mappa che leghi lo spazio reale e lo spazio di riferimento (dove viene risolto il problema) si veda \cite{perotto:2008}. I conti 
+mostrano che alla forma variazionale si aggiungono alcuni casi non gestiti dal \texttt{GeneralAssembler}.
 
 L'utilizzo del modulo \texttt{ETA} \`e tuttavia nascosto all'utente, il costruttore si occupa di inizializzare \texttt{M\_etfespace} ricavando 
 le informazioni necessarie da \texttt{M\_fespace}.
-
+Lo spazio elementi finiti viene comunque conservato per alcune sue utility non presenti in ETFespace di cui avevamo bisogno.
 \begin{lstlisting}[style=general]
  template<typename mesh_type,typename matrix_type,typename vector_type>
  HiModAssembler<mesh_type, matrix_type,vector_type>::
@@ -670,44 +674,41 @@ le informazioni necessarie da \texttt{M\_fespace}.
 Proponiamo di seguito una descrizione dei vari metodi disponibili nella classe \texttt{HiModAssembler}. La classe \`e ampia, tuttavia comprende 
 tre sezioni ben distinte: assemblaggio, analisi e export.
 \subsubsection{Assemblaggio}
-\begin{lstlisting}[style=general, frame = top]
+\begin{lstlisting}[style=general,frame=none]
 
 void AddADRProblem	( const matrix_ptrType& systemMatrix,
 											const Real& mu, 
 											const TreDvector_type& beta, 
 											const Real& sigma)
 \end{lstlisting}
-Si occupa dell'assemblaggio della matrice di sistema. I coefficienti sono considerati costanti (ipotesi \referenza{sec: ipotesi}), l'estensione 
-a coefficienti non costanti comporta cambiamenti anche nella classe \texttt{ModalSpace}, tali modifiche non sono state apportate perch\`e esuli 
-dai nostri obbiettivi progettuali. Si \`e ragionato su una possibile implementazione che segue la linea generale proposta negli articoli 
-(citazione perotto).
+Si occupa dell'assemblaggio della matrice di sistema. I coefficienti sono considerati costanti, l'estensione 
+a coefficienti non costanti comporta cambiamenti anche nella classe \texttt{ModalSpace}, tali modifiche non sono state apportate perch\`e esuliano
+dai nostri obbiettivi progettuali. Si \`e ragionato su una possibile implementazione che segua la linea generale proposta nel report \citep{perotto:2008} \footnote{Nel caso si fosse interessati all'implementazione parte del codice \`e gi\`a presente nel branch \texttt{20130710\_HiModMap}}.
 Le fasi di assemblaggio sono semplici: la matrice di sistema viene percorsa a blocchi e per ognuno di essi il computo dei valori avviene tramite 
-il metodo \texttt{integrate} del pacchetto \texttt{ETA}. Difatti ogni blocco corrisponde al problema 1D che accoppia la frequenza \texttt{j} e 
-\texttt{k}.
+il metodo \texttt{integrate} del pacchetto \texttt{ETA}. Difatti ogni blocco corrisponde al problema 1D che accoppia ldue frequenze.
 
-\begin{lstlisting}[style = general, frame = top]
+\begin{lstlisting}[style = general, frame = none]
 
 void interpolate	( const function_Type& f,
 										const vector_ptrType& f_interpolated)
 \end{lstlisting}
 Data una generica funzione spaziale, questo metodo si occupa di calcolare, per ogni punto della griglia 1D, tutte le componenti di Fourier 
 rispetto alle basi modali. Il risultato viene salvato nel vettore strutturato passato negli argomenti. \`E in questo punto che ricopre un ruolo 
-fondamentale il metodo \texttt{Coeff\_fk()} posseduto da \texttt{ModalSpace}.
-In pratica, come sottolineato dalla firma stessa del metodo, stiamo interpolando una generica funzione sullo spazio HiMod. Le dimensioni del 
-vettore che contiene i coefficienti di interpolazione sono pari ovviamente a \texttt{Mtot$\cdot$DOFfem}.
+fondamentale il metodo \texttt{FourierCoeffPointWise()} posseduto da \classe{ModalSpace}.
+Calcolare le componenti di una generica funzione $H^1$ rispetto allo spazio del metodo HiMod  richiede prima una proiezione lungo le basi modali e successivamente un'interpolazione dei coefficienti di Fourier nello spazio elementi finiti. Le dimensioni del vettore che contiene le componenti della funzione sono pari ovviamente a \texttt{Mtot$\cdot$DOFfem}.
 
-\begin{lstlisting}[style=general, frame = top]
+\begin{lstlisting}[style=general, frame = none]
 
 void Addrhs	(	const vector_ptrType& rhs,
 							const vector_ptrType& f_interpolated);
 \end{lstlisting}
 Definito il metodo \texttt{interpolate} risulta semplice assemblare il termine noto. Ottenuta l'interpolazione della forzante l'approccio non 
-\`e differente da \texttt{AdADRProblem()}: il vettore \texttt{rhs} possiede \texttt{M\_mtot} blocchi di dimensione ciascuno pari ai gradi di 
+\`e differente da \texttt{AddADRProblem()}: il vettore \texttt{rhs} possiede \texttt{M\_mtot} blocchi di dimensione ciascuno pari ai gradi di 
 libert\`a FEM, si scorrono tutti i blocchi e poich\`e ognuno di essi \`e legato al problema 1D riferito alla \texttt{j-esima} frequenza, il 
 metodo \texttt{integrate()} computa gli opportuni coefficienti.
 
 Mostriamo in breve le operazioni eseguite nel main per definire ed assemblere il termine noto:
-\begin{lstlisting}[style = general]
+\begin{lstlisting}[style = general,frame=bottomline]
 boost::shared_ptr<vector_Type> rhs 
 		(new vector_Typer (Map,Repated));
 *rhs *= 0.0;
@@ -720,7 +721,7 @@ HM.interpolate ( f,f_interpolated );
 HM.Addrhs (rhs,f_interpolated);
 \end{lstlisting}
 
-\begin{lstlisting}[style = general,frame = top]
+\begin{lstlisting}[style = general,frame = none]
 
 void AddDirichletBC_In (	const matrix_ptrType& systemMatrix,
 													const vector_ptrType& rhs,
@@ -733,44 +734,27 @@ invece di condizioni essenziali quali quelle di Dirichlet, abbiamo deciso di int
 trattamento delle BC fatto da FreeFem++. Per capire dove intervenire dobbiamo rifarci all'interpretazione data nei cenni teorici, ricordiamo 
 infatti che la matrice di sistema del metodo HiMod \`e costituita da $\texttt{M\_mtot}^2$ problemi 1D correlati fra loro. Dunque se ogni 
 sottoblocco rappresenta la matrice di sistema di un problema ADR agli elementi finiti 1D, \`e chiaro che sar\`a sufficiente intervenire sul 
-primo elemento (nel caso di Dirichlet all'inflow). Analogamente l'intervento sul termine noto, viene eseguito sostituendo al primo elemento di 
+primo elemento (nel caso di Dirichlet all'inflow) di ogni sottoblocco diagonale. Analogamente l'intervento sul termine noto, viene eseguito sostituendo al primo elemento di 
 ogni sottoblocco, il coefficiente 
-dell'interpolazione del dato in ingresso, moltiplicato per il medesimo coefficiente di penalizzazione usato nella matrice di sistema.
+di Fourier del dato in ingresso, moltiplicato per il medesimo coefficiente di penalizzazione usato nella matrice di sistema. Otteniamo dunque che:
+\begin{equation}
+\label{eq: inflow}
+\tilde u_k(0)=\tilde g_k \quad \forall k = 1 \ldots m_{tot}
+\end{equation}
 
-Nel caso dell'interpolazione del dato in ingresso, si tratta di una sitazione pi\`e semplice dell'interpolazione 3D, dunque \`e stato sviluppato 
+dove $\tilde g_k$ \`e il $k$-esimo coefficiente di Fourier del dato all'inflow $g(y,z)$.
+Per calcolarli \`e stato sviluppato 
 il metodo \texttt{FourierCoefficients()} contenuto in \texttt{ModalSpace}.
-\begin{lstlisting}[style = general]
-
- template<typename mesh_type,typename matrix_type,typename vector_type>
- void HiModAssembler<mesh_type, matrix_type,vector_type>::
- AddDirichletBC_In (	const matrix_ptrType& systemMatrix,
- 											const vector_ptrType& rhs,
- 											const function_Type& g)
- {
- 	vector<Real> FCoefficients_g;
- 	FCoefficients_g = M_modalbasis->FourierCoefficients (g);
- 	UInt dof = M_etfespace->dof().numTotalDof();
- 	for( UInt j(0); j<M_modalbasis->mtot(); ++j)
- 	{
-		systemMatrix->setCoefficient(j*dof,j*dof,1e+30);
-		rhs->setCoefficient(j*dof,1e+30*FCoefficients_g[j]) ;
- 	}
- 	
- 	return;
- }
-\end{lstlisting}
-
+\clearpage
 \subsubsection{Analisi}
 
-I seguenti metodi si occupano di manipolare le informazioni contenute nel vettore soluzione o in un gerico vettore che raccoglie i coefficienti 
-relativi all'interpolazione nello spazio HiMod. Il nostro primo interesse \`e poter ricostruire i valori della soluzione nei punti della griglia 
+I seguenti metodi si occupano di manipolare le informazioni contenute nel vettore soluzione o in un generico vettore dello spazio HiMod. Il nostro primo interesse \`e poter ricostruire i valori della soluzione nei punti della griglia 
 3D costituita dai nodi di quadratura e i nodi FEM. Il vettore ottenuto sar\`a poi utilizzato per eventuali operazioni o analisi quali computo 
 della norma L2.
 Per eseguire confronti con generiche funzioni, abbiamo implementato anche una specializzazione nel caso l'argomento di ingresso risulti essere 
 una generica funzione spaziale.
 
-Ai fini di proporre confronti e grafici di convergenza \`e stata implementato il computo della norma L2, spazio principale in cui la teoria ha 
-dimostrato stime di convergenza.
+Ai fini di proporre confronti e grafici di convergenza \`e stata implementato il computo della norma L2.
 
 \begin{lstlisting}[style = general,frame=none]
 
@@ -782,19 +766,20 @@ Real normL2 (const vector_type& fun)
 
 \end{lstlisting}
 
-La particolarit\`e dei metodi appena presentati \`e il fatto che non viene valutata nessuna funzione, si tratta solamente di recuperare i valori 
+La particolarit\`a dei metodi appena presentati \`e il fatto che non viene valutata nessuna funzione di base, si tratta solamente di recuperare i valori 
 memorizzati nelle strutture dati di \texttt{M\_modalspace}. Tuttavia questo vantaggio \`e preservato fin tanto ci si accontenta di valutare la 
 funzione nei punti della griglia di quadratura. Nel caso di una valutazione pi\`u fitta o di un punto arbitrario, occorre risalire alla forma 
 originale delle basi modali. Questo \`e concesso grazie al metodo \texttt{EvalSinglePoint()}, posseduto da ogni generatore di basi il quale 
-conosce, tramite la classe ausiliaria  \texttt{EducatedBasisFunctor}, la forma originale della base modale. Ovviamente tale approccio si poteva 
+conosce la forma originale della base modale. Ovviamente tale approccio si poteva 
 adottare anche per i precedenti metodi, ma l'utilizzo avrebbe comportato la valutazione di una funzione, posseduta da un oggetto posto nelle 
 foglie di una struttura polimorfica. Il risultato finale sarebbe stato un costo computazionale notevolmente maggiore.
-\begin{lstlisting}[style = general, frame = none]
-Real evaluateHiModFunc(const vector_ptrType& fun, const Real& x, const Real& y, const Real& z)
-\end{lstlisting}
 
 
 \subsubsection{Export}
+
+\begin{lstlisting}[style = general, frame = none]
+Real evaluateHiModFunc(const vector_ptrType& fun, const Real& x, const Real& y, const Real& z)
+\end{lstlisting}
 
 Nella fase di export risulta necessaria la presenza del metodo \texttt{evaluateHiModFunc()}, infatti abbiamo ritenuto opportuno permettere 
 all'utente la valutazione e successivamente l'export, su di una griglia pi\`u fitta rispetto al prodotto cartesiano fra nodi di quadratura e 

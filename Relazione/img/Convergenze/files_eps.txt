@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 CfrDOF.eps
 DDDD_ADR.eps
+=======
+ConfrontoDOF.eps
+Confronto_tempi.eps
+>>>>>>> 75b3d56489c6da946e25bcc6b7302f31bf4340ca
 DDDD.eps
+DDDD_ADR.eps
 DRDR.eps
 RRRR.eps
+TIMEHimodVsFemNOLOG.eps
 spy_14elem3modes.eps
 TIMEHimodVsFemNOLOG.eps
 TIMEHimodVsFem.eps

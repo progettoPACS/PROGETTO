@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 CfrDOF.png
 DDDD_ADR.png
+=======
+ConfrontoDOF.png
+Confronto_tempi.png
+>>>>>>> 75b3d56489c6da946e25bcc6b7302f31bf4340ca
 DDDD.png
+DDDD_ADR.png
 DRDR.png
 RRRR.png
+TIMEHimodVsFemNOLOG.png
 spy_14elem3modes.png
 TIMEHimodVsFemNOLOG.png
 TIMEHimodVsFem.png
