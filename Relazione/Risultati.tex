@@ -2,14 +2,14 @@
 In questa sezione mostreremo alcuni dei risultati che abbiamo ottenuto, per visualizzarli abbiamo utilizzato
 il software ParaView.
 All'interno del file \texttt{himod/util/CaseTest.hpp} sono salvati diversi casi test
-con soluzione esatta (la forzante \`e stata ottenuta usando il symbolic toolbox di Matlab) e uno senza.
+con soluzione esatta e uno senza (la forzante \`e stata ottenuta usando il symbolic toolbox di Matlab).
 Nel caso si fosse interessati ad aggiungere altri casi test \`e possibile aggiungerli modificando i
-file \texttt{CaseTest.hpp} e \texttt{CaseTest.cpp}, una volta creato il caso test 
-per provarlo basta aggiungerlo allo switch che si trova nella classe \classe{GeneralTest} che si trova sempre nella
+file \texttt{CaseTest.hpp} e \texttt{CaseTest.cpp}. Una volta creato il caso test 
+occorre aggiungerlo allo switch che si trova nella classe \classe{GeneralTest} nella
 cartella \texttt{util}. \classe{GeneralTest} \`e una classe che abbiamo sviluppato per poter
-lanciare diversi test senza dover ricompilare, ma semplicimente richiedendo un diverso caso test o diversi 
-parametri dal datafile di \texttt{GetPot}\footnote{Se si vuole provare a lanciare qualche test si veda il tutorial
-\texttt{4\_generaltest}, se invece si vuole vedere come si dovrebbe assemblare un test da zero si veda il tutorial \texttt{1\_ADR} }
+lanciare diversi test senza dover modificare il sorgente, ma semplicimente settando 
+parametri  e caso test dal datafile di \texttt{GetPot}\footnote{Se si vuole provare a lanciare qualche test si veda il tutorial
+\texttt{4\_generaltest}, se invece si vuole vedere come si dovrebbe assemblare un test da zero si veda il tutorial \texttt{1\_ADR} }.
 Cominciamo mostrando il caso test senza soluzione esatta, che per\`o \`e pi\`u interessante dal punto di vista qualitativo.
 \begin{equation}
  \label{eq:camini}
