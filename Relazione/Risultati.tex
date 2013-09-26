@@ -21,51 +21,50 @@ Cominciamo mostrando il caso test senza soluzione esatta, che per\`o \`e pi\`u i
 \end{aligned}
 \right.
 \end{equation}
+
 dove $\vect{\beta}=(5,1,0)$, $\sigma=0.3$ e $f$ \`e riportata in figura \ref{fig:fcamini} e rappresenta due sorgenti 
 di forma sferica.
-In figura \ref{fig:confrontocamini} abbiamo sulla sinistra\begin{wrapfloat}{figure}{r}{0pt}
-\includegraphics[scale=0.15]{DDDD_ADR/Forceterm3}
- \caption{Forzante}
- \label{fig:fcamini}
-\end{wrapfloat} la soluzione ottenuta con
-gli elementi finiti (sempre con LifeV), utilizzando una griglia strutturata con \# elementi in direzione $x$
-e \# in direzione $y$ e $z$, sulla destra invece c'\`e la soluzione ottenuta con HiMod, \# elementi in direzioni $x$
-e 50 modi.
-\begin{figure}[!h]
+In figura \ref{fig:confrontocamini} abbiamo in alto la soluzione ottenuta con
+gli elementi finiti (sempre con LifeV), utilizzando una griglia strutturata con 20 elementi in direzione $x$, $y$ e $z$, in basso invece c'\`e la soluzione ottenuta con HiMod, 20 elementi in direzioni $x$ e 50 modi.
+Osserviamo che 50 modi, in un problema come questo dove la geometria e le condizioni al bordo sono le stesse in direzione $x$ e $y$, significa circa 7 modi in direzione $y$ e altrettanti in direzione $z$.
+ Vediamo come, dal punto di vista qualitativo, il fenomeno venga colto bene anche dalla riduzione gerarchica di modello.
+
+Nella figura \ref{fig:camini2d+} vediamo diverse sezioni longitudinali fissata la coordinata $y$ in tre punti diversi del dominio e possiamo apprezzare, sempre dal punto di vista qualitativo,
+la convergenza. 
+\begin{figure}[!b]
 \centering
 \subfigure[FEM]
-{\includegraphics[scale=0.23]{Foto2D+/FEMsolution_pretty3D_2ritoccata}}
-\hspace{20mm}
+{\includegraphics[scale=0.4]{Foto2D+/FEMPretty}}
+
 \subfigure[HiMod]
-{\includegraphics[scale=0.23]{Foto2D+/FEMsolution_pretty3D_2ritoccata}}
+{\includegraphics[scale=0.4]{Foto2D+/HiModPretty50}}
 \caption{Soluzione FEM a confronto con soluzione HiMod, m=50}
 \label{fig:confrontocamini}
 \end{figure}
-Osserviamo che 50 modi, in un problema come questo dove la geometria e le condizioni al bordo sono le stesse in direzione
-$x$ e $y$, significa circa 7 modi in direzione $y$ e altrettanti in direzione $z$.
-Vediamo come, dal punto di vista qualitativo, il fenomeno venga colto bene anche dalla riduzione gerarchica di modello.
-Nella figura \ref{fig:camini2d+} vediamo diverse sezioni trasversali del dominio e possiamo apprezzare, sempre dal punto di vista qualitativo,
-la convergenza. 
 \begin{figure}[!htbp]
 \centering
 \subfigure[HiMod, m=9]
-{\includegraphics[scale=0.23]{Foto2D+/HiMod_m=9}}
+{\includegraphics[scale=0.25]{Foto2D+/HiMod_m=9}}
 
 \subfigure[HiMod, m=16]
-{\includegraphics[scale=0.23]{Foto2D+/HiMod_m=16}}
+{\includegraphics[scale=0.25]{Foto2D+/HiMod_m=16}}
 
 \subfigure[HiMod, m=25]
-{\includegraphics[scale=0.23]{Foto2D+/HiMod_m=25}}
+{\includegraphics[scale=0.25]{Foto2D+/HiMod_m=25}}
 
 \subfigure[FEM]
-{\includegraphics[scale=0.23]{Foto2D+/FEMsolution35}}
+{\includegraphics[scale=0.25]{Foto2D+/FEMsolution35}}
 \caption{Soluzione FEM a confronto con diversi valori di m}
 \label{fig:camini2d+}
 \end{figure}
-Vediamo che gi\`a con 9 modi la soluzione \`e ragionevole anche se non \`e in grado di cogliere 
+Vediamo che gi\`a con 9 modi \begin{wrapfloat}{figure}{r}{0pt}
+\includegraphics[scale=0.3]{DDDD_ADR/Forceterm}
+ \caption{Forzante}
+ \label{fig:fcamini}
+\end{wrapfloat}la soluzione \`e ragionevole anche se non \`e in grado di cogliere 
 bene tutte le caratteristiche della soluzione, con 16 modi ci sono evidenti miglioramenti e con 25 siamo gi\`a a convergenza dal punto di 
 vista qualitativo, non abbiamo quindi riportato risultati con pi\`u di 25 modi.
-Infine, in figura \ref{fig:camini2D}, riportiamo un'altra visualizzazione di una sezione orizzontale con $y=0.5$.
+Infine, in figura \ref{fig:camini2D}, riportiamo un'altra visualizzazione della sezione centrale con $y=0.5$.
 Anche qui possiamo apprezzare la convergenza.
 \begin{figure}[!htbp]
 \centering
@@ -88,8 +87,7 @@ metodo.
 \clearpage
 \subsection*{Convergenza}
 Dal punto di vista teorico la teoria della convergenza per le basi istruite \`e ancora in fase di sviluppo.
-
-Nel caso 2D si ha una convergenza di ordine due in $L^2(\Omega)$ rispetto al numero di modi.
+Nel caso 2D si ha una convergenza del secondo ordine in $L^2(\Omega)$ rispetto al numero di modi.
 In particolare nel caso Dirichlet in 2D usando i P1 in direzione $x$ si ha per $u\in H^2(\Omega)$
 \begin{equation}
  \label{eq:stimainl2}
@@ -122,7 +120,7 @@ Vediamo per\`o che riducendo il passo della griglia le curve dell'errore si atte
 \end{figure}
 
 Nel caso riportato in figura \ref{fig:drdrconv} abbiamo un caso test con condizioni miste sui lati del quadrato:
-il lato in basso e in alto hanno condizioni di Dirichlet, mentre i lati a destra e a sinistra hanno condizioni di Robin.
+i lati in basso e in alto hanno condizioni di Dirichlet, mentre i lati a destra e a sinistra hanno condizioni di Robin.
 Anche qui possiamo vedere come il grafico di convergenza confermi i risultati attesi dalla teoria.
 Infine abbiamo costruito un caso test con condizioni di Robin su tutti i lati. 
 
@@ -138,33 +136,32 @@ vedere come l'ordine di convergenza sembra essere superiore alla velocit\`a atte
 si verifica anche nei casi test bidimensionali con condizioni al bordo di Robin, dal punto di vista teorico ancora non ci sono 
 spiegazioni convincenti, tuttavia questo comportamento si verifica puntualmente.
 
-\begin{figure}[!h]
+\begin{figure}[!b]
 \centering
 \includegraphics[scale=0.5]{Convergenze/CfrDOF}
 \caption{Confronti gradi di libert\`a sulla slice trasversale}
 \label{fig:dof}
 \end{figure}
 
-Abbiamo poi riportato alcuni test per cercare di confrontare gli elementi finiti con HiMod.
-In figura \ref{fig:dof} abbiamo riportato il numero di gradi di libert\`a dei due metodi lungo la slice trasversale utilizzati per 
-approssimare il caso test con condizioni di Dirichlet che abbiamo utilizzato anche per osservare la convergenza.
-Per gli elementi finiti abbiamo utilizzato una griglia strutturata e entrambi i metodi condividono la stessa griglia 
-in direzione $x$. Sull'asse delle ordinate abbiamo riportato l'errore in norma $L^2(\Omega)$.
+Presentiamo inoltre alcuni test per cercare di confrontare gli elementi finiti con HiMod.
+In figura \ref{fig:dof} riportiamo sulle ascisse il numero di gradi di libert\`a utilizzati sulla slice trasversale nel caso test con condizioni di Dirichlet e sulle ordinate l'errore in norma $L^2$.
+Per gli elementi finiti abbiamo utilizzato una griglia strutturata ed entrambi i metodi condividono la stessa griglia 
+in direzione $x$.
 
-\begin{figure}[!htbp]
+\begin{figure}[!b]
 \centering
 \includegraphics[scale=0.5]{Convergenze/Confronto_tempi}
 \caption{Confonto tempi di assemblaggio}
 \label{fig:time}
 \end{figure}
 
-Si vede come a parit\`a di precisione, con himod sia possibile ottenere utilizzare molti meno gradi di libert\`a in direzione trasversale.
+Si vede come a parit\`a di precisione, con himod sia possibile utilizzare meno gradi di libert\`a in direzione trasversale.
 Tuttavia questo dipende anche dal caso test, perch\`e l'ordine di convergenza \`e lo stesso, quindi tutto dipende dalla 
 costante davanti alla stima dell'errore. \`E chiaro che se la soluzione non presenta dinamiche particolarmente complesse in direzione trasversale,
 se la base scelta \`e buona gi\`a con i primi modi si potranno cogliere le caratteristiche principali e dunque la curva HiMod
 in figura \ref{fig:dof} si trover\`a al di sotto della curva per gli elementi finiti.
 
 Infine, sempre sul caso test con condizioni di Dirichlet, abbiamo cercato di capire quanto tempo impiega l'assemblaggio della matrice
-rispetto all'analogo test assemblato con il pacchetto \texttt{ETA} di \texttt{LifeV}.
+rispetto all'analogo test assemblato con \texttt{ADRAssembler} di \texttt{LifeV}.
 I risultati si possono vedere in figura \ref{fig:time} e vediamo come, a parit\`a di precisione, il tempo di assemblaggio 
 della matrice sia minore che nel caso elementi finiti, ci\`o \`e dovuto al minor numero di gradi di libert\`a.

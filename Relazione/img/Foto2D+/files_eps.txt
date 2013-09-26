@@ -1,9 +1,11 @@
+FEMPretty.eps
+FEMsolution.eps
 FEMsolution35.eps
 FEMsolutionHiMod_m=100grey.eps
-FEMsolution.eps
+FEMsolution_pretty3D.eps
 FEMsolution_pretty3D_2.eps
 FEMsolution_pretty3D_2ritoccata.eps
-FEMsolution_pretty3D.eps
+HiModPretty50.eps
 HiMod_m=100.eps
 HiMod_m=16.eps
 HiMod_m=25.eps
