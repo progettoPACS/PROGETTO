@@ -1,0 +1,11 @@
+FEMsolution35.png
+FEMsolutionHiMod_m=100grey.png
+FEMsolution.png
+FEMsolution_pretty3D_2.png
+FEMsolution_pretty3D_2ritoccata.png
+FEMsolution_pretty3D.png
+HiMod_m=100.png
+HiMod_m=16.png
+HiMod_m=25.png
+HiMod_m=50.png
+HiMod_m=9.png

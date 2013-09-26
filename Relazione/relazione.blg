@@ -2,14 +2,13 @@ This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
 The top-level auxiliary file: relazione.aux
 The style file: alpha.bst
 Database file #1: pacs.bib
-Warning--I didn't find a database entry for "paperseriohimod"
 Warning--empty school in perotto:2008
 Warning--empty school in perotto:2009
 Warning--empty school in perotto:2012
 Warning--empty school in zilio:himod
 You've used 5 entries,
             2543 wiz_defined-function locations,
-            584 strings with 5158 characters,
+            583 strings with 5143 characters,
 and the built_in function-call counts, 1596 in all, are:
 = -- 155
 > -- 85
@@ -48,4 +47,4 @@ warning$ -- 4
 while$ -- 13
 width$ -- 8
 write$ -- 63
-(There were 5 warnings)
+(There were 4 warnings)
