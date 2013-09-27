@@ -1,21 +1,26 @@
-\begin{thebibliography}{PEV09}
+\begin{thebibliography}{PEV10}
 
 \bibitem[EPV08]{perotto:2008}
-Alexandre Ern, Simona Perotto, and Alessandro Veneziani.
-\newblock {\em Hierarchical model reduction for advection-diffusion-reaction
-  problems}.
-\newblock Mox--report, 2008.
+A.~Ern, S.~Perotto, and A.~Veneziani.
+\newblock Hierarchical model reduction for advection-diffusion-reaction
+  problems.
+\newblock In Karl Kunisch, Günther Of, and Olaf Steinbach, editors, {\em
+  Numerical Mathematics and Advanced Applications}, pages 703--710. Springer
+  Berlin Heidelberg, 2008.
 
-\bibitem[PEV09]{perotto:2009}
+\bibitem[PEV10]{perotto:2009}
 Simona Perotto, Alexandre Ern, and Alessandro Veneziani.
-\newblock {\em Hierarchical local model reduction for elliptic problems I: a
-  domain decomposition approach}.
-\newblock Mox--report, 2009.
+\newblock Hierarchical local model reduction for elliptic problems: a domain
+  decomposition approach.
+\newblock {\em Multiscale Model. Simul.}, 8(4):1102--1127, 2010.
 
-\bibitem[PZ12]{perotto:2012}
-Simona Perotto and Alessandro Zilio.
-\newblock {\em Hierarchical model reduction: three different approaches}.
-\newblock Mox--report, 2012.
+\bibitem[PZ13]{perotto:2012}
+S.~Perotto and A.~Zilio.
+\newblock Hierarchical model reduction: Three different approaches.
+\newblock In Andrea Cangiani, Ruslan~L. Davidchack, Emmanuil Georgoulis,
+  Alexander~N. Gorban, Jeremy Levesley, and Michael~V. Tretyakov, editors, {\em
+  Numerical Mathematics and Advanced Applications 2011}, pages 851--859.
+  Springer Berlin Heidelberg, 2013.
 
 \bibitem[Sal04]{salsa2004equazioni}
 S.~Salsa.
