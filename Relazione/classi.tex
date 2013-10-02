@@ -777,22 +777,10 @@ foglie di una struttura polimorfica. Il risultato finale sarebbe stato un costo 
 
 \subsubsection{Export}
 
-\begin{lstlisting}[style = general, frame = none]
-Real evaluateHiModFunc(const vector_ptrType& fun, const Real& x, const Real& y, const Real& z)
-\end{lstlisting}
+L'export di un generico vettore dello spazio HiMod viene gestito dal metodo \texttt{ExporterStructuredVTK()}. Poich\`e  per sua natura la classe HiMod non possiede una griglia 3D,  il metodo ne genera una di supporto su cui eseguire l'export. 
+L'operazione occupa molto tempo, infatti su ogni punto della mesh fittizia, occorre sommare i contributi di ogni frequenza del sistema. Inoltre questo valore deve essere moltiplicato per il valore assunto dalle basi FEM 1D in quel punto (nel caso P1 sono soltanto due). La valutazione delle basi modali tuttavia pu\`o agilmente uscire dal ciclo dei nodi di griglia: nel codice si \`e scelto di ciclare esternamente sulle frequenze del sistema, dunque per ogni modo vengono registrati tutti i contributi della funzione base sulla slice (richiamando il metodo \texttt{EvalSinglePoint()}) e infine si cicla sui nodi della griglia, componendo le basi FEM, il vettore HiMod e i valori appena registrati della base modale.
 
-L'export di un generico vettore dello spazio HiMod viene gestito dal metodo \texttt{ExporterStructuredVTK()}. Poich\`e  per sua natura la classe HiMod non possiede una griglia 3D definita sul dominio (fatta eccezione la griglia dei nodi di quadratura), viene generata all'interno \texttt{ExporterStructuredVTK()} una griglia di supporto su cui eseguire l'export. Utilizziamo il metodo \texttt{regulaMesh3D()}. La valutazione delle funzioni test al di fuori dei nodi di quadratura richiede la chiamata a \texttt{EvalSinglePoint()}, metodo membro dei generatori di base.
-
- di   fase di export risulta necessaria la presenza del metodo \texttt{evaluateHiModFunc()}, infatti abbiamo ritenuto opportuno permettere 
-all'utente la valutazione e successivamente l'export, su di una griglia pi\`u fitta rispetto al prodotto cartesiano fra nodi di quadratura e 
-nodi di mesh FEM. 
-Particolare attenzione meritano i metodi dedicati all'export. Ci siamo occupati di esportare in formato VTK considerando due situazioni 
-differenti:
-\begin{itemize}
-\item[1.] Griglia strutturata.
-\item[2.] Griglia non strutturata.
-\end{itemize}
-\begin{lstlisting}[style = general]
+\begin{lstlisting}[style = general,frame=none]
 void ExporterStructuredVTK (	const UInt& nx,
 															const UInt& ny,
 															const UInt& nz,
@@ -801,17 +789,11 @@ void ExporterStructuredVTK (	const UInt& nx,
 															string prefix,
 															string content)
 \end{lstlisting}
-Nel primo caso si cerca di lavorare sulla struttura ordinata del problema
-Ricordiamo che:
-\begin{equation}
-u(x,y,z) = \sum_{j,s}^{m,n}u_{js}\psi_s(x)\varphi_j(y,z) = \sum_{j,s}^{m,n}u_{js}\psi_s(x)\eta_p(y)\xi_q(z)
-\end{equation}
 
-Vi sono due modi di procedere, o fissiamo il modo e calcoliamo tutti i contributi o lo facciamo per la funzione FEM.
-Noi abbiamo scelto di farlo sui modi, quindi il ciclo pi\`u esterno \`e sui modi.
-\textcolor{red}{Sarebbe interessante provare a fare l'altro modo per vedere se ci si mette di meno}
+Esclusa la metodologia per ricostruire i valori della soluzione, il metodo si appoggia interamente sulla classe ExporterVTK.
+Inoltre \`e stata implementato un ulteriore metodo di export che si occupa di valutare sulla medesima griglia strutturata una generica funzione scalare.
 
-\begin{lstlisting}[style = general]
+\begin{lstlisting}[style = general,frame=none]
 void ExporterFunctionVTK (	const UInt& nx,
 															const UInt& ny,
 															const UInt& nz,
@@ -821,3 +803,8 @@ void ExporterFunctionVTK (	const UInt& nx,
 															string content)
 \end{lstlisting}
 
+Infine abbiamo implementato un'utitli\`a che potrebbe rivelarsi utile in futuro, ovvero una funzione che valuta un vettore appartenente allo spazio HiMod  su un generico punto appartentente ad $\Omega$.
+
+\begin{lstlisting}[style = general,frame=none]
+Real evaluateHiModFunc(const vector_ptrType& fun, const Real& x, const Real& y, const Real& z)
+\end{lstlisting}
