@@ -1,0 +1,38 @@
+\chapter{Conclusione e sviluppi futuri}
+In questo progetto abbiamo implementato una prima versione del metodo di riduzione gerarchica di modello in 3D.
+I risultati ottenuti sono in accordo con le aspettative e aiutano lo sviluppo della teoria e, anche se alcune ottimizzazioni sono ancora possibili, 
+i tempi di calcolo sono gi\`a buoni.
+Per la gestione delle condizioni al bordo laterale abbiamo implementato le basi istruite, ma questa non \`e l'unica
+scelta possibile e sicuramente \`e una scelta difficile da generalizzare a geometrie complesse.
+Durante l'implementazione non ci siamo focalizzati su alcuni dettagli che non presentano difficolt\`a teoriche o tecniche,
+che per\`o andrebbero sistemati, quali la generalit\`a sui diversi tipi di elementi finiti e sulla griglia da usare sulla fibra di supporto,
+oppure tutte le possibili condizioni di bordo in inflow o in outflow.
+
+Abbiamo invece parzialmente esplorato due possibili direzioni di sviluppo, tra loro collegate,
+\begin{itemize}
+ \item estensione del metodo a coefficienti non costanti
+ \item estensione del metodo a geometrie differenti.
+\end{itemize}
+Il primo caso \`e gestito nel codice, anche se non ne abbiamo discusso l'implementazione nella
+relazione, \`e infatti presente un metodo \texttt{AddADRproblem} che prende in ingresso delle funzioni e non dei coefficienti costanti.
+Tuttavia \`e un metodo molto lento, sono necessarie alcune semplici ottimizzazioni e bisogna testarne il funzionamento
+in modo pi\`u intenso dato che per ora \`e stato testato solo con dei coefficienti costanti inseriti all'interno di funzioni.
+Nel caso si volesse procedere con test pi\`u complessi \`e presente il tutorial numero sei da modificare ( \texttt{6\_nonconst} ).
+ 
+Nel caso dell'estensione a geometrie pi\`u complesse bisogna prendere in considerazione la
+mappa. Essa generer\`a dei coefficienti non costanti: sar\`a dunque necessario perfezionare il metodo descritto
+sopra. L'estensione alla mappa presenter\`a due problematiche: la prima \`e che comparir\`a nella forma bilineare dei problemi
+1D un termine dove la derivata spaziale \`e sulla funzione test e non sulla base associata alla soluzione, tuttavia, 
+avendo scelto di usare il pacchetto \texttt{ETA} per l'assemblaggio, questo non risulta un problema.
+La seconda problematica riguarda la scelta delle basi sulla sezione trasversale dove si potrebbero utilizzare i polinomi di Legendre.
+
+Altri aspetti invece sono stati considerati solo teoricamente
+\begin{enumerate}
+ \item creare una struttura dati adeguata ad ospitare la particolare matrice di sistema
+ \item implementare la seconda scelta per l'ordinamento della matrice, presentata 
+ nell'introduzione teorica, e testare come cambia la velocit\`a del solutore lineare
+ \item parallelizzare il codice: con la struttura a blocchi si aprono molte possibilit\`a
+ soprattutto nella parallelizzazione dell'assemblaggio, questo \`e sicuramente il punto pi\`u ampio e pi\`u promettente
+ \item implementare il metodo su un tubo a sezione circolare per gestire domini di forma generica con mappe pi\`u semplici
+ \item implementare il metodo con la logica della domain decomposition (si veda \cite{perotto:2009}).
+\end{enumerate}

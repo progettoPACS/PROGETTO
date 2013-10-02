@@ -1,0 +1,29 @@
+\section{Conclusione e sviluppi futuri}
+In questo progetto abbiamo implementato una prima versione del metodo di riduzione gerarchica di modello in 3D.
+Per la gestione delle condizioni al bordo laterale abbiamo implementato le basi istruite, ma questa non \`e l'unica
+scelta possibile e sicuramente \`e una scelta difficile da generalizzare a geometrie complesse.
+Ci sono due possibili direzioni di sviluppo che abbiamo parzialmente esplorato e che sono tra loro collegate: 
+\begin{itemize}
+ \item estensione del metodo a coefficienti non costanti
+ \item estensione del metodo a geometrie differenti.
+\end{itemize}
+Il primo caso \`e stato parzialmente gestito nel nostro progetto: anche se non ne abbiamo discusso l'implementazione nella
+relazione \`e presente un metodo \texttt{AddADRproblem} che prende in ingresso delle funzioni e non dei coefficienti costanti.
+Tuttavia \`e un metodo molto lento. \`E possibile fare alcune semplici ottimizzazioni ed \`e necessario testarne il funzionamento
+in modo pi\`u intenso visto che per ora \`e stato testato solo con dei coefficienti costanti passate sottoforma di funzioni.
+Nel caso si volesse procedere con altri test \`e presente il tutorial numero sei: \texttt{6\_nonconst}.
+Nel caso dell'estensione a geometrie pi\`u complesse bisogna prendere in considerazione la
+mappa. Essa si riflette poi in dei coefficienti non costanti: sar\`a dunque necessario perfezionare il metodo che abbiamo spiegato 
+sopra. L'estensione alla mappa presenter\`a due problematiche: la prima \`e che compare nella forma bilineare dei problemi
+1D un termine dove la derivata spaziale \`e sulla funzione test e non sulla base associata alla soluzione, tuttavia, 
+avendo scelto di usare il pacchetto \texttt{ETA} per l'assemblaggio, questo non risulta un problema.
+La seconda problematica riguarda la scelta delle basi sulla sezione trasversale dove si potrebbero utilizzare i polinomi di Legendre.
+
+Altri aspetti invece non sono stati esplorati in questo progetto:
+\begin{enumerate}
+ \item creazeare di una struttura dati adeguata ad ospitare la particolare struttura della matrice di sistema
+ \item implementare la seconda scelta per l'ordinamento della matrice, presentata nell'introduzione teorica, e testare come cambia la velocit\`a del solutore lineare
+ \item parallelizzare il codice: con la struttura a blocchi si aprono molte possibilit\`a soprattutto nella parallelizzazione dell'assemblaggio.
+ \item implementare il metodo su un tubo a sezione circolare
+ \item implementare il metodo con la logica della domain decomposition (si veda \cite{perotto:2009})
+\end{enumerate}
