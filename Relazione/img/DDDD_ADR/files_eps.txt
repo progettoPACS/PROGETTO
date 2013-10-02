@@ -3,7 +3,6 @@ FEMslice.eps
 Forceterm.eps
 Forceterm2.eps
 Forceterm3.eps
-Forceterm3ritoccata.eps
 ForcetermTrasport.eps
 ForcetermTrasportlight.eps
 HiMod16slice.eps

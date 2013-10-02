@@ -44,16 +44,16 @@ la convergenza.
 \begin{figure}[!htbp]
 \centering
 \subfigure[HiMod, m=9]
-{\includegraphics[scale=0.25]{Foto2D+/HiMod_m=9}}
+{\includegraphics[scale=0.23]{Foto2D+/HiMod_m=9}}
 
 \subfigure[HiMod, m=16]
-{\includegraphics[scale=0.25]{Foto2D+/HiMod_m=16}}
+{\includegraphics[scale=0.23]{Foto2D+/HiMod_m=16}}
 
 \subfigure[HiMod, m=25]
-{\includegraphics[scale=0.25]{Foto2D+/HiMod_m=25}}
+{\includegraphics[scale=0.23]{Foto2D+/HiMod_m=25}}
 
 \subfigure[FEM]
-{\includegraphics[scale=0.25]{Foto2D+/FEMsolution35}}
+{\includegraphics[scale=0.23]{Foto2D+/FEMsolution35}}
 \caption{Soluzione FEM a confronto con diversi valori di m}
 \label{fig:camini2d+}
 \end{figure}
@@ -72,13 +72,13 @@ Anche qui possiamo apprezzare la convergenza.
 {\includegraphics[scale=0.23]{DDDD_ADR/HiMod9slice}}
 
 \subfigure[HiMod, m=16]
-{\includegraphics[scale=0.23]{DDDD_ADR/HiMod16slice}}
+{\includegraphics[scale=0.25]{DDDD_ADR/HiMod16slice}}
 
 \subfigure[HiMod, m=25]
-{\includegraphics[scale=0.23]{DDDD_ADR/HiMod25slice}}
+{\includegraphics[scale=0.25]{DDDD_ADR/HiMod25slice}}
 
 \subfigure[FEM]
-{\includegraphics[scale=0.23]{DDDD_ADR/FEMslice}}
+{\includegraphics[scale=0.25]{DDDD_ADR/FEMslice}}
 \caption{Soluzione FEM a confronto con diversi valori di m}
 \label{fig:camini2D}
 \end{figure}
@@ -101,7 +101,7 @@ non \`e stata ancora terminata.
 
 \begin{figure}[!h]
 \centering
-\includegraphics[scale=0.5]{Convergenze/DDDD_ADR}
+\includegraphics[scale=0.4]{Convergenze/DDDD}
 \caption{Convergenza caso condizioni di Dirichlet}
 \label{fig:ddddconv}
 \end{figure}
@@ -114,7 +114,7 @@ Vediamo per\`o che riducendo il passo della griglia le curve dell'errore si atte
 
 \begin{figure}[!h]
 \centering
-\includegraphics[scale=0.5]{Convergenze/DRDR}
+\includegraphics[scale=0.4]{Convergenze/DRDR}
 \caption{Convergenza caso condizioni di Dirichlet e di Robin}
 \label{fig:drdrconv}
 \end{figure}
@@ -126,7 +126,7 @@ Infine abbiamo costruito un caso test con condizioni di Robin su tutti i lati.
 
 \begin{figure}[!h]
 \centering
-\includegraphics[scale=0.5]{Convergenze/RRRR}
+\includegraphics[scale=0.4]{Convergenze/RRRR}
 \caption{Convergenza caso condizioni di Robin}
 \label{fig:rrrr_conv}
 \end{figure}
@@ -136,7 +136,7 @@ vedere come l'ordine di convergenza sembra essere superiore alla velocit\`a atte
 si verifica anche nei casi test bidimensionali con condizioni al bordo di Robin, dal punto di vista teorico ancora non ci sono 
 spiegazioni convincenti, tuttavia questo comportamento si verifica puntualmente.
 
-\begin{figure}[!b]
+\begin{figure}[!h]
 \centering
 \includegraphics[scale=0.5]{Convergenze/CfrDOF}
 \caption{Confronti gradi di libert\`a sulla slice trasversale}
@@ -148,9 +148,9 @@ In figura \ref{fig:dof} riportiamo sulle ascisse il numero di gradi di libert\`a
 Per gli elementi finiti abbiamo utilizzato una griglia strutturata ed entrambi i metodi condividono la stessa griglia 
 in direzione $x$.
 
-\begin{figure}[!b]
+\begin{figure}[!h]
 \centering
-\includegraphics[scale=0.5]{Convergenze/Confronto_tempi}
+\includegraphics[scale=0.5]{Convergenze/Tempi}
 \caption{Confonto tempi di assemblaggio}
 \label{fig:time}
 \end{figure}

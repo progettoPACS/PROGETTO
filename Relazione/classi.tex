@@ -781,7 +781,9 @@ foglie di una struttura polimorfica. Il risultato finale sarebbe stato un costo 
 Real evaluateHiModFunc(const vector_ptrType& fun, const Real& x, const Real& y, const Real& z)
 \end{lstlisting}
 
-Nella fase di export risulta necessaria la presenza del metodo \texttt{evaluateHiModFunc()}, infatti abbiamo ritenuto opportuno permettere 
+L'export di un generico vettore dello spazio HiMod viene gestito dal metodo \texttt{ExporterStructuredVTK()}. Poich\`e  per sua natura la classe HiMod non possiede una griglia 3D definita sul dominio (fatta eccezione la griglia dei nodi di quadratura), viene generata all'interno \texttt{ExporterStructuredVTK()} una griglia di supporto su cui eseguire l'export. Utilizziamo il metodo \texttt{regulaMesh3D()}. La valutazione delle funzioni test al di fuori dei nodi di quadratura richiede la chiamata a \texttt{EvalSinglePoint()}, metodo membro dei generatori di base.
+
+ di   fase di export risulta necessaria la presenza del metodo \texttt{evaluateHiModFunc()}, infatti abbiamo ritenuto opportuno permettere 
 all'utente la valutazione e successivamente l'export, su di una griglia pi\`u fitta rispetto al prodotto cartesiano fra nodi di quadratura e 
 nodi di mesh FEM. 
 Particolare attenzione meritano i metodi dedicati all'export. Ci siamo occupati di esportare in formato VTK considerando due situazioni 
@@ -796,7 +798,8 @@ void ExporterStructuredVTK (	const UInt& nx,
 															const UInt& nz,
 															const vector_ptrType& fun,
 															const GetPot& dfile, 
-															string prefix)
+															string prefix,
+															string content)
 \end{lstlisting}
 Nel primo caso si cerca di lavorare sulla struttura ordinata del problema
 Ricordiamo che:
@@ -809,10 +812,12 @@ Noi abbiamo scelto di farlo sui modi, quindi il ciclo pi\`u esterno \`e sui modi
 \textcolor{red}{Sarebbe interessante provare a fare l'altro modo per vedere se ci si mette di meno}
 
 \begin{lstlisting}[style = general]
-void ExporterGeneralVTK (	const export_mesh_Type& mesh,
-													const vector_ptrType& fun,
-													const GetPot& dfile,
-													string prefix)
+void ExporterFunctionVTK (	const UInt& nx,
+															const UInt& ny,
+															const UInt& nz,
+															const function_Type& fun,
+															const GetPot& dfile, 
+															string prefix,
+															string content)
 \end{lstlisting}
-
 

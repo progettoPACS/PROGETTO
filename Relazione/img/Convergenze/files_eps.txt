@@ -1,10 +1,5 @@
 CfrDOF.eps
-ConfrontoDOF.eps
-Confronto_tempi.eps
-DDDD_ADR.eps
 DDDD.eps
 DRDR.eps
 RRRR.eps
-spy_14elem3modes.eps
-TIMEHimodVsFemNOLOG.eps
-TIMEHimodVsFem.eps
+Tempi.eps

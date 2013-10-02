@@ -1,10 +1,5 @@
 CfrDOF.png
-ConfrontoDOF.png
-Confronto_tempi.png
-DDDD_ADR.png
 DDDD.png
 DRDR.png
 RRRR.png
-spy_14elem3modes.png
-TIMEHimodVsFemNOLOG.png
-TIMEHimodVsFem.png
+Tempi.png

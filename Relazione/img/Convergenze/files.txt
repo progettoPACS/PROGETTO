@@ -1,10 +1,5 @@
 CfrDOF
-ConfrontoDOF
-Confronto_tempi
-DDDD_ADR
 DDDD
 DRDR
 RRRR
-spy_14elem3modes
-TIMEHimodVsFemNOLOG
-TIMEHimodVsFem
+Tempi
