@@ -1,0 +1,54 @@
+\ProvidesPackage{linkimage}
+\usepackage{ifthen}
+\newcounter{linkimagecounter}
+\setcounter{linkimagecounter}{0}
+
+\AtBeginDocument{%
+% open file linkimage.aux for writing images' filenames to it
+\newwrite\linkimageoutputstream
+\immediate\openout\linkimageoutputstream=linkimage.aux
+}
+
+% use this command to link some content to a large picture at the end of your slides
+\newcommand{\linkimage}[2]{%
+% create link anchor where link from document's end points to
+\hypertarget{linkimagerefbackward\arabic{linkimagecounter}}{%
+% create link pointing forward to link source in frames at document's end
+\hyperlink{linkimagerefforward\arabic{linkimagecounter}}{%
+#1%
+}} % close both hypertarget and hyperlink
+\immediate\write\linkimageoutputstream{#2}
+% step counter
+\addtocounter{linkimagecounter}{1}
+}
+
+% call this command at the very end of your presentation (even after "Now questions, please" slide)
+\newcommand{\flushlinkimages}{%
+% internal counter for loop over all linked images
+\newcounter{linkimagetotal}
+\setcounter{linkimagetotal}{\value{linkimagecounter}}
+\setcounter{linkimagecounter}{0}
+% close auxiliary file linkimage.aux and re-open it again for reading
+\immediate\closeout\linkimageoutputstream
+\newread\linkimageinputstream
+\immediate\openin\linkimageinputstream=linkimage.aux
+% loop over all linked images ...
+\whiledo{\value{linkimagecounter}<\value{linkimagetotal}}{%
+% read one line (one image filename) at a time (and strip new line character at end)
+\endlinechar=-1\immediate\read\linkimageinputstream to \linkimagefilename
+% create a new frame per image, center content
+\begin{frame}\begin{center}
+% create link pointing backward to link source in main document
+\hyperlink{linkimagerefbackward\arabic{linkimagecounter}}{%
+% create link anchor where link from main document points to
+\hypertarget{linkimagerefforward\arabic{linkimagecounter}}{%
+\includegraphics[width=\linewidth,height=0.75\paperheight,keepaspectratio]{\linkimagefilename}%
+}% hypertarget
+}% hyperlink
+\end{center}\end{frame}
+% step counter
+\addtocounter{linkimagecounter}{1}
+} % whiledo
+% close file
+\immediate\closein\linkimageinputstream
+}

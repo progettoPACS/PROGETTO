@@ -124,7 +124,7 @@ dove $\gamma_x=\gamma=(0,L_y)\times(0,L_z)\quad\forall x\in(0,L_x)$
 Per gestire un dominio di forma generica \`e necessario utilizzare una mappa con la quale ricondursi ad un 
 dominio di riferimento (si veda \cite{perotto:2008}. La teoria delle basi istruite, tuttavia, non \`e, ora, in grado di coprire 
 il caso della mappa\footnote{In fase di implementazione abbiamo cominciato ad inserire le funzionalit\`a relative alla
-mappa, ma ci siamo limitati ad aprire un branch sul repository (\texttt{20130710_HiModMap})	 che, pur essendo praticamente 
+mappa, ma ci siamo limitati ad aprire un branch sul repository (\texttt{20130710\_HiModMap})	 che, pur essendo praticamente 
 completato, abbiamo dovuto abbandonare essendo incompatibile con le basi istruite. 
 Con un altro tipo di base, ad esempio i polinomi di Legendre, \`e possibile recuperare il branch e 
 completare l'implementazione.}.
@@ -174,9 +174,10 @@ su $V_\gamma^m$ e valga}
 
 Utilizziamo l'espansione di $u_m(x,y,z)$ 
 rispetto alla base di Fourier 
-\begin{displaymath}
+\begin{equation}
+\label{eq: espansione himod}
 u_m(x,y,z)=\sum_{j=k}^m\tilde{u}_j(x)\varphi _j(y,z),\quad\tilde{u}_j(x)=\int_{\gamma}u_m(x,y,z) \varphi_j(y,z)\,dydz
-\end{displaymath}
+\end{equation}
 consideriamo inoltre funzioni test della forma 
 $$v_m=\vartheta(x)\varphi _k(y,z),\quad \vartheta(x)\in V_{1D}\text{ e }
 k=1,...m.$$ Il problema assume la seguente forma:
@@ -202,35 +203,34 @@ Svolgendo l'operatore gradiente si ottiene:
 \end{split}
 \end{equation*}
 
+Vediamo come il problema 2D si sia trasformato nella ricerca di $m$ funzioni monodimensionali.
 Per semplicit\`a consideriamo una partizione $\tau_h$ uniforme lungo 
 la fibra di supporto 1D.
 Sia $N$ il numero di vertici lungo $\Omega_{1D}$.
 Il passo della partizione \`e dunque $h=\vert \Omega_{1D}\vert / (N-1)$. 
 
 Introduciamo lo spazio agli elementi finiti lungo $\Omega_{1D}$
-\begin{equation}
+\begin{equation*}
 \label{eq: spazio polinomiale}
-X_h^r= \left\{\psi_h \in C^0(\Omega_{1D}): \psi_h \vert_K  \in \mathbb{P}_r,\forall K\in T_h \right\}
-\end{equation}
+X_h^r= \left\{\psi_h \in C^0(\Omega_{1D}): \psi_h \vert_K  \in \mathbb{P}_r,\forall K\in T_h \right\}.
+\end{equation*}
 Per semplicit\`a supponiamo di utilizzare elementi finiti di grado uno, ma
 la trattazione teorica \`e del tutto equivalente nel caso si volessero usare 
 polinomi di grado pi\`u alto.
-% {Il codice \`e stato scritto in modo da utilizzare polinomi di primo grado, 
-% la generalizzazione non rientrava negli obbiettivi primali del progetto}
 Una volta introdotta la discretizzazione lungo la direzione dominante 
 del fenomeno \`e possibile esprimere i coefficienti di Fuorier 
 nel seguente modo
-\begin{equation}
+\begin{equation*}
 \label{eq: coeff fourier espansi}
-\tilde{u}_j(x)=\sum_{s=1}^Nu_{js}\psi_s(x)
-\end{equation}
+\tilde{u}_j(x)=\sum_{s=1}^Nu_{js}\psi_s(x).
+\end{equation*}
 Abbiamo quindi discretizzato completamente il problema. Tramite l'espansione modale
 siamo stati in grado di ridurre il problema da 3D a $m$ problemi 1D accoppiati che ora
 abbiamo discretizzato con il metodo degli elementi finiti.
 
-Otteniamo dunque la formulazione matriciale del problema ovvero\\
-\emph{Trovare $\vect{u} \in \mathbb{R}^{N*m}$ tale che}
-\begin{equation}
+Otteniamo dunque la formulazione matriciale del problema\\
+\emph{Trovare $\vect{u} \in \mathbb{R}^{N\cdot m}$ tale che}
+\begin{equation*}
 \begin{split}
 &\sum_{j=1}^m \sum_{s=1}^N
 u_{js} \Bigg[ \int_\Omega\mu( \partial_x\psi_s \partial_x\psi_l\varphi _j\varphi _k + \psi_s \psi_l \partial_y\varphi _j\partial_y\varphi _k + \psi_s \psi_l \partial_z\varphi _j\partial_z\varphi _k)\,dxdydz \\
@@ -238,11 +238,48 @@ u_{js} \Bigg[ \int_\Omega\mu( \partial_x\psi_s \partial_x\psi_l\varphi _j\varphi
 &+\int_\Omega \sigma\psi_s\psi_l\varphi _j\varphi _k\,dxdydz \Bigg]\\
 &=\int_\Omega f\psi_l\varphi _k\,dxdydz\quad \forall \psi_l\quad l=1\ldots N\quad\forall \varphi_k\quad k=1\ldots m
 \end{split}
-\end{equation}
-
+\end{equation*}
 Per chiarezza abbiamo utilizzato un doppio indice $"js"$. Esso scorre in realt\`a  un vettore,
 ma \`e possibile usare un solo indice che si lega a $"js"$ nel seguente modo
 $$\vect{u}_{js}=\vect{u}[i]=\vect{u}[(j-1)N+s].$$ 
+Integrando prima lungo la fibra trasversale si ottiene:
+
+{\footnotesize
+\begin{equation*}
+\begin{split}
+&\sum_{j=1}^m \sum_{s=1}^N
+u_{js} \Bigg[ \int_{\Omega_{1D}}\mu\Bigg( \partial_x\psi_s \partial_x\psi_l\left(\int_{\gamma}\varphi _j\varphi _k\,dydz\right)\\
+&+ \psi_s \psi_l \left(\int_{\gamma}\partial_y\varphi _j\partial_y\varphi _k\,dydz\right)
++ \psi_s \psi_l \left(\int_{\gamma}\partial_z\varphi _j\partial_z\varphi _k\,dydz\right)\Bigg)dx \\
+&+ \int_{\Omega_{1D}}\Bigg( b_1\partial_x\psi_s\psi_l\left(\int_{\gamma}\varphi _j\varphi_k\,dydz\right)	
+                    + b_2\psi_s          \psi_l\left(\int_{\gamma}\partial_y\varphi _j\varphi _k\,dydz\right)\\
+&                    + b_3\psi_s          \psi_l\left(\int_{\gamma}\partial_z\varphi_j\varphi _k\,dydz\right)\Bigg)dx
++\int_{\Omega_{1D}} \sigma\psi_s\psi_l\left(\int_{\gamma}\varphi _j\varphi _k\,dydz\right)dx \Bigg]\\
+&=\int_{\Omega_{1D}} f\psi_l\varphi _k\,dxdydz\quad \forall \psi_l\quad l=1\ldots N\quad\forall \varphi_k\quad k=1\ldots m.
+\end{split}
+\end{equation*}}
+
+Riordinando i termini
+
+{\footnotesize
+\begin{equation}
+\begin{split}
+\sum_{j=1}^m \sum_{s=1}^N
+u_{js}\nsp{2} \Bigg[\nsp{2}\int_{\Omega_{1D}}\nsp{2}&\underbrace{\left(\nsp{2}\int_{\gamma}\mu\varphi _j\varphi _k\,dydz\right)}_{Diffusione}
+\partial_x\psi_s \partial_x\psi_l\\
++&\underbrace{\left(\nsp{2}\int_{\gamma}b_1\varphi _j\varphi_k\,dydz\right)}_{Trasporto}\partial_x\psi_s\psi_l\\
++&\underbrace{\Bigg(\nsp{2}\int_{\gamma}\mu\partial_y\varphi _j\partial_y\varphi _k
++ \mu\partial_z\varphi _j\partial_z\varphi _k
++ b_2\partial_y\varphi _j\varphi _k
++ b_3\partial_z\varphi_j\varphi _k
++ \sigma\varphi _j\varphi _k\,dydz\Bigg)}_{Reazione} \psi_s \psi_l dx \Bigg]\\
+=\int_{\Omega_{1D}}&\underbrace{\left(\nsp{2}\int_{\gamma}f\varphi _k\,dydz\right)}_{Forzante} \psi_ldx\quad \forall \psi_l\quad l=1\ldots N\quad\forall \varphi_k\quad k=1\ldots m. 
+\end{split}
+\end{equation}}
+
+
+da quest'ultima equazione \`e possibile riconoscere la struttura di un problema ADR 1D per ogni coppia $(s,l)$ con coefficienti che
+comprimono le informazioni provenienti dalle direzioni trasversali.
  La matrice generata ha dimensioni $(mN)^2$, tuttavia fissata
  la frequenza della soluziona e della funzione test, ossia fissando l'indice che scorre la base modale,
  \`e possibile identificare un blocco che corrisponde ad un problema monodimensionale.
@@ -282,23 +319,23 @@ Introduciamo con un esempio l'algoritmo di costruzione delle basi istruite
 \item[\textbf{1.}] \textbf{Costruzione di un problema ausiliario} che rispecchi 
 la natura delle condizioni alle pareti del problema originale (devono essere omogenee) e passaggio ai relativi problemi agli autovalori.
 \mybox{
-Nel caso si abbiano condizioni di Robin uguali sull'intera parete del vaso, dovremo considerare il seguente problema ausiliario
+Nel caso si abbiano condizioni di Robin sull'intera parete del vaso, dovremo considerare il seguente problema ausiliario
 \begin{equation}
 \label{eq: problema RRRR}
 \begin{cases}
 -\Delta u(y,z)= 0 & \text{in $\gamma$}\\
-\mu \nabla u(y,z) \cdot \vect{n} +\chi u(y,z)=0 & \text{su $\partial\gamma$} \\
+\mu \nabla u(y,z) \cdot \vect{n} +\chi u(y,z)=0 & \text{su $\partial\gamma$}. \\
 \end{cases}
 \end{equation}
 Si passi ora al problema agli autovalori associato al precedente sistema e 
-ipotizzando la separazione di variabili per $u(y,z)=\varphi(y)\vartheta(z)$, 
-si arrivano facilmente ad ottenere i seguenti sottoproblemi agli autovalori
+ipotizzando la separazione di variabili $u(y,z)=\varphi(y)\vartheta(z)$, 
+si arriva facilmente ai seguenti sottoproblemi agli autovalori
 \begin{equation}
 \label{eq: problema RR1}
 \begin{cases}
 -\varphi(y)'' = K_y\varphi(y) & \\
 \mu \varphi(y)' +\chi \varphi(y) = 0 & \text{per $y=L_y$} \\
--\mu \varphi(y)'+\chi \varphi(y)=0 & \text{per $y=0$} \\
+-\mu \varphi(y)'+\chi \varphi(y)=0 & \text{per $y=0$}. \\
 \end{cases}
 \end{equation}
 \begin{equation}
@@ -314,12 +351,12 @@ si arrivano facilmente ad ottenere i seguenti sottoproblemi agli autovalori
 \item[\textbf{2.}] \textbf{Identificazione del tipo di soluzione} dei problemi agli autovalori associati.
 
 \mybox{
-Per i sottoproblemi ottenuti i generi di soluzione sono i seguenti
+La generica soluzione dei sottoproblemi ottenuti \`e
 \begin{equation}
 \label{eq: 1sottoproblema}
 \begin{array}{c}
 \varphi (y)=A_ysin(\sqrt{K_y}y)+B_ycos(\sqrt{K_y}y) \\ \\
-\vartheta (z)=A_zsin(\sqrt{K_z}z)+B_zcos(\sqrt{K_z}z)
+\vartheta (z)=A_zsin(\sqrt{K_z}z)+B_zcos(\sqrt{K_z}z).
 \end{array}
 \end{equation}
 
@@ -332,7 +369,7 @@ Nel caso trattato in esempio le equazioni che si ottengono sono le seguenti ($x 
 \label{eq: funzione autovalori}
 \begin{array}{c}
 f(x)= 2\mu x + tan(L_y x)\left(\chi - \frac{\mu ^2 x^2 }{\chi} \right) \\ \\
-f(w)= 2\mu w + tan(L_z w)\left(\chi - \frac{\mu ^2 w^2 }{\chi} \right)
+f(w)= 2\mu w + tan(L_z w)\left(\chi - \frac{\mu ^2 w^2 }{\chi} \right).
 \end{array}
 \end{equation}
 }{Esempio - Robin BC}
@@ -369,7 +406,7 @@ gli autovalori che si ottengono sono noti a priori e sono della forma
 \begin{array}{c l}
 K_{y,p} = \left( \frac{\pi p}{L_y}\right)^2 & p = 1, ... ,m_y\\
 K_{z,q} = \left( \frac{\pi q}{L_z}\right)^2 & q = 1, ... ,m_z\\
-\lambda_{p,q}=K_{y,p}+K_{z,q}&\\
+\lambda_{p,q}=K_{y,p}+K_{z,q}.&\\
 \end{array}
 \end{equation}
 }{Osservazione -- Caso condizioni al bordo di Dirichlet}
@@ -379,5 +416,5 @@ st\`a nel legarli in modo opportuno agli autovalori del problema bidimensionale 
 venga preservato l'ordinamento crescente degli autovalori 2D rispetto all'indice $k$ della base modale.
 In particolare \`e necessario costruire una mappa che leghi ad ogni frequenza $k$ 
 la corretta coppia $(p,q)$, per farlo abbiamo sviluppato un algoritmo che verr\`a descritto 
-nel capitolo relativo all'implementazione
+nel capitolo relativo all'implementazione.
 \clearpage

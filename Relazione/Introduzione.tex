@@ -243,11 +243,44 @@ Per chiarezza abbiamo utilizzato un doppio indice $"js"$. Esso scorre in realt\`
 ma \`e possibile usare un solo indice che si lega a $"js"$ nel seguente modo
 $$\vect{u}_{js}=\vect{u}[i]=\vect{u}[(j-1)N+s].$$ 
 Integrando prima lungo la fibra trasversale si ottiene:
+
 \begin{equation*}
 \begin{split}
-TODO
+&\sum_{j=1}^m \sum_{s=1}^N
+u_{js} \Bigg[ \int_{\Omega_{1D}}\mu\Bigg( \partial_x\psi_s \partial_x\psi_l\left(\int_{\gamma}\varphi _j\varphi _k\,dydz\right)\\
+&+ \psi_s \psi_l \left(\int_{\gamma}\partial_y\varphi _j\partial_y\varphi _k\,dydz\right)
++ \psi_s \psi_l \left(\int_{\gamma}\partial_z\varphi _j\partial_z\varphi _k\,dydz\right)\Bigg)dx \\
+&+ \int_{\Omega_{1D}}\Bigg( b_1\partial_x\psi_s\psi_l\left(\int_{\gamma}\varphi _j\varphi_k\,dydz\right)	
+                    + b_2\psi_s          \psi_l\left(\int_{\gamma}\partial_y\varphi _j\varphi _k\,dydz\right)\\
+&                    + b_3\psi_s          \psi_l\left(\int_{\gamma}\partial_z\varphi_j\varphi _k\,dydz\right)\Bigg)dx
++\int_{\Omega_{1D}} \sigma\psi_s\psi_l\left(\int_{\gamma}\varphi _j\varphi _k\,dydz\right)dx \Bigg]\\
+&=\int_{\Omega_{1D}} f\psi_l\varphi _k\,dxdydz\quad \forall \psi_l\quad l=1\ldots N\quad\forall \varphi_k\quad k=1\ldots m.
 \end{split}
 \end{equation*}
+
+Riordinando i termini
+
+{\footnotesize
+\begin{equation}
+\begin{split}
+\sum_{j=1}^m \sum_{s=1}^N\nsp{2}
+u_{js}\nsp{1} \Bigg[\nsp{1}\int_{\Omega_{1D}}\nsp{4}&\underbrace{\left(\nsp{2}\int_{\gamma}\mu\varphi _j\varphi _k\,dydz\right)}_{Diffusione}
+\partial_x\psi_s \partial_x\psi_l\\
++&\underbrace{\left(\nsp{2}\int_{\gamma}b_1\varphi _j\varphi_k\,dydz\right)}_{Trasporto}\partial_x\psi_s\psi_l\\
++&\underbrace{\Bigg(\nsp{2}\int_{\gamma}\mu\partial_y\varphi _j\partial_y\varphi _k
++ \mu\partial_z\varphi _j\partial_z\varphi _k
++ b_2\partial_y\varphi _j\varphi _k
++ b_3\partial_z\varphi_j\varphi _k
++ \sigma\varphi _j\varphi _k\,dydz\Bigg)}_{Reazione} \psi_s \psi_l dx \Bigg]\\
+=\int_{\Omega_{1D}}\nsp{4}&\underbrace{\left(\nsp{2}\int_{\gamma}f\varphi _k\,dydz\right)}_{Forzante} \psi_ldx\quad \forall \psi_l\quad l=1\ldots N\quad\forall \varphi_k\quad k=1\ldots m. 
+\end{split}
+\end{equation}}
+
+Da quest'ultima equazione \`e possibile riconoscere la struttura di un problema ADR 1D per ogni coppia $(j,k)$ con coefficienti che
+comprimono le informazioni provenienti dalle direzioni trasversali.
+Supponendo che i coefficienti siano costanti \`e possibile separare ulteriormente le variabili $(y,z)$. In questo modo
+tutte le tre dimensioni fattorizzano con un enorme risparmio del tempo computazionale.
+
  La matrice generata ha dimensioni $(mN)^2$, tuttavia fissata
  la frequenza della soluziona e della funzione test, ossia fissando l'indice che scorre la base modale,
  \`e possibile identificare un blocco che corrisponde ad un problema monodimensionale.

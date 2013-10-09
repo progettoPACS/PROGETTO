@@ -778,7 +778,13 @@ foglie di una struttura polimorfica. Il risultato finale sarebbe stato un costo 
 \subsubsection{Export}
 
 L'export di un generico vettore dello spazio HiMod viene gestito dal metodo \texttt{ExporterStructuredVTK()}. Poich\`e  per sua natura la classe HiMod non possiede una griglia 3D,  il metodo ne genera una di supporto su cui eseguire l'export. 
-L'operazione occupa molto tempo, infatti su ogni punto della mesh fittizia, occorre sommare i contributi di ogni frequenza del sistema. Inoltre questo valore deve essere moltiplicato per il valore assunto dalle basi FEM 1D in quel punto (nel caso P1 sono soltanto due). La valutazione delle basi modali tuttavia pu\`o agilmente uscire dal ciclo dei nodi di griglia: nel codice si \`e scelto di ciclare esternamente sulle frequenze del sistema, dunque per ogni modo vengono registrati tutti i contributi della funzione base sulla slice (richiamando il metodo \texttt{EvalSinglePoint()}) e infine si cicla sui nodi della griglia, componendo le basi FEM, il vettore HiMod e i valori appena registrati della base modale.
+L'operazione occupa molto tempo, infatti su ogni punto della mesh fittizia, 
+occorre sommare i contributi di ogni frequenza del sistema. 
+Inoltre questo valore deve essere moltiplicato per il valore assunto dalle basi FEM 1D in quel punto (nel caso P1 sono soltanto due).
+Abbiamo scelto di ciclare prima sulle frequenze del sistema: per ogni modo vengono registrati 
+tutti i contributi della funzione di base sulla slice (richiamando il metodo \texttt{EvalSinglePoint()}) 
+e, successivamente, si cicla sui nodi della griglia, componendo le basi FEM, il vettore HiMod e 
+i valori appena registrati della base modale.
 
 \begin{lstlisting}[style = general,frame=none]
 void ExporterStructuredVTK (	const UInt& nx,
@@ -790,8 +796,9 @@ void ExporterStructuredVTK (	const UInt& nx,
 															string content)
 \end{lstlisting}
 
-Esclusa la metodologia per ricostruire i valori della soluzione, il metodo si appoggia interamente sulla classe ExporterVTK.
-Inoltre \`e stata implementato un ulteriore metodo di export che si occupa di valutare sulla medesima griglia strutturata una generica funzione scalare.
+Nell'implementazione di questo metodo ci siamo focalizzati
+solamente sulla valutazione della soluzione su una griglia, il metodo si appoggia, poi, sulla classe ExporterVTK.
+Abbiamo poi implementato un metodo analogo per esportare sulla medesima griglia strutturata una generica funzione scalare.
 
 \begin{lstlisting}[style = general,frame=none]
 void ExporterFunctionVTK (	const UInt& nx,
@@ -803,7 +810,8 @@ void ExporterFunctionVTK (	const UInt& nx,
 															string content)
 \end{lstlisting}
 
-Infine abbiamo implementato un'utitli\`a che potrebbe rivelarsi utile in futuro, ovvero una funzione che valuta un vettore appartenente allo spazio HiMod  su un generico punto appartentente ad $\Omega$.
+Infine abbiamo implementato un'utitli\`a che potrebbe rivelarsi utile in futuro, 
+ovvero una funzione che valuta un vettore appartenente allo spazio HiMod  su un generico punto appartentente ad $\Omega$.
 
 \begin{lstlisting}[style = general,frame=none]
 Real evaluateHiModFunc(const vector_ptrType& fun, const Real& x, const Real& y, const Real& z)

@@ -1,0 +1,89 @@
+\documentclass{beamer}
+
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{amsthm}
+\usepackage{amstext}
+\usepackage{array}
+\usepackage{graphicx,color,psfrag,pgfplots}
+
+
+\usepackage[bf,footnotesize,center]{caption}
+\captionsetup{labelformat=empty,labelsep=none}
+
+\usepackage[tight]{subfigure}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,matrix,decorations.pathreplacing,shapes.geometric,positioning}  
+
+%Comando per togliere le etichette dal subfigure
+% \renewcommand{\thesubfigure}{}
+% \makeatletter
+% \renewcommand{\p@subfigure}{}
+% \renewcommand{\@thesubfigure}{\thesubfigure\hskip\subfiglabelskip}
+% \makeatother
+%
+\usepackage{mathtools}
+%Per video
+%\usepackage{movie15}
+
+\usepackage{bbm}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
+\newcommand{\tens}[1]{\mathbb{#1}}
+\newcommand{\figref}[1]{( Fig.\ref{#1} )}
+\theoremstyle{plain}
+\newtheorem{teorema}{Teorema}
+%%%%%%%%%%%%%%PER IL BOX
+\usepackage{tikz}
+\usetikzlibrary{shapes,shadows}
+\tikzstyle{abstractbox} = [draw=black, fill=white, rectangle, 
+  inner sep=11pt, style=rounded corners]%, drop shadow={fill=black,
+  %opacity=1}]
+  \tikzstyle{abstracttitle}=[fill=white]
+  \newcommand{\mybox}[3][fill=white]{
+    \begin{center}
+      \begin{tikzpicture}
+        \node [abstractbox, #1] (box)
+        {\begin{minipage}{0.95\linewidth} 
+%           \setlength{\parindent}{2mm}
+           \footnotesize #2
+          \end{minipage}};
+        \node[abstracttitle, right=11pt] at (box.north west) {#3};
+      \end{tikzpicture}
+    \end{center}
+  }
+%%%%%%%%FINE PER IL BOX
+\usetikzlibrary{patterns}
+\usepackage{booktabs}
+
+\usepackage{linkimage}
+
+\usetheme{Madrid}
+
+\graphicspath{{../Relazione/img/}}
+
+
+\author[Aletti \& Bortolossi]{Matteo Aletti \& Andrea Bortolossi}
+\title[Hi-Mod in 3D]{3D- Riduzione Gerarchica di Modello}
+\subtitle{con le basi istruite}
+\institute[PoliMi]{Politecnico di Milano}
+%	\DeclareGraphicsExtensions{.eps}
+\titlegraphic{\includegraphics[scale=0.3]{Varie/logo-polimi}}
+\date{16 Ottobre 2013}
+
+\includeonly{
+Contents/Teoria
+Contents/Implementazione
+Contents/Risultati
+}
+\begin{document}
+\begin{frame}
+\maketitle
+\end{frame}
+\begin{frame}
+\tableofcontents
+\end{frame}
+\include{Contents/Teoria}
+\include{Contents/Implementazione}
+\include{Contents/Risultati}
+% \flushlinkimages
+\end{document}

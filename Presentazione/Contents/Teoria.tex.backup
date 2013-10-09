@@ -1,0 +1,45 @@
+\section{Fondamenti teorici}
+\subsection{Hierarchical Model Reduction in 3D}
+ \begin{frame}
+  \frametitle{Motivazione}
+  \framesubtitle{esistenza di una direzione dominante}
+  
+  \begin{itemize}
+  \item \`e un modello arricchito meglio dell'1D pi\`u leggero del 3D
+  \end{itemize}
+
+ \end{frame}
+
+ \begin{frame}
+ \frametitle{Impostazione geometrica}
+ \framesubtitle{il dominio}
+ \begin{itemize}
+  \item omega1D
+  \item omega diviso in slices
+  \item disegno tikz senza mappa con dominio di forma generica
+ \end{itemize}
+ \end{frame}
+
+ \begin{frame}
+ \frametitle{Processo di riduzione}
+ \framesubtitle{spazi ridotti}
+ \begin{itemize}
+  \item la gerarchia di spazi $V^m_\gamma$ e $V^m(\Omega)$
+  \item $V^\infty$ isometrico a $H^1(\Omega)$
+  \item la soluzione scritta in serie di fourier
+ \end{itemize}
+ \end{frame}
+ 
+\begin{frame}
+ \frametitle{Basis choice}
+ \framesubtitle{The sinusoidal basis}
+ \begin{itemize}
+  \item Letteratura: in perotto:2008, dirichlet, base di soli seni (2D).
+  \item Letteratura: legendre polynomials x $(1-x^2)$.
+  \item Educated basis x condizioni al bordo pi\`u generali.
+ \end{itemize}
+
+\end{frame}
+
+ 
+ \subsection{Basi istruite}
