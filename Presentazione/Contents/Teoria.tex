@@ -3,9 +3,11 @@
  \begin{frame}
   \frametitle{Motivazione}
   \framesubtitle{esistenza di una direzione dominante}
-   \begin{center}
+  \begin{exampleblock}{}
+ Vogliamo risolvere un certo tipo di problemi: quelli che presentano una direzione preferenziale
+\begin{center}
 \begin{tikzpicture}
-[scale=0.8]
+[scale=0.7]
 \def\xi{0};
 \def\xo{7};
 \def\c{3.5};
@@ -42,20 +44,79 @@
 \node at (\c +2,-\r-0.4) {$\Gamma_{lat}$};
 \end{tikzpicture}
 \end{center}
-  \begin{itemize}
-  \item \`e un modello arricchito meglio dell'1D pi\`u leggero del 3D
-  \end{itemize}
+\end{exampleblock}
+\begin{center}
+\tikzstyle{3d} = [ellipse, draw, fill=red!50, 
+    text width=7em,text badly centered, inner sep=0pt]
 
+\tikzstyle{1d} = [ellipse, draw, fill=blue!30, 
+    text width=7em,text badly centered, inner sep=0pt]
+    
+\tikzstyle{himod} = [rectangle, draw, fill=blue!50!red!50!white]
+\begin{tikzpicture}
+\def\x{7};
+\node[1d] (1d) at (0,0) {\textbf{Modello 1D}\\{\footnotesize Bassa precisione}\\{\footnotesize Economico}};
+\node[3d] (3d) at (\x,0) {\textbf{Modello 3D}\\{\footnotesize Alta precisione}\\{\footnotesize Costoso}};
+\node[himod] (himod) at (\x/2,0) {HiMod};
+\path[draw,thick,dashed,->] (1d) -- (himod);
+\path[draw,thick,dashed,<-] (himod) -- (3d);
+
+			  
+%smily face sinistra
+\def\f{1.0}
+\def\alt{-0.5}
+\def\rad{0.15}
+\draw[thin] (\f,\alt) circle(\rad cm);
+\draw[thin] plot [smooth,tension=1.5] coordinates{(\f - 0.5*\rad,\alt - 0.4*\rad) (\f + 0*\rad,\alt - 0.7*\rad) (\f + 0.5*\rad,\alt -0.4*\rad)};
+% \draw[thin, fill=black] (\f+0*\rad,\alt-0.2*\rad) circle (0.1*\rad);
+\draw[thin] plot [smooth,tension=1.5] coordinates{(\f-0.4*\rad,\alt+0.4*\rad) (\f-0.3*\rad,\alt +0.5*\rad) (\f-0.2*\rad,\alt+0.4*\rad)};
+\draw[thin] plot [smooth,tension=1.5] coordinates{(\f+0.4*\rad,\alt+0.4*\rad) (\f+0.3*\rad,\alt+0.5*\rad) (\f+0.2*\rad,\alt+0.4*\rad)};
+
+  
+%smily face sinistra
+\def\f{8.25}
+\def\alt{-0.05}
+\def\rad{0.15}
+\draw[thin] (\f,\alt) circle(\rad cm);
+\draw[thin] plot [smooth,tension=1.5] coordinates{(\f - 0.5*\rad,\alt - 0.4*\rad) (\f + 0*\rad,\alt - 0.7*\rad) (\f + 0.5*\rad,\alt -0.4*\rad)};
+% \draw[thin, fill=black] (\f+0*\rad,\alt-0.2*\rad) circle (0.1*\rad);
+\draw[thin] plot [smooth,tension=1.5] coordinates{(\f-0.4*\rad,\alt+0.4*\rad) (\f-0.3*\rad,\alt +0.5*\rad) (\f-0.2*\rad,\alt+0.4*\rad)};
+\draw[thin] plot [smooth,tension=1.5] coordinates{(\f+0.4*\rad,\alt+0.4*\rad) (\f+0.3*\rad,\alt+0.5*\rad) (\f+0.2*\rad,\alt+0.4*\rad)};
+
+  
+%sad face destra
+\def\f{7.8}
+\def\alt{-0.5}
+\def\rad{0.15}
+\draw[thin] (\f,\alt) circle(\rad cm);
+\draw[thin] plot [smooth,tension=1.5] coordinates{(\f-0.3*\rad,\alt-0.6*\rad) (\f-0.2*\rad,\alt-0.5*\rad) (\f +0.3*\rad,\alt-0.5*\rad)};
+\draw[thin] (\f-0.4*\rad,\alt+0.4*\rad) -- (\f-0.2*\rad,\alt +0.3*\rad);
+\draw[thin] (\f+0.4*\rad,\alt+0.5*\rad) -- (\f+0.2*\rad,\alt +0.4*\rad);
+% \draw[thin, fill=black] (\f+0*\rad,\alt-0.2*\rad) circle (0.1*\rad);
+%sad face sinistra
+\def\f{1.4}
+\def\alt{-0.05}
+\def\rad{0.15}
+\draw[thin] (\f,\alt) circle(\rad cm);
+\draw[thin] plot [smooth,tension=1.5] coordinates{(\f-0.3*\rad,\alt-0.6*\rad) (\f-0.2*\rad,\alt-0.5*\rad) (\f +0.3*\rad,\alt-0.5*\rad)};
+\draw[thin] (\f-0.4*\rad,\alt+0.4*\rad) -- (\f-0.2*\rad,\alt +0.3*\rad);
+\draw[thin] (\f+0.4*\rad,\alt+0.5*\rad) -- (\f+0.2*\rad,\alt +0.4*\rad);
+% \draw[thin, fill=black] (\f+0*\rad,\alt-0.2*\rad) circle (0.1*\rad);
+\end{tikzpicture}
+\end{center}
  \end{frame}
 
  \begin{frame}
  \frametitle{Impostazione geometrica}
  \framesubtitle{il dominio}
- \begin{itemize}
-  \item omega1D
-  \item omega diviso in slices
- \end{itemize}
- \begin{center}
+ 
+\begin{itemize}
+ \item Fibra di supporto rettilinea \textcolor{blue}{$\Omega_{1D}$} dove avviene la dinamica dominante.
+ \item Suddivisione del dominio in slices \textcolor{red}{$\gamma_x$} ortogonali alla fibra di supporto.
+\end{itemize}
+
+$$\Omega=\bigcup_{x\in\Omega_{1D}}\gamma_x$$
+\begin{center}
 \begin{tikzpicture}
 [scale=0.8]
 \def\xi{0};
@@ -87,17 +148,45 @@
 \node at (\c +2,-2*\r-0.4) {$\Gamma_{lat}$};
 \end{tikzpicture}
 \end{center}
- \end{frame}
+\end{frame}
 
  \begin{frame}
  \frametitle{Processo di riduzione}
- \framesubtitle{spazi ridotti}
+ \framesubtitle{mapping e serie di Fourier}
+ Idea: 
  \begin{itemize}
-  \item la gerarchia di spazi $V^m_\gamma$ e $V^m(\Omega)$
-  \item $V^\infty$ isometrico a $H^1(\Omega)$
-  \item la soluzione scritta in serie di fourier
+  \item mappare $\Omega$ in un dominio di riferimento $\widehat \Omega$ in modo che $$\hat \gamma_{\hat x}=\hat \gamma\,\,\forall \hat x\in\widehat\Omega_{1D}$$
+  \item espandere, in direzione trasversale, la soluzione rispetto alla base di Fourier generalizzata $$\{\varphi_k(y,z)\}_{k\in\mathbb{N}}$$
  \end{itemize}
+ Noi lavoreremo direttamente in un riferimento, quindi non utilizzeremo la notazione con i cappelli.
+ \begin{block}{Spazi in direzione trasversale}
+ \footnotesize
+  $$V^\infty_\gamma=\left\{v(y,z)=\sum_{k=1}^\infty v_k\varphi_k(y,z)\right\}$$
+  $$V^m_\gamma=\left\{v(y,z)=\sum_{k=1}^m v_k\varphi_k(y,z)\right\}$$
+ \end{block}
  \end{frame}
+\begin{frame}
+ \frametitle{Processo di riduzione}
+ \framesubtitle{Spazi ridotti}
+ Lungo la direzione principale usiamo uno spazio $V_{1D}$ di tipo $H^1(\Omega_{1D})$ che consideri correttamente le condizioni al bordo.
+ Possiamo ora definire gli spazi ridotti come spazi prodotto:
+ \begin{block}{Spazi ridotti}
+  $$V^\infty(\Omega)=V_{1D}\otimes V^\infty_\gamma:=\left\{v(x,y,z)=\sum_{k=1}^\infty v_k(x)\varphi_k(y,z), v_k\in V_{1D}\right\}.$$
+  $$V^m(\Omega)=V_{1D}\otimes V^m_\gamma:=\left\{v(x,y,z)=\sum_{k=1}^m v_k(x)\varphi_k(y,z), v_k\in V_{1D}\right\}.$$
+  \end{block}
+\end{frame}
+% \begin{frame}
+%  \frametitle{Spazi prodotto}
+%  \framesubtitle{Alcune propriet\`a}
+%  \begin{itemize}
+%   \item $V^{\infty}(\Omega)$ \`e l'insieme delle combinazioni lineari delle funzioni di base sulla slice trasversale, con coefficienti che sono
+%   a loro volta funzioni di $V_{1D}$.
+%   \item \`E possibile mostrare che $V^{\infty}(\Omega)$ \`e isometricamente isomorfo a $H^1_D(\Omega)$
+%  \end{itemize}
+% 
+% \end{frame}
+
+
  \begin{frame}
   \frametitle{Modelli ridotti}
   \framesubtitle{Problemi 1D accoppiati}
