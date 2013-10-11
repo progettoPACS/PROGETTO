@@ -1,0 +1,112 @@
+\section{Implementazione}
+\titleslide{Implementazione}
+\subsection{Basis1DAbstract}
+\begin{frame}
+ \frametitle{Basis1DAbstract}
+ \framesubtitle{Una classe astratta per risolvere i sottoproblemi agli autovalori}
+ \begin{columns}
+  \begin{column}{0.5\textwidth}
+  Il problema viene sempre rimappato nell'intervallo $(0,1)$
+ \begin{itemize}
+  \item Calcola gli autovalori\\$\rightarrow$ \texttt{Next()}
+  \item Valuta le funzioni di base\\$\rightarrow$ \texttt{EvaluateBasis(...)}
+ \end{itemize}
+  \end{column}
+\begin{column}{0.5\textwidth}
+ \begin{figure}
+  \centering
+  \includegraphics[scale=0.3,trim=1cm 1cm 1cm 1cm,clip=true]{Varie/ricercazeri}
+ \end{figure}
+\begin{center}Ricerca degli zeri con condizioni di Robin\end{center}
+\end{column}
+ \end{columns}
+\end{frame}
+\begin{frame}
+ \frametitle{Polimorfismo su \texttt{Basis1DAbstract}...}
+ \framesubtitle{... e su \texttt{EducatedBasisFunctorAbstract}}
+ \begin{columns}
+  \begin{column}{0.5\textwidth}
+ \begin{figure}
+  \centering
+  {\linkimage{\includegraphics[scale=0.2]{UML/Basis1DAbstract}}{UML/Basis1DAbstract}}
+ \end{figure}
+  \end{column}
+  \begin{column}{0.5\textwidth}
+   Per gestire le diverse classi figlie di \texttt{Basis1DAbstract} abbiamo utilizzato una \textbf{factory}.
+  \end{column}
+ \end{columns}
+\end{frame}
+\subsection{ModalSpace}
+\begin{frame}
+ \frametitle{\texttt{ModalSpace}}
+ \framesubtitle{Una classe che gestisce la costruzione dell'intera base modale}
+ \begin{itemize}
+  \item Gestisce le formule di quadratura sulla slice
+  \item Istanzia i corretti generatori di base\\
+  $\rightarrow$ \texttt{AddSliceBC(...)}
+  \item Calcola gli autovalori del problema 2D\\
+  $\rightarrow$ \texttt{EigensProvider(...)}
+  \item Valuta le funzioni di base e le loro derivate nei nodi di quadratura\\
+  $\rightarrow$ \texttt{??}
+  \item Calcola i coefficient $r^{st}_{k,j}$\\
+  $\rightarrow$ \texttt{Compute\_\*(...)}
+ \end{itemize}
+\end{frame}
+\begin{frame}[fragile]
+\frametitle{\texttt{AddSliceBC(...)}}
+\framesubtitle{due metodi uno per ogni direzione}
+\begin{lstlisting}[style = general]
+void ModalSpace::
+AddSliceBCY (const string& left, const string& right, const Real& mu, const Real& chi)
+{
+	// Creation of the correct basis generator
+	M_genbasisY = Basis1DFactory::istance().createObject(left+right);
+	// Setting of the parameters
+	M_genbasisY->setL(M_Ly);
+	M_genbasisY->setMu(mu);
+	M_genbasisY->setChi(chi);
+	return;
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}
+ \frametitle{EigensProvider}
+ \framesubtitle{Ordinare correttamente gli autovalori non \`e facile}
+\begin{tikzpicture}[stack/.style={
+rectangle split, rectangle split parts=5, draw, anchor=center},
+myarrow/.style={single arrow, draw=none}]
+% 
+\node [stack] (prima) {{\nodepart{two}
+\nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(1)}$
+\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
+% 
+% \node [stack,right=of prima,rectangle split part fill={white,white,blue!20,blue!20,white}] (seconda) {\nodepart{two}\textcolor{blue!100}{New}
+% \nodepart{three}$Ky^{(2)},Kz^{(2)}$\nodepart{four}$Ky^{(3)},Kz^{(1)}$
+% \nodepart{five}$Ky^{(1)},Kz^{(2)}$};
+%   
+% \node [stack,right=of seconda] (terza)  {\nodepart{two}
+% \nodepart{three}$Ky^{(1)},Kz^{(2)}$\nodepart{four}$Ky^{(2)},Kz^{(1)}$
+% \nodepart{five}$Ky^{(1)},Kz^{(1)}$};
+% 
+% \node [stack,right=of terza] (quarta) {\nodepart{two}
+% \nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(2)}$
+% \nodepart{five}$Ky^{(3)},Kz^{(1)}$};
+%   
+% \node [above=of prima,anchor=north,align=left] {Eigenvalues};
+% \node [above=of seconda,anchor=north,align=left] {Tmp};
+% \node [above=of terza,anchor=north,align=left] {Eigenvalues};
+% \node [above=of quarta,anchor=north,align=left] {Tmp};
+% 
+% \node [myarrow,draw,anchor=west] at ($(seconda.east)+(2.5pt,0)$) {\phantom{te}} ;
+% 
+% \draw [red,ultra thick,->] ($(seconda.west)+(-0.1,-1.0)$) -- ($(prima.east)+(0.1,+0.1)$);
+% \draw [blue,dashed,ultra thick,->] ($(prima.east)+(0.1,-0.3)$) -- ($(seconda.west)+(-0.1,+0.1)$);
+% \draw [blue,dashed,ultra thick,->] ($(prima.east)+(0.1,-0.3)$) -- ($(seconda.west)+(-0.1,-0.5)$);
+% \draw [red,thick] ($(seconda.south)+(-1.4,-0.2)$)--($(seconda.south)+(1.4,0.8)$);
+% \draw [red,thick] ($(seconda.south)+(-1.4,0.8)$)--($(seconda.south)+(1.4,-0.2)$);
+\end{tikzpicture}
+\end{frame}
+
+
+\subsection{HiModAssembler}

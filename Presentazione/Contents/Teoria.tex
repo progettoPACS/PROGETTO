@@ -1,4 +1,5 @@
 \section{Fondamenti teorici}
+\titleslide{Teoria}
 \subsection{Hierarchical Model Reduction in 3D}
  \begin{frame}
   \frametitle{Motivazione}
@@ -241,7 +242,23 @@ dx\biggr]=\int_{\Omega_{1D}}\nsp{2}\underbrace{\theta_jf_k}_{\textbf{Forzante}} 
 \end{equation}}
 \end{exampleblock}
  \end{frame}
+ \begin{frame}
+  \frametitle{Struttura alegebrica}
+  \framesubtitle{Pattern di sparsit\`a}
+  Per $V_{1D}$ utilizziamo una discretizzazione elementi finiti P1 ottenendo il seguende 
+  \textbf{pattern di 
+  sparsit\`a}.
+  
+  \begin{figure}
+   \centering
+  \includegraphics[scale=0.35,trim=4.2cm 1.5cm 3.5cm 1cm, clip=true]{Varie/spy_14elem3modes}
  
+  \end{figure}
+  \begin{center} 14 elementi, 3 modi.\end{center}
+  
+  \textbf{\red{Nota:}} i blocchi si riferiscono alle \red{frequenze}, ogni blocco ha il pattern proprio degli \red{elementi finiti}
+ \end{frame}
+
 \begin{frame}
  \frametitle{Scelta della base}
  \framesubtitle{Basi trigonometriche e polinomi di Legendre}
@@ -380,15 +397,15 @@ Inoltre, $L^2$ ha una base ortonormale $\{ u_m \}_{m\geq 1}$ di autofunzioni di 
   \end{column}
  \end{columns}
  \textbf{Ipotesi:} $u(y,z)=Y(y)Z(z)$
+ {\footnotesize
  \begin{equation}
  \begin{cases}
- \footnotesize
   -\frac{Y''}{Y}-\frac{Z''}{Z} = \lambda&\longrightarrow \red{-Y''=K_yY},\psp{2} \blue{-Z''= K_zZ},\psp{2}\lambda=K_z+K_y\\
   u=0 \text{ su }1,3&\longrightarrow Y(y)\blue{Z(1)=0},\psp{1} Y(y)\blue{Z(0)=0} \psp{3}\forall y\in(0,L_y)\\
   u=0 \text{ su }4&\longrightarrow \red{Y(0)}Z(z)\red{=0} \psp{3}\forall z\in(0,L_z)\\
   \mu \dpar{u}{y} + \chi u = 0 \text{ su } 2&\longrightarrow \red{\mu \dpar{Y}{y}(1)}Z(z) + \red{\chi Y(1)}Z(z)\red{ = 0} \psp{3}\forall z\in(0,L_z)\\
   \end{cases}
- \end{equation}
+ \end{equation}}
  \end{frame}
  
  \begin{frame}

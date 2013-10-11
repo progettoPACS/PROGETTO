@@ -241,7 +241,21 @@ dx\biggr]=\int_{\Omega_{1D}}\nsp{2}\underbrace{\theta_jf_k}_{\textbf{Forzante}} 
 \end{equation}}
 \end{exampleblock}
  \end{frame}
- 
+ \begin{frame}
+  \frametitle{Struttura alegebrica}
+  \framesubtitle{Pattern di sparsit\`a}
+  Per $V_{1D}$ utilizziamo una discretizzazione elementi finiti P1 ottenendo il seguende pattern di 
+  sparsit\`a.
+  
+  I blocchi si riferiscono alle frequenze, ogni blocco ha il pattern proprio degli elementi finiti
+  \begin{figure}
+   \centering
+  {\linkimage{\includegraphics[scale=0.3]{Varie/spy_14elem3modes}}{Varie/spy_14elem3modes}}
+   \caption{14 elementi, 3 modi.}
+  \end{figure}
+
+ \end{frame}
+
 \begin{frame}
  \frametitle{Scelta della base}
  \framesubtitle{Basi trigonometriche e polinomi di Legendre}
@@ -380,15 +394,15 @@ Inoltre, $L^2$ ha una base ortonormale $\{ u_m \}_{m\geq 1}$ di autofunzioni di 
   \end{column}
  \end{columns}
  \textbf{Ipotesi:} $u(y,z)=Y(y)Z(z)$
+ {\footnotesize
  \begin{equation}
  \begin{cases}
- \footnotesize
   -\frac{Y''}{Y}-\frac{Z''}{Z} = \lambda&\longrightarrow \red{-Y''=K_yY},\psp{2} \blue{-Z''= K_zZ},\psp{2}\lambda=K_z+K_y\\
   u=0 \text{ su }1,3&\longrightarrow Y(y)\blue{Z(1)=0},\psp{1} Y(y)\blue{Z(0)=0} \psp{3}\forall y\in(0,L_y)\\
   u=0 \text{ su }4&\longrightarrow \red{Y(0)}Z(z)\red{=0} \psp{3}\forall z\in(0,L_z)\\
   \mu \dpar{u}{y} + \chi u = 0 \text{ su } 2&\longrightarrow \red{\mu \dpar{Y}{y}(1)}Z(z) + \red{\chi Y(1)}Z(z)\red{ = 0} \psp{3}\forall z\in(0,L_z)\\
   \end{cases}
- \end{equation}
+ \end{equation}}
  \end{frame}
  
  \begin{frame}
@@ -479,12 +493,16 @@ $\chi$&$\mu$	&$\chi$	&$\mu$	&Rob-Rob		&$\tan{(\sqrt{\lambda_k})}
 \begin{frame}
  \frametitle{Un problema di ordinamento}
  \framesubtitle{Esempio caso condizioni di Dirichlet}
- \textbf{Esempio:} condizioni di Dirichlet su $\Gamma_{lat}$ con $L_y=\pi$ e $L_z=3\pi/2$, si ha che
-%  \begin{alertblock}
-%  \begin{equation}
-%   K_{y,p}=p^2, K_{z,q}=(2/3q)^2.
-%  \end{equation}
-%  \end{alertblock}
+ \textbf{Esempio:} condizioni di Dirichlet su $\Gamma_{lat}$ con $L_y=\pi$ e $L_z=3\pi/2$.
+ 
+ Si ha che
+ \begin{alertblock}{}
+ \begin{equation}
+  K_{y,p}=p^2, K_{z,q}=(2/3q)^2.
+ \end{equation} 
+ \end{alertblock}
+ \vspace{0.5cm}
+ 
  {\footnotesize
  \begin{tabular}{c|lc|lc|lc|lc|lc|lc}
   \blue{$K_{y,p}$}&1&p=1&4&p=2&9&p=3&1&p=1&4&p=2&...\\%9&p=3\\%&1 p=1&4 p=2&9 p=3\\
@@ -492,6 +510,7 @@ $\chi$&$\mu$	&$\chi$	&$\mu$	&Rob-Rob		&$\tan{(\sqrt{\lambda_k})}
   \midrule
   \blue{$\lambda_k$}&1.44&k=1&4.44&k=3 &9.44&k=5&2.77&k=2&5.77&k=4&...\\%10.77&k=6 \\%&21.25&24.25&29.25\\
 \end{tabular}}
-Per gestire il problema dell'ordinamento abbiamo e di evenutali autovalori con molteplicit\`a maggiore di uno
-abbiamo scritto l'algoritmo implementato in \texttt{EigensProvider}.
+ \vspace{0.5cm}
+
+Per  il problema dell'ordinamento abbiamo sviluppato l'algoritmo implementato in \red{\texttt{EigensProvider}}.
 \end{frame}

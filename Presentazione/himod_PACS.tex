@@ -2,6 +2,7 @@
 
 \usepackage[italian]{babel}
 \usepackage{amsmath, amssymb}
+\usepackage{hyperref}
 \usepackage{amsthm}
 \usepackage{amstext}
 \usepackage{array}
@@ -11,8 +12,8 @@
 \usepackage{mathtools}
 % to have the equations numbered only if they are refered in the text
 \mathtoolsset{showonlyrefs=true}
-\usepackage[bf,footnotesize,center]{caption}
-\captionsetup{labelformat=empty,labelsep=none}
+% \usepackage[bf,footnotesize,center]{caption}
+% \captionsetup{labelformat=empty,labelsep=none}
 
 \usepackage[tight]{subfigure}
 \usepackage{tikz}
@@ -88,6 +89,78 @@ Contents/Risultati
 }
 \newcommand{\red}[1]{\textcolor{red}{#1}}
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\titleslide}[1]{
+\begin{frame}
+ \begin{center}
+  \Huge\textcolor{blue!70}{#1}
+ \end{center}
+
+\end{frame}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+
+\lstdefinestyle{customc}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  frame=single,
+  xleftmargin=\parindent,
+  language=C++,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{black},
+  stringstyle=\color{purple},
+  %morekeywords={}  
+}
+
+\lstdefinestyle{customasm}{
+  belowcaptionskip=1\baselineskip,
+  frame=L,
+  xleftmargin=\parindent,
+  language=[x86masm]Assembler,
+  basicstyle=\footnotesize\ttfamily,
+  commentstyle=\itshape\color{purple!40!black},
+}
+
+
+\lstdefinestyle{general}{ %
+  backgroundcolor=\color{white},
+  basicstyle=\footnotesize,       
+  breakatwhitespace=false,       
+  breaklines=true,                 
+  %captionpos=t,
+  abovecaptionskip=-0.8cm,
+  %belowcaptionskip=-0.8cm,
+  commentstyle=\color{mygreen},
+  deletekeywords={...},            
+  escapeinside={\%*}{*)},
+  extendedchars=true,   
+  frame=lines,
+  %none L false leftline  topline bottomline shadowbox single lines 
+  keepspaces=true,                
+  keywordstyle=\color{blue},       
+  language=C++,                 
+  morekeywords={Real,UInt},           
+  %numbers=left,
+  %numbersep=5pt,              
+  %numberstyle=\tiny\color{mygray}, 
+  rulecolor=\color{black},
+  showspaces=false,        
+  showstringspaces=false,         
+  showtabs=false,                  
+  %stepnumber=1,                   
+  stringstyle=\color{mymauve},
+  tabsize=2,                      
+  title=\lstname                  
+}
 \begin{document}
 \begin{frame}
 \maketitle
