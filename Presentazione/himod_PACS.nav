@@ -30,8 +30,12 @@
 \headcommand {\beamer@framepages {12}{12}}
 \headcommand {\slideentry {1}{2}{4}{13/13}{Basi istruite}{0}}
 \headcommand {\beamer@framepages {13}{13}}
-\headcommand {\beamer@partpages {1}{13}}
-\headcommand {\beamer@subsectionpages {14}{13}}
-\headcommand {\beamer@sectionpages {14}{13}}
-\headcommand {\beamer@documentpages {13}}
-\headcommand {\def \inserttotalframenumber {13}}
+\headcommand {\slideentry {1}{2}{5}{14/14}{Basi istruite}{0}}
+\headcommand {\beamer@framepages {14}{14}}
+\headcommand {\slideentry {1}{2}{6}{15/15}{Basi istruite}{0}}
+\headcommand {\beamer@framepages {15}{15}}
+\headcommand {\beamer@partpages {1}{15}}
+\headcommand {\beamer@subsectionpages {16}{15}}
+\headcommand {\beamer@sectionpages {16}{15}}
+\headcommand {\beamer@documentpages {15}}
+\headcommand {\def \inserttotalframenumber {15}}
