@@ -1,4 +1,4 @@
-\frametitle {\texttt{AddADRProblem(...)}}
+\frametitle{\texttt{AddADRProblem(...)}}
  \framesubtitle{Utilizzo del pacchetto ETA per assemblare i problemi 1D}
  \begin{lstlisting}[style=general]
 for j {

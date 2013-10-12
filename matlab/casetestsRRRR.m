@@ -46,7 +46,7 @@ bx=0;
 by=0;
 bz=0;
 mu=1;
-chi=3;
+chi=4.456;
 ly=0.1;
 lz=0.1;
 lx=0.1;
@@ -57,12 +57,12 @@ collect(f, exp((70*y^2)/(x*z + 1) - (Chi*(Ly/2 - y)^2)/Ly - (140*y^3)/(3*Ly*(x*z
 u=matlabFunction(ues);
 v=u(chi,lx,ly,lz,mu,x,y,z);
 
-% xslice = linspace(0,lx,10); yslice = []; zslice = [];
-% contourslice(x,y,z,v,xslice,yslice,zslice);daspect([1,1,1])
-% camva(6); 
-% camproj perspective;
-% campos([0.6,-0.9,0.45])
-% set(gcf,'Color',[.5,.5,.5],'Renderer','zbuffer')
-% set(gca,'Color','black','XColor','white', ...
-% 	'YColor','white','ZColor','white')
-% box on
+ xslice = linspace(0,lx,10); yslice = []; zslice = [];
+ contourslice(x,y,z,v,xslice,yslice,zslice);daspect([1,1,1])
+ camva(6); 
+ camproj perspective;
+ campos([0.6,-0.9,0.45])
+ set(gcf,'Color',[.5,.5,.5],'Renderer','zbuffer')
+ set(gca,'Color','black','XColor','white', ...
+ 	'YColor','white','ZColor','white')
+ box on

@@ -1,5 +1,10 @@
 \documentclass{beamer}
 
+%Per tanti pacchetti
+% Estende il contatore di pacchetti
+\usepackage{etex}
+%================
+
 \usepackage[italian]{babel}
 \usepackage{amsmath, amssymb}
 \usepackage{hyperref}
@@ -15,17 +20,21 @@
 % \usepackage[bf,footnotesize,center]{caption}
 % \captionsetup{labelformat=empty,labelsep=none}
 
+
+
+
+
 \usepackage[tight]{subfigure}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,matrix,decorations.pathreplacing,shapes.geometric,positioning}  
 
 %Comando per togliere le etichette dal subfigure
-% \renewcommand{\thesubfigure}{}
-% \makeatletter
-% \renewcommand{\p@subfigure}{}
-% \renewcommand{\@thesubfigure}{\thesubfigure\hskip\subfiglabelskip}
-% \makeatother
-%
+\renewcommand{\thesubfigure}{}
+\makeatletter
+\renewcommand{\p@subfigure}{}
+ \renewcommand{\@thesubfigure}{\thesubfigure\hskip\subfiglabelskip}
+ \makeatother
+
 \usepackage{mathtools}
 %Per video
 %\usepackage{movie15}
