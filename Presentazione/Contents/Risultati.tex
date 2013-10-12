@@ -1,19 +1,27 @@
 \section{Risultati numerici}
-
-
-\subsection{Test di convergenza -- Dirichlet}
+\begin{frame}
+\tableofcontents[currentsection]
+\end{frame}
 
 \begin{frame}
 \frametitle{Convergenza DRDR}
 
+{\footnotesize
+\begin{equation}
+\begin{split}
+& C_1(x,y)=\frac{70}{1+x}(-\frac{2}{3L_y} y^3+ y^2) \psp{7}
+C_2(x,z)=\frac{70}{1+x}(-\frac{2}{3L_z}z^3+z^2) \\
+& u_{es}(x,y,z)=10^5exp( - \frac{\chi}{\mu L_y} (y - Ly/2 )^2 + C_1  - \frac{\chi}{\mu L_z}(z - L_z/2 ) ^ 2 + C_2 )(Lx-x)^2 
+\end{split}
+\end{equation}
+}\\
+
 \begin{figure}[!h]
 \centering
-\includegraphics[scale=0.35]{Convergenze/DRDR}
+{\linkimage{\includegraphics[scale=0.32]{Convergenze/DRDR}}{Convergenze/DRDR}}
 \label{fig:drdrconv}
 \end{figure}
 \end{frame}
-
-\subsection{Test di convergenza -- Robin}
 
 \begin{frame}
 \frametitle{Convergenza RRRR}
@@ -47,42 +55,16 @@ u=0 & \text{su $\Gamma _{vaso}$} \\
 \end{cases}
 \end{equation}
 \begin{figure}
-{\includegraphics[scale=0.3]{Foto2D+/HiModPretty50}}
+{\linkimage{\includegraphics[scale=0.3]{Foto2D+/HiModPretty50}}{Foto2D+/HiModPretty50}}
 \end{figure}
 \end{column}
 
 \begin{column}{0.5 \paperwidth}
 \begin{figure}
 \subfigure
-{\includegraphics[scale=0.22]{DDDD_ADR/Forceterm}}
+{\linkimage{\includegraphics[scale=0.22]{DDDD_ADR/Forceterm}}{DDDD_ADR/Forceterm}}
 \subfigure
-{\includegraphics[scale=0.3]{Foto2D+/FEMPretty}}
-\end{figure}
-\end{column}
-
-\end{columns}
-\end{frame}
-
-\subsection{Test dei due camini}
-\begin{frame}
-\frametitle{Slice XY}
-\begin{columns}
-
-\begin{column}{0.5 \paperwidth}
-\begin{figure}
-\subfigure[m=9]
-{\includegraphics[scale=0.185]{DDDD_ADR/HiMod9slice}}
-\subfigure[m=25]
-{\includegraphics[scale=0.199]{DDDD_ADR/HiMod25slice}}
-\end{figure}
-\end{column}
-
-\begin{column}{0.5 \paperwidth}
-\begin{figure}
-\subfigure[m=16]
-{\includegraphics[scale=0.2]{DDDD_ADR/HiMod16slice}}
-\subfigure[FEM]
-{\includegraphics[scale=0.2]{DDDD_ADR/FEMslice}}
+{\linkimage{\includegraphics[scale=0.3]{Foto2D+/FEMPretty}}{Foto2D+/FEMPretty}}
 \end{figure}
 \end{column}
 
@@ -90,24 +72,51 @@ u=0 & \text{su $\Gamma _{vaso}$} \\
 \end{frame}
 
 \begin{frame}
-\frametitle{Slice XY}
+\frametitle{Slice XY 2D}
+
 \begin{columns}
 
 \begin{column}{0.5 \paperwidth}
 \begin{figure}
 \subfigure[m=9]
-{\includegraphics[scale=0.17]{Foto2D+/HiMod_m=9}}
+{\linkimage{\includegraphics[height=2.8cm,width=5.5cm]{DDDD_ADR/HiMod9slice}}{DDDD_ADR/HiMod9slice}}
 \subfigure[m=25]
-{\includegraphics[scale=0.17]{Foto2D+/HiMod_m=16}}
+{\linkimage{\includegraphics[height=2.8cm,width=5.5cm]{DDDD_ADR/HiMod25slice}}{DDDD_ADR/HiMod25slice}}
 \end{figure}
 \end{column}
 
 \begin{column}{0.5 \paperwidth}
 \begin{figure}
 \subfigure[m=16]
-{\includegraphics[scale=0.17]{Foto2D+/HiMod_m=25}}
+{\linkimage{\includegraphics[height=2.8cm,width=5.5cm]{DDDD_ADR/HiMod16slice}}{DDDD_ADR/HiMod16slice}}
 \subfigure[FEM]
-{\includegraphics[scale=0.17]{Foto2D+/FEMsolution35}}
+{\linkimage{\includegraphics[height=2.8cm,width=5.5cm]{DDDD_ADR/FEMslice}}{DDDD_ADR/FEMslice}}
+\end{figure}
+\end{column}
+\end{columns}
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Slice XY}
+\begin{columns}
+
+\begin{column}{0.5 \paperwidth}
+\begin{figure}
+\subfigure[m=9]
+{\linkimage{\includegraphics[scale=0.17]{Foto2D+/HiMod_m=9}}{Foto2D+/HiMod_m=9}}
+\subfigure[m=25]
+{\linkimage{\includegraphics[scale=0.17]{Foto2D+/HiMod_m=16}}{Foto2D+/HiMod_m=16}}
+\end{figure}
+\end{column}
+
+\begin{column}{0.5 \paperwidth}
+\begin{figure}
+\subfigure[m=16]
+{\linkimage{{\includegraphics[scale=0.17]{Foto2D+/HiMod_m=25}}}{Foto2D+/HiMod_m=25}}
+\subfigure[FEM]
+{\linkimage{\includegraphics[scale=0.17]{Foto2D+/FEMsolution35}}{Foto2D+/FEMsolution35}}
 \end{figure}
 \end{column}
 
