@@ -70,30 +70,7 @@ AddSliceBCY (const string& left, const string& right, const Real& mu, const Real
 \end{lstlisting}
 \end{frame}
 
-\begin{frame}
- \frametitle{EigensProvider()}
- \framesubtitle{Ordinare correttamente gli autovalori non \`e facile}
- Una visualizzazione dell'algoritmo ad albero
-\begin{tikzpicture}
-[scale=1.5]
-\tikzstyle{every node}=[draw,shape=rectangle];
-\path (5,0)  node (v1) {$Ky^{(1)},Kz^{(1)}$};
-\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
-\path (7,-1) node (v3) {$Ky^{(1)},Kz^{(2)}$};
-\path (2,-2) node (v4) {$Ky^{(3)},Kz^{(1)}$};
-\path (4,-2) node (v5) {$Ky^{(2)},Kz^{(2)}$};
-\path (6,-2) node (v6) {$Ky^{(2)},Kz^{(2)}$};
-\path (8,-2) node (v7) {$Ky^{(1)},Kz^{(3)}$};
-\draw (v1) -- (v2)
-(v1) -- (v3)
-(v2) -- (v4)
-(v2) -- (v5)
-(v3) -- (v6)
-(v3) -- (v7);
-\draw [thick,red, -] (5.5,-1.5)--(6.5,-2.5);
-\draw [thick,red, -] (6.5,-1.5)--(5.5,-2.5);
-\end{tikzpicture}
-\end{frame}
+\input{Contents/Algoritmo}
 
 \begin{frame}[fragile]
 \frametitle{\texttt{EvaluateBasis(...)}}

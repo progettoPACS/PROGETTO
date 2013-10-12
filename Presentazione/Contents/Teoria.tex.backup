@@ -1,4 +1,5 @@
 \section{Fondamenti teorici}
+\titleslide{Teoria}
 \subsection{Hierarchical Model Reduction in 3D}
  \begin{frame}
   \frametitle{Motivazione}
@@ -22,6 +23,7 @@
 \def\xe{6}
 \def\xa{0.15}
 \def\ya{0.15}
+
  \draw (\xs,\yd) -- (\xf,\yd)
        (\xf,\yd) -- (\xf-\xa,\yd-\ya)
        (\xf-\xa,\yd-\ya) -- (\xe,0)
@@ -45,6 +47,7 @@
 \end{tikzpicture}
 \end{center}
 \end{exampleblock}
+
 \begin{center}
 \tikzstyle{3d} = [ellipse, draw, fill=red!50, 
     text width=7em,text badly centered, inner sep=0pt]
@@ -53,55 +56,69 @@
     text width=7em,text badly centered, inner sep=0pt]
     
 \tikzstyle{himod} = [rectangle, draw, fill=blue!50!red!50!white]
+
 \begin{tikzpicture}
 \def\x{7};
-\node[1d] (1d) at (0,0) {\textbf{Modello 1D}\\{\footnotesize Bassa precisione}\\{\footnotesize Economico}};
-\node[3d] (3d) at (\x,0) {\textbf{Modello 3D}\\{\footnotesize Alta precisione}\\{\footnotesize Costoso}};
-\node[himod] (himod) at (\x/2,0) {HiMod};
-\path[draw,thick,dashed,->] (1d) -- (himod);
-\path[draw,thick,dashed,<-] (himod) -- (3d);
+\def\dx{6}
+\def\bby{1};
+\def\bbx{3};
 
-			  
-%smily face sinistra
-\def\f{1.0}
-\def\alt{-0.5}
-\def\rad{0.15}
-\draw[thin] (\f,\alt) circle(\rad cm);
-\draw[thin] plot [smooth,tension=1.5] coordinates{(\f - 0.5*\rad,\alt - 0.4*\rad) (\f + 0*\rad,\alt - 0.7*\rad) (\f + 0.5*\rad,\alt -0.4*\rad)};
-% \draw[thin, fill=black] (\f+0*\rad,\alt-0.2*\rad) circle (0.1*\rad);
-\draw[thin] plot [smooth,tension=1.5] coordinates{(\f-0.4*\rad,\alt+0.4*\rad) (\f-0.3*\rad,\alt +0.5*\rad) (\f-0.2*\rad,\alt+0.4*\rad)};
-\draw[thin] plot [smooth,tension=1.5] coordinates{(\f+0.4*\rad,\alt+0.4*\rad) (\f+0.3*\rad,\alt+0.5*\rad) (\f+0.2*\rad,\alt+0.4*\rad)};
+%smile sx
+\def\f{1.0};
+\def\rad{0.15};
+\def\alte{-0.5};
 
-  
-%smily face sinistra
-\def\f{8.25}
-\def\alt{-0.05}
-\def\rad{0.15}
-\draw[thin] (\f,\alt) circle(\rad cm);
-\draw[thin] plot [smooth,tension=1.5] coordinates{(\f - 0.5*\rad,\alt - 0.4*\rad) (\f + 0*\rad,\alt - 0.7*\rad) (\f + 0.5*\rad,\alt -0.4*\rad)};
-% \draw[thin, fill=black] (\f+0*\rad,\alt-0.2*\rad) circle (0.1*\rad);
-\draw[thin] plot [smooth,tension=1.5] coordinates{(\f-0.4*\rad,\alt+0.4*\rad) (\f-0.3*\rad,\alt +0.5*\rad) (\f-0.2*\rad,\alt+0.4*\rad)};
-\draw[thin] plot [smooth,tension=1.5] coordinates{(\f+0.4*\rad,\alt+0.4*\rad) (\f+0.3*\rad,\alt+0.5*\rad) (\f+0.2*\rad,\alt+0.4*\rad)};
 
-  
-%sad face destra
-\def\f{7.8}
-\def\alt{-0.5}
-\def\rad{0.15}
-\draw[thin] (\f,\alt) circle(\rad cm);
-\draw[thin] plot [smooth,tension=1.5] coordinates{(\f-0.3*\rad,\alt-0.6*\rad) (\f-0.2*\rad,\alt-0.5*\rad) (\f +0.3*\rad,\alt-0.5*\rad)};
-\draw[thin] (\f-0.4*\rad,\alt+0.4*\rad) -- (\f-0.2*\rad,\alt +0.3*\rad);
-\draw[thin] (\f+0.4*\rad,\alt+0.5*\rad) -- (\f+0.2*\rad,\alt +0.4*\rad);
-% \draw[thin, fill=black] (\f+0*\rad,\alt-0.2*\rad) circle (0.1*\rad);
-%sad face sinistra
-\def\f{1.4}
-\def\alt{-0.05}
-\def\rad{0.15}
-\draw[thin] (\f,\alt) circle(\rad cm);
-\draw[thin] plot [smooth,tension=1.5] coordinates{(\f-0.3*\rad,\alt-0.6*\rad) (\f-0.2*\rad,\alt-0.5*\rad) (\f +0.3*\rad,\alt-0.5*\rad)};
-\draw[thin] (\f-0.4*\rad,\alt+0.4*\rad) -- (\f-0.2*\rad,\alt +0.3*\rad);
-\draw[thin] (\f+0.4*\rad,\alt+0.5*\rad) -- (\f+0.2*\rad,\alt +0.4*\rad);
-% \draw[thin, fill=black] (\f+0*\rad,\alt-0.2*\rad) circle (0.1*\rad);
+\useasboundingbox (-\bbx +0.5,-\bby) rectangle (\dx +0.5+ \bbx,\bby);
+
+\node<1->[3d] (3d) at (\x,0) {\textbf{Modello 3D}\\{\footnotesize Alta precisione}\\{\footnotesize Costoso}};
+\node<2->[1d] (1d) at (0,0) {\textbf{Modello 1D}\\{\footnotesize Bassa precisione}\\{\footnotesize Economico}};
+
+% smily face sinistra
+
+% \draw<2->[thin] (\f,\alte) circle(\rad cm);
+% \draw<2->[thin] plot [smooth,tension=1.5] coordinates{(\f - 0.5*\rad,\alte - 0.4*\rad) (\f + 0*\rad,\alte - 0.7*\rad) (\f + 0.5*\rad,\alte -0.4*\rad)};
+% % % \draw<2-2>[thin, fill=black] (\f+0*\rad,\alte-0.2*\rad) circle (0.1*\rad);
+% \draw<2->[thin] plot [smooth,tension=1.5] coordinates{(\f-0.4*\rad,\alte+0.4*\rad) (\f-0.3*\rad,\alte +0.5*\rad) (\f-0.2*\rad,\alte+0.4*\rad)};
+% \draw<2->[thin] plot [smooth,tension=1.5] coordinates{(\f+0.4*\rad,\alte+0.4*\rad) (\f+0.3*\rad,\alte+0.5*\rad) (\f+0.2*\rad,\alte+0.4*\rad)};
+
+
+\node<3->[himod] (himod) at (\x/2,0) {HiMod};
+
+%freccie
+\path<3->[draw,thick,dashed,->] (1d) -- (himod);
+\path<3->[draw,thick,dashed,<-] (himod) -- (3d);
+	  
+%   
+% %smily face sinistra
+% \def\f{8.25}
+% \def\alte{-0.05}
+% \def\rad{0.15}
+% \draw[thin] (\f,\alte) circle(\rad cm);
+% \draw[thin] plot [smooth,tension=1.5] coordinates{(\f - 0.5*\rad,\alte - 0.4*\rad) (\f + 0*\rad,\alte - 0.7*\rad) (\f + 0.5*\rad,\alte -0.4*\rad)};
+% % \draw[thin, fill=black] (\f+0*\rad,\alte-0.2*\rad) circle (0.1*\rad);
+% \draw[thin] plot [smooth,tension=1.5] coordinates{(\f-0.4*\rad,\alte+0.4*\rad) (\f-0.3*\rad,\alte +0.5*\rad) (\f-0.2*\rad,\alte+0.4*\rad)};
+% \draw[thin] plot [smooth,tension=1.5] coordinates{(\f+0.4*\rad,\alte+0.4*\rad) (\f+0.3*\rad,\alte+0.5*\rad) (\f+0.2*\rad,\alte+0.4*\rad)};
+% 
+%   
+% %sad face destra
+% \def\f{7.8}
+% \def\alte{-0.5}
+% \def\rad{0.15}
+% \draw[thin] (\f,\alte) circle(\rad cm);
+% \draw[thin] plot [smooth,tension=1.5] coordinates{(\f-0.3*\rad,\alte-0.6*\rad) (\f-0.2*\rad,\alte-0.5*\rad) (\f +0.3*\rad,\alte-0.5*\rad)};
+% \draw[thin] (\f-0.4*\rad,\alte+0.4*\rad) -- (\f-0.2*\rad,\alte +0.3*\rad);
+% \draw[thin] (\f+0.4*\rad,\alte+0.5*\rad) -- (\f+0.2*\rad,\alte +0.4*\rad);
+% % \draw[thin, fill=black] (\f+0*\rad,\alte-0.2*\rad) circle (0.1*\rad);
+% %sad face sinistra
+% \def\f{1.4}
+% \def\alte{-0.05}
+% \def\rad{0.15}
+% \draw[thin] (\f,\alte) circle(\rad cm);
+% \draw[thin] plot [smooth,tension=1.5] coordinates{(\f-0.3*\rad,\alte-0.6*\rad) (\f-0.2*\rad,\alte-0.5*\rad) (\f +0.3*\rad,\alte-0.5*\rad)};
+% \draw[thin] (\f-0.4*\rad,\alte+0.4*\rad) -- (\f-0.2*\rad,\alte +0.3*\rad);
+% \draw[thin] (\f+0.4*\rad,\alte+0.5*\rad) -- (\f+0.2*\rad,\alte +0.4*\rad);
+% % \draw[thin, fill=black] (\f+0*\rad,\alte-0.2*\rad) circle (0.1*\rad);
 \end{tikzpicture}
 \end{center}
  \end{frame}
@@ -244,16 +261,18 @@ dx\biggr]=\int_{\Omega_{1D}}\nsp{2}\underbrace{\theta_jf_k}_{\textbf{Forzante}} 
  \begin{frame}
   \frametitle{Struttura alegebrica}
   \framesubtitle{Pattern di sparsit\`a}
-  Per $V_{1D}$ utilizziamo una discretizzazione elementi finiti P1 ottenendo il seguende pattern di 
-  sparsit\`a.
+  Per $V_{1D}$ utilizziamo una discretizzazione elementi finiti P1 ottenendo il seguende 
+  \textbf{pattern di 
+  sparsit\`a}.
   
-  I blocchi si riferiscono alle frequenze, ogni blocco ha il pattern proprio degli elementi finiti
   \begin{figure}
    \centering
-  {\linkimage{\includegraphics[scale=0.3]{Varie/spy_14elem3modes}}{Varie/spy_14elem3modes}}
-   \caption{14 elementi, 3 modi.}
+  \includegraphics[scale=0.35,trim=4.2cm 1.5cm 3.5cm 1cm, clip=true]{Varie/spy_14elem3modes}
+ 
   \end{figure}
-
+  \begin{center} 14 elementi, 3 modi.\end{center}
+  
+  \textbf{\red{Nota:}} i blocchi si riferiscono alle \red{frequenze}, ogni blocco ha il pattern proprio degli \red{elementi finiti}
  \end{frame}
 
 \begin{frame}
