@@ -1,15 +1,23 @@
-\frametitle {\texttt{AddSliceBC(...)}}
-\framesubtitle{due metodi uno per ogni direzione}
-\begin{lstlisting}[style = general]
-void ModalSpace::
-AddSliceBCY (const string& left, const string& right, const Real& mu, const Real& chi)
-{
-// Creation of the correct basis generator
-M_genbasisY = Basis1DFactory::istance().createObject(left+right);
-// Setting of the parameters
-M_genbasisY->setL(M_Ly);
-M_genbasisY->setMu(mu);
-M_genbasisY->setChi(chi);
-return;
+\frametitle {\texttt{AddADRProblem(...)}}
+ \framesubtitle{Utilizzo del pacchetto ETA per assemblare i problemi 1D}
+ \begin{lstlisting}[style=general]
+for j {
+for k {
+VectorSmall<5> Coeff;
+Coeff[0] = M_modalbasis->Compute_PhiPhi (j, k);
+//...
+{ using namespace ExpressionAssembly;
+  //...
+  integrate(
+      elements(M_etfespace->mesh()),
+      M_fespace->qr(),
+      M_etfespace,
+      M_etfespace,
+      mu*Coeff[0]*dot(grad(phi_i),grad(phi_j))
+      //...
+      )
+  >>(systemMatrix->block(k,j));
 }
+//...
+return;
 \end{lstlisting}

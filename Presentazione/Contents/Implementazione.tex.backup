@@ -47,9 +47,9 @@
   \item Calcola gli autovalori del problema 2D\\
   $\rightarrow$ \texttt{EigensProvider(...)}
   \item Valuta le funzioni di base e le loro derivate nei nodi di quadratura\\
-  $\rightarrow$ \texttt{??}
+  $\rightarrow$ \texttt{EvaluateBasis(...)}
   \item Calcola i coefficient $r^{st}_{k,j}$\\
-  $\rightarrow$ \texttt{Compute\_\*(...)}
+  $\rightarrow$ \texttt{Compute\_*(...)}
  \end{itemize}
 \end{frame}
 \begin{frame}[fragile]
@@ -71,42 +71,138 @@ AddSliceBCY (const string& left, const string& right, const Real& mu, const Real
 \end{frame}
 
 \begin{frame}
- \frametitle{EigensProvider}
+ \frametitle{EigensProvider()}
  \framesubtitle{Ordinare correttamente gli autovalori non \`e facile}
-\begin{tikzpicture}[stack/.style={
-rectangle split, rectangle split parts=5, draw, anchor=center},
-myarrow/.style={single arrow, draw=none}]
-% 
-\node [stack] (prima) {{\nodepart{two}
-\nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(1)}$
-\nodepart{five}$Ky^{(1)},Kz^{(1)}$};
-% 
-% \node [stack,right=of prima,rectangle split part fill={white,white,blue!20,blue!20,white}] (seconda) {\nodepart{two}\textcolor{blue!100}{New}
-% \nodepart{three}$Ky^{(2)},Kz^{(2)}$\nodepart{four}$Ky^{(3)},Kz^{(1)}$
-% \nodepart{five}$Ky^{(1)},Kz^{(2)}$};
-%   
-% \node [stack,right=of seconda] (terza)  {\nodepart{two}
-% \nodepart{three}$Ky^{(1)},Kz^{(2)}$\nodepart{four}$Ky^{(2)},Kz^{(1)}$
-% \nodepart{five}$Ky^{(1)},Kz^{(1)}$};
-% 
-% \node [stack,right=of terza] (quarta) {\nodepart{two}
-% \nodepart{three}\nodepart{four}$Ky^{(2)},Kz^{(2)}$
-% \nodepart{five}$Ky^{(3)},Kz^{(1)}$};
-%   
-% \node [above=of prima,anchor=north,align=left] {Eigenvalues};
-% \node [above=of seconda,anchor=north,align=left] {Tmp};
-% \node [above=of terza,anchor=north,align=left] {Eigenvalues};
-% \node [above=of quarta,anchor=north,align=left] {Tmp};
-% 
-% \node [myarrow,draw,anchor=west] at ($(seconda.east)+(2.5pt,0)$) {\phantom{te}} ;
-% 
-% \draw [red,ultra thick,->] ($(seconda.west)+(-0.1,-1.0)$) -- ($(prima.east)+(0.1,+0.1)$);
-% \draw [blue,dashed,ultra thick,->] ($(prima.east)+(0.1,-0.3)$) -- ($(seconda.west)+(-0.1,+0.1)$);
-% \draw [blue,dashed,ultra thick,->] ($(prima.east)+(0.1,-0.3)$) -- ($(seconda.west)+(-0.1,-0.5)$);
-% \draw [red,thick] ($(seconda.south)+(-1.4,-0.2)$)--($(seconda.south)+(1.4,0.8)$);
-% \draw [red,thick] ($(seconda.south)+(-1.4,0.8)$)--($(seconda.south)+(1.4,-0.2)$);
+ Una visualizzazione dell'algoritmo ad albero
+\begin{tikzpicture}
+[scale=1.5]
+\tikzstyle{every node}=[draw,shape=rectangle];
+\path (5,0)  node (v1) {$Ky^{(1)},Kz^{(1)}$};
+\path (3,-1) node (v2) {$Ky^{(2)},Kz^{(1)}$};
+\path (7,-1) node (v3) {$Ky^{(1)},Kz^{(2)}$};
+\path (2,-2) node (v4) {$Ky^{(3)},Kz^{(1)}$};
+\path (4,-2) node (v5) {$Ky^{(2)},Kz^{(2)}$};
+\path (6,-2) node (v6) {$Ky^{(2)},Kz^{(2)}$};
+\path (8,-2) node (v7) {$Ky^{(1)},Kz^{(3)}$};
+\draw (v1) -- (v2)
+(v1) -- (v3)
+(v2) -- (v4)
+(v2) -- (v5)
+(v3) -- (v6)
+(v3) -- (v7);
+\draw [thick,red, -] (5.5,-1.5)--(6.5,-2.5);
+\draw [thick,red, -] (6.5,-1.5)--(5.5,-2.5);
 \end{tikzpicture}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{\texttt{EvaluateBasis(...)}}
+\framesubtitle{Valutare le funzioni di base sui nodi di quadratura}
+\begin{lstlisting}[style=general]
+void ModalSpace::
+EvaluateBasis()
+{
+    // Compute all the eigens from the 1D problems
+    EigensProvider();
+    
+    // Fill the matrices with the evaluation of 
+    // the monodimensional basis and its derivatives
+    M_genbasisY->EvaluateBasis (M_phiy, M_dphiy, 
+                                M_eigenvaluesY, M_quadruleY);
+    M_genbasisZ->EvaluateBasis (M_phiz, M_dphiz, 
+                                M_eigenvaluesZ, M_quadruleZ);
+}
+\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]
+ \frametitle{\texttt{Compute\_*(..)}}
+ \framesubtitle{Sfruttando la separazione di variabili}
+ \begin{lstlisting}[style=general]
+Real ModalSpace::
+Compute_PhiPhi (const UInt& j, const UInt& k) const
+{   //... 
+    //... (Date le frequenze estrae i sottoindici p e q)
+    for (UInt n = 0; n < M_quadruleY->nbQuadPt(); ++n)
+    coeff_y += M_phiy [p_j][n] * normy *
+                   M_phiy [p_k][n] * normy *
+                   M_Ly * M_quadruleY->weight (n);
+    for (UInt n = 0; n < M_quadruleZ->nbQuadPt(); ++n)
+    coeff_z += M_phiz[q_j][n] * normz *
+                   M_phiz[q_k][n] * normz *
+                   M_Lz * M_quadruleZ->weight (n);
+    return coeff_y * coeff_z;
+}
+\end{lstlisting}
+
+{\footnotesize\textbf{\red{WIP}}: Abbiamo aggiunto dei metodi per considerare 
+\textbf{coefficienti non costanti} che si occupano di calcolare i coefficienti $r^{st}_{j,k}$ \textbf{senza separare le variabili}.
+
+Sono ancora da testare e da ottimizzare.}
+\end{frame}
 
 \subsection{HiModAssembler}
+\begin{frame}
+ \frametitle{HiModAssembler}
+ \framesubtitle{La classe che combina gli elementi finiti e la base modale}
+ \begin{itemize}
+  \item \textbf{Membri principali}
+  \begin{itemize}
+   \item \texttt{M\_modalbasis}
+   \item \texttt{M\_etfespace}
+  \end{itemize}
+
+  \item Metodi per l'\textbf{assemblaggio}
+  \begin{itemize}
+   \item \texttt{AddADRProblem(...)}
+   \item \texttt{interpolate(...)}
+   \item \texttt{Addrhs(...)}
+   \item \texttt{AddDirichletBC\_In(...)}
+  \end{itemize}
+
+  \item Metodi per l'\textbf{analisi}
+  \begin{itemize}
+   \item \texttt{evaluateBase3DGrid(...)} \textcolor{green!50!black}{$//$HiMod vector}
+   \item \texttt{evaluateBase3DGrid(...)} \textcolor{green!50!black}{$//$Function type}
+   \item \texttt{normL2(...)}
+  \end{itemize}
+
+  \item Metodi per l'\textbf{export}
+  \begin{itemize}
+   \item \texttt{ExportStructuredVTK(...)}
+   \item \texttt{ExportFunctionVTK(...)}
+  \end{itemize}
+
+ \end{itemize}
+
+\end{frame}
+\begin{frame}[fragile]
+ \frametitle{\texttt{AddADRProblem(...)}}
+ \framesubtitle{Utilizzo del pacchetto ETA per assemblare i problemi 1D}
+ \begin{lstlisting}[style=general]
+void HiModAssembler::
+AddADRProblem (const matrix_ptrType& systemMatrix, const Real& mu, const TreDvector_type& beta, const Real& sigma)
+{   for (UInt k = 0; k < M_modalbasis->mtot(); ++k)
+    {   for (UInt j = 0; j < M_modalbasis->mtot(); ++j)
+        {   //...
+            VectorSmall<5> Coeff;
+            Coeff[0] = M_modalbasis->Compute_PhiPhi (j, k);     //mu sigma beta1
+            //...
+            {   using namespace ExpressionAssembly;
+                VectorSmall<1> oneVector;
+                oneVector[0] = 1.0;
+                integrate ( elements (M_etfespace->mesh() ),
+                            M_fespace->qr(),
+                            M_etfespace,
+                            M_etfespace,
+                            mu * Coeff[0] * dot ( grad (phi_i) , grad (phi_j) )
+                            + beta[0]*Coeff[0] * dot ( grad (phi_j) , value (oneVector) ) *phi_i
+                            + ( mu * (Coeff[2] + Coeff[4])
+                                + beta[1]*Coeff[1] + beta[2]*Coeff[3]
+                                + sigma * Coeff[0]
+                                + chi_z * Boundary[0] * (xij_Lz * xik_Lz + xij_0 * xik_0)
+                                + chi_y * Boundary[1] * (etaj_Ly * etak_Ly + etaj_0 * etak_0) ) * phi_i * phi_j
+                          )
+                        >> (systemMatrix->block (k, j) );}}}
+    return;}
+\end{lstlisting}
+\end{frame}
