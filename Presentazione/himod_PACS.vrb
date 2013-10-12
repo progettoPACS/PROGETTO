@@ -1,4 +1,4 @@
-\frametitle {\texttt{AddSliceBC(...)}}
+\frametitle{\texttt{AddSliceBC(...)}}
 \framesubtitle{due metodi uno per ogni direzione}
 \begin{lstlisting}[style = general]
 void ModalSpace::
