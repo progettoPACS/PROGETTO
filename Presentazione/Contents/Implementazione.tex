@@ -47,9 +47,9 @@
   \item Calcola gli autovalori del problema 2D\\
   $\rightarrow$ \texttt{EigensProvider(...)}
   \item Valuta le funzioni di base e le loro derivate nei nodi di quadratura\\
-  $\rightarrow$ \texttt{??}
+  $\rightarrow$ \texttt{EvaluateBasis(...)}
   \item Calcola i coefficient $r^{st}_{k,j}$\\
-  $\rightarrow$ \texttt{Compute\_\*(...)}
+  $\rightarrow$ \texttt{Compute\_*(...)}
  \end{itemize}
 \end{frame}
 \begin{frame}[fragile]
@@ -95,5 +95,108 @@ AddSliceBCY (const string& left, const string& right, const Real& mu, const Real
 \end{tikzpicture}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{\texttt{EvaluateBasis(...)}}
+\framesubtitle{Valutare le funzioni di base sui nodi di quadratura}
+\begin{lstlisting}[style=general]
+void ModalSpace::
+EvaluateBasis()
+{
+    // Compute all the eigens from the 1D problems
+    EigensProvider();
+    
+    // Fill the matrices with the evaluation of 
+    // the monodimensional basis and its derivatives
+    M_genbasisY->EvaluateBasis (M_phiy, M_dphiy, 
+                                M_eigenvaluesY, M_quadruleY);
+    M_genbasisZ->EvaluateBasis (M_phiz, M_dphiz, 
+                                M_eigenvaluesZ, M_quadruleZ);
+}
+\end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]
+ \frametitle{\texttt{Compute\_*(..)}}
+ \framesubtitle{Sfruttando la separazione di variabili}
+ \begin{lstlisting}[style=general]
+Real ModalSpace::
+Compute_PhiPhi (const UInt& j, const UInt& k) const
+{   //... 
+    //... (Date le frequenze estrae i sottoindici p e q)
+    for (UInt n = 0; n < M_quadruleY->nbQuadPt(); ++n)
+    coeff_y += M_phiy [p_j][n] * normy *
+                   M_phiy [p_k][n] * normy *
+                   M_Ly * M_quadruleY->weight (n);
+    for (UInt n = 0; n < M_quadruleZ->nbQuadPt(); ++n)
+    coeff_z += M_phiz[q_j][n] * normz *
+                   M_phiz[q_k][n] * normz *
+                   M_Lz * M_quadruleZ->weight (n);
+    return coeff_y * coeff_z;
+}
+\end{lstlisting}
+
+{\footnotesize\textbf{\red{WIP}}: Abbiamo aggiunto dei metodi per considerare 
+\textbf{coefficienti non costanti} che si occupano di calcolare i coefficienti $r^{st}_{j,k}$ \textbf{senza separare le variabili}.
+
+Sono ancora da testare e da ottimizzare.}
+\end{frame}
 
 \subsection{HiModAssembler}
+\begin{frame}
+ \frametitle{HiModAssembler}
+ \framesubtitle{La classe che combina gli elementi finiti e la base modale}
+ \begin{itemize}
+  \item \textbf{Membri principali}
+  \begin{itemize}
+   \item \texttt{M\_modalbasis}
+   \item \texttt{M\_etfespace}
+  \end{itemize}
+
+  \item Metodi per l'\textbf{assemblaggio}
+  \begin{itemize}
+   \item \texttt{AddADRProblem(...)}
+   \item \texttt{interpolate(...)}
+   \item \texttt{Addrhs(...)}
+   \item \texttt{AddDirichletBC\_In(...)}
+  \end{itemize}
+
+  \item Metodi per l'\textbf{analisi}
+  \begin{itemize}
+   \item \texttt{evaluateBase3DGrid(...)} \textcolor{green!50!black}{$//$HiMod vector}
+   \item \texttt{evaluateBase3DGrid(...)} \textcolor{green!50!black}{$//$Function type}
+   \item \texttt{normL2(...)}
+  \end{itemize}
+
+  \item Metodi per l'\textbf{export}
+  \begin{itemize}
+   \item \texttt{ExportStructuredVTK(...)}
+   \item \texttt{ExportFunctionVTK(...)}
+  \end{itemize}
+
+ \end{itemize}
+
+\end{frame}
+\begin{frame}[fragile]
+ \frametitle{\texttt{AddADRProblem(...)}}
+ \framesubtitle{Utilizzo del pacchetto ETA per assemblare i problemi 1D}
+ \begin{lstlisting}[style=general]
+for j {
+for k {
+VectorSmall<5> Coeff;
+Coeff[0] = M_modalbasis->Compute_PhiPhi (j, k);
+//...
+{ using namespace ExpressionAssembly;
+  //...
+  integrate(
+      elements(M_etfespace->mesh()),
+      M_fespace->qr(),
+      M_etfespace,
+      M_etfespace,
+      mu*Coeff[0]*dot(grad(phi_i),grad(phi_j))
+      //...
+      )
+  >>(systemMatrix->block(k,j));
+}
+//...
+return;
+\end{lstlisting}
+\end{frame}
