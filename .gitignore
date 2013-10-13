@@ -4,3 +4,9 @@
 *.toc
 *.synctex.gz
 *.swp
+*.nav
+*.pdf
+*.out
+*.snm
+*.backup
+*.vrb
