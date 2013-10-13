@@ -37,7 +37,7 @@
 % read one line (one image filename) at a time (and strip new line character at end)
 \endlinechar=-1\immediate\read\linkimageinputstream to \linkimagefilename
 % create a new frame per image, center content
-\begin{frame}\begin{center}
+\begin{frame}[noframenumbering]\begin{center}
 % create link pointing backward to link source in main document
 \hyperlink{linkimagerefbackward\arabic{linkimagecounter}}{%
 % create link anchor where link from main document points to
