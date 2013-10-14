@@ -20,10 +20,6 @@
 % \usepackage[bf,footnotesize,center]{caption}
 % \captionsetup{labelformat=empty,labelsep=none}
 
-
-
-
-
 \usepackage[tight]{subfigure}
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows,matrix,decorations.pathreplacing,shapes.geometric,positioning}  
@@ -91,11 +87,6 @@
 \newcommand{\nsp}[1]{\foreach \n in {1,...,#1}{\!}}
 \newcommand{\psp}[1]{\foreach \n in {1,...,#1}{\,}}
 
-\includeonly{
-Contents/Teoria,
-Contents/Implementazione,
-Contents/Risultati
-}
 \newcommand{\red}[1]{\textcolor{red}{#1}}
 \newcommand{\blue}[1]{\textcolor{blue}{#1}}
 \newcommand{\titleslide}[1]{
@@ -113,32 +104,6 @@ Contents/Risultati
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mygray}{rgb}{0.5,0.5,0.5}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
-
-
-\lstdefinestyle{customc}{
-  belowcaptionskip=1\baselineskip,
-  breaklines=true,
-  frame=single,
-  xleftmargin=\parindent,
-  language=C++,
-  showstringspaces=false,
-  basicstyle=\footnotesize\ttfamily,
-  keywordstyle=\bfseries\color{green!40!black},
-  commentstyle=\itshape\color{purple!40!black},
-  identifierstyle=\color{black},
-  stringstyle=\color{purple},
-  %morekeywords={}  
-}
-
-\lstdefinestyle{customasm}{
-  belowcaptionskip=1\baselineskip,
-  frame=L,
-  xleftmargin=\parindent,
-  language=[x86masm]Assembler,
-  basicstyle=\footnotesize\ttfamily,
-  commentstyle=\itshape\color{purple!40!black},
-}
-
 
 \lstdefinestyle{general}{ %
   backgroundcolor=\color{white},
@@ -170,6 +135,15 @@ Contents/Risultati
   tabsize=2,                      
   title=\lstname                  
 }
+
+
+\includeonly{
+Contents/Teoria,
+Contents/Implementazione,
+Contents/Risultati,
+Contents/Extras
+}
+
 \begin{document}
 \begin{frame}
 \maketitle
@@ -180,6 +154,7 @@ Contents/Risultati
 \include{Contents/Teoria}
 \include{Contents/Implementazione}
 \include{Contents/Risultati}
+\titleslide{Fine}
 \appendix
-\flushlinkimages
+\include{Contents/Extras}
 \end{document}
