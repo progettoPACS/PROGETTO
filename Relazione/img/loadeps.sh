@@ -5,7 +5,6 @@
 	#Determino il numero di file
 	NFILE=`find ./* -type d | wc -l`
 	for((i=1;i<=$NFILE;i++));do 
-	cd `sed -n "$i"p cartelle.txt`
-	echo "Ciao"
-	echo `sed -n "$i"p cartelle.txt`
-	; done
+	cd `sed -n "$i"p cartelle.txt`;
+	echo "`sed -n "$i"p ../cartelle.txt`";
+	cd ../; done
