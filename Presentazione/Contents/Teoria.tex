@@ -2,7 +2,7 @@
 
 \subsection{Hierarchical Model Reduction in 3D}
 \begin{frame}
-\tableofcontents[currentsection]
+\tableofcontents[currentsection,currentsubsection]
 \end{frame}
 
  \begin{frame}
@@ -226,6 +226,7 @@ $$\Omega=\bigcup_{x\in\Omega_{1D}}\gamma_x$$
 
 \end{frame}
 
+
  \begin{frame}
   \frametitle{Modelli ridotti}
   \framesubtitle{Problemi 1D accoppiati}
@@ -254,7 +255,8 @@ $$\Omega=\bigcup_{x\in\Omega_{1D}}\gamma_x$$
     \draw<3-> (5.,-1.15)--(5.13,-1);
     \end{tikzpicture}
  \end{center}
- \onslide<3->{ I coefficienti $r^{st}_{k,j}$ accoppiano i problemi 1D: comprimono le informazioni nella fibra trasversale 
+
+ \onslide<3->{ I coefficienti \hyperlink{coeffRE}{$r^{st}_{k,j}$} accoppiano i problemi 1D: comprimono le informazioni nella fibra trasversale 
   tramite opportuni integrali su $\gamma$.}
  \begin{exampleblock}<4->{}
 Trovare $\{u_k\}_{k=1}^m$ con $u_k\in V_{1D}\,\,\forall k=1\ldots m$ tale che
@@ -268,8 +270,10 @@ Trovare $\{u_k\}_{k=1}^m$ con $u_k\in V_{1D}\,\,\forall k=1\ldots m$ tale che
 +\underbrace{\hat r^{00}_{k,j} u_k\theta_j}_{\textbf{Reazione}}
 dx\biggr]=\int_{\Omega_{1D}}\nsp{2}\underbrace{\theta_jf_k}_{\textbf{Forzante}} dx. \psp{3}\forall j=1\ldots m\quad\theta_j\in V_{1D} 
 \end{equation}}
+ \hypertarget<4->{coeffR}{}
 \end{exampleblock}
  \end{frame}
+
  \begin{frame}
   \frametitle{Struttura alegebrica}
   \framesubtitle{Pattern di sparsit\`a}
@@ -317,7 +321,7 @@ dx\biggr]=\int_{\Omega_{1D}}\nsp{2}\underbrace{\theta_jf_k}_{\textbf{Forzante}} 
 \subsection{Basi istruite}
 
 \begin{frame}
-\tableofcontents[currentsection]
+\tableofcontents[currentsection,currentsubsection]
 \end{frame}
 
 \begin{frame}
@@ -510,19 +514,19 @@ a partire da $\{K_{y,p}\}$ e $\{K_{z,q}\}$ \textbf{?}
 \red{\textbf{Note:}} \red{1.} ortogonalit\`a garantita dal teorema spettrale\\
 $\psp{18}$\red{2.} equazione spesso non lineare in $w_{y,k}$
 
-%{\footnotesize
-%\begin{tabular}{l l l l l l l l }
-%\toprule
-%a	&b	&c		&d	&Type			&$\lambda_k$ 					 	&A&B\\
-%\midrule
-%$\chi$&$\mu$	&$\chi$	&$\mu$	&Rob-Rob		&$\tan{(\sqrt{\lambda_k})}
-%(\chi-\frac{\mu^2\lambda_k}{\chi})+2\mu\sqrt{\lambda_k}=0$								&1&$\frac{\mu\sqrt{\lambda_k}}{\chi}$\\
-%1	&0	&$\chi$	&$\mu$	&Dir-Rob	&$\tan{(\sqrt{\lambda_k})}+\frac{\mu\sqrt{\lambda_k}}{\chi}=0$	&1&$-\tan{(\sqrt{\lambda_k})}$  \\
-%1	&0	&1		&0	&Dir-Dir	&$\lambda_k=(k\pi)^2$						&1&0\\
-%0	&1	&0		&1	&Neu-Neu	&$\lambda_k=(k\pi)^2$						&0&1\\
-%
-%\bottomrule
-%\end{tabular}}
+{\footnotesize
+\begin{tabular}{l l l l l l l l }
+\toprule
+a	&b	&c		&d	&Type			&$\lambda_k$ 					 	&A&B\\
+\midrule
+$\chi$&$\mu$	&$\chi$	&$\mu$	&Rob-Rob		&$\tan{(\sqrt{\lambda_k})}
+(\chi-\frac{\mu^2\lambda_k}{\chi})+2\mu\sqrt{\lambda_k}=0$								&1&$\frac{\mu\sqrt{\lambda_k}}{\chi}$\\
+1	&0	&$\chi$	&$\mu$	&Dir-Rob	&$\tan{(\sqrt{\lambda_k})}+\frac{\mu\sqrt{\lambda_k}}{\chi}=0$	&1&$-\tan{(\sqrt{\lambda_k})}$  \\
+1	&0	&1		&0	&Dir-Dir	&$\lambda_k=(k\pi)^2$						&1&0\\
+0	&1	&0		&1	&Neu-Neu	&$\lambda_k=(k\pi)^2$						&0&1\\
+
+\bottomrule
+\end{tabular}}
 \end{frame}
 
 
@@ -549,4 +553,6 @@ $\psp{18}$\red{2.} equazione spesso non lineare in $w_{y,k}$
  \vspace{0.5cm}
 
 Per  il problema dell'ordinamento abbiamo sviluppato l'algoritmo implementato in \red{\texttt{EigensProvider}}.
+\hypertarget{alberoteoria}{}
+\hyperlink{albero}{\beamergotobutton{Vai direttamente all'algoritmo}}
 \end{frame}

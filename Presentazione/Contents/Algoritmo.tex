@@ -7,11 +7,13 @@
 \tikzstyle{eig}=[rectangle, draw, fill=blue!20];
 \tikzstyle{temp}=[rectangle,draw,fill=yellow!20];
 \tikzstyle{rip}=[rectangle,draw,fill=red!70];
-\def\yo{4.8}
-\def\dy{-1}
-\def\c{1.5}
-\def\spazio{2}
+\def\yo{4.8}:
+\def\dy{-1};
+\def\c{1.5};
+\def\spazio{2};
 \useasboundingbox (-4,0) rectangle (4,5);
+\hypertarget<1-1>{albero}{};
+\node<1-> (goback) at (-3,\yo) {\hyperlink{alberoteoria}{\beamerreturnbutton{torna alla parte teorica}}};
 \node<1->[eig] (v1) at (0,\yo)  {$(1,0.44)\psp{\spazio}\mathbf{1.44}$};
 \node<2-4>[temp] (v2) at (-\c,\yo+\dy)  {$(4,0.44)\psp{\spazio}\mathbf{4.44}$};
 \node<2-2>[temp] (v3) at (+\c,\yo+\dy)   {$(1,1.77)\psp{\spazio}\mathbf{2.77}$};
@@ -30,8 +32,8 @@
 \node<7->[rip] (v7) at (-\c+\c/2,\yo+2*\dy) {$(4,1.77)\psp{\spazio}\mathbf{5.77}$};
 \node<8->[eig] (v5) at (\c + \c/2,\yo+2*\dy) {$(1,4)\psp{\spazio}\mathbf{5}$};
 
-\def\s{-0.5}
-\def\sp{0.3}
+\def\s{-0.5};
+\def\sp{0.3};
 \node<1->[eig] (legeig) at (-4+\sp,\s+\yo+2.3*\dy) {$\psp{5}$};
 \node<1->[right,text width=11.5cm] (texteig) at (-3.5,\s+\yo+2.3*\dy) {Nodi gi\`a salvati in \texttt{M\_eigenvalues}, 
 \`e un \texttt{vector} il cui indice, k, \`e gi\`a associato all k-esima \textbf{frequenza}.};
