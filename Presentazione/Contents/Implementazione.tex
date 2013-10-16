@@ -1,4 +1,28 @@
 \section{Implementazione}
+\begin{frame}
+\tableofcontents[currentsection]
+\end{frame}
+
+\begin{frame}
+\frametitle{Schema delle classi}
+\begin{figure}
+\pgfdeclarelayer{background}
+\pgfsetlayers{main,background}
+\begin{tikzpicture}
+\begin{pgfonlayer}{background}
+\node at (0,0) {\linkimage{\includegraphics[scale=0.2]{UML/Basis1DAbstractflip}}{UML/Basis1DAbstractflip}};
+\node at (4.3,0) {\linkimage{\includegraphics[scale=0.2]{UML/modalspace}}{UML/modalspace}};
+\node at (7,0) {\linkimage{\includegraphics[scale=0.2]{UML/himodassembler}}{UML/himodassembler}};
+\end{pgfonlayer}
+
+\draw [dashed, ->] (0.1,-1.5)--(-1,-0.8);
+\draw [dashed,->] (-0.7,0.0)--(-1.4,0.1);
+\draw [dashed,->] (3.1,0.9)--(2,2.3);
+\draw [dashed,->] (5.8,0.8)--(5.3,1.5);
+
+\end{tikzpicture}
+\end{figure}
+\end{frame}
 
 \subsection{Basis1DAbstract}
 
@@ -84,7 +108,7 @@ AddSliceBCY (const string& left, const string& right, const Real& mu, const Real
 %Slide tikz con animazione albero autovalori: nerd alert.
 \input{Contents/Algoritmo}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile,label=evaluatebasis]
 \frametitle{\texttt{EvaluateBasis(...)}}
 \framesubtitle{Valutare le funzioni di base sui nodi di quadratura}
 \begin{lstlisting}[style=general]

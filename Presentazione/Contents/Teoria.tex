@@ -246,38 +246,38 @@ $$\Omega=\bigcup_{x\in\Omega_{1D}}\gamma_x$$
     \useasboundingbox (-\bbx +1,-\bby) rectangle (\dx +1+ \bbx,\bby);
     \node<1->[ellisse] (3D) at (0,0) {\footnotesize \textbf{Problema 3D} in forma debole su $\mathbf{V^m(\Omega)}$};
     \node<2->[rec] (int) at (4,0) {\footnotesize Integrazione su $\boldsymbol{\gamma}$};
-    \node<4->[ellisse] (1Dcoupled) at (8,0) {\footnotesize $\mathbf{m}$ \textbf{problemi 1D} in forma debole su $\mathbf{V_{1D}}$};
-    \node<3->[cerchio] (r) at (5.5,-1) {$r^{st}_{k,j}$};
+    \node<3->[ellisse] (1Dcoupled) at (8,0) {\footnotesize $\mathbf{m}$ \textbf{problemi 1D} in forma debole su $\mathbf{V_{1D}}$};
+    \node<4->[cerchio] (r) at (5.5,-1) {$r^{st}_{k,j}$};
     \draw<2->[->] (3D) -- (int);
-    \draw<4->[->] (int)-- (1Dcoupled);
-    \draw<3-> plot[smooth,tension=1.3] coordinates{(4,-0.5) (4.2,-1) (5.15,-1)};
-    \draw<3-> (4.95,-0.95)--(5.13,-1);
-    \draw<3-> (5.,-1.15)--(5.13,-1);
+    \draw<3->[->] (int)-- (1Dcoupled);
+    \draw<4-> plot[smooth,tension=1.3] coordinates{(4,-0.5) (4.2,-1) (5.15,-1)};
+    \draw<4-> (4.95,-0.95)--(5.13,-1);
+    \draw<4-> (5.,-1.15)--(5.13,-1);
     \end{tikzpicture}
  \end{center}
 
- \onslide<3->{ I coefficienti \hyperlink{coeffRE}{$r^{st}_{k,j}$} accoppiano i problemi 1D: comprimono le informazioni nella fibra trasversale 
-  tramite opportuni integrali su $\gamma$.}
- \begin{exampleblock}<4->{}
+ \onslide<4->{ I coefficienti \hyperlink{coeffRE}{$r^{st}_{k,j}$} accoppiano i problemi 1D: comprimono le informazioni nella fibra trasversale 
+  tramite opportuni integrali su $\gamma$. \hypertarget<4->{coeffR}{}}
+ \begin{exampleblock}<3->{}
 Trovare $\{u_k\}_{k=1}^m$ con $u_k\in V_{1D}\,\,\forall k=1\ldots m$ tale che
   {\footnotesize
 \begin{equation}
 \label{eq:modalreducedcoeff}
  \sum_{k=1}^m\int_{\Omega_{1D}}
  \biggl[
- \underbrace{\hat r^{11}_{k,j}\dpar{ u_k}{x}\dpar{\theta_j}{x}}_{\textbf{Diffusione}}
-+\underbrace{\hat r^{10}_{k,j}\dpar{ u_k}{x}\theta_j}_{\textbf{Trasporto}}
-+\underbrace{\hat r^{00}_{k,j} u_k\theta_j}_{\textbf{Reazione}}
+ \underbrace{r^{11}_{k,j}\dpar{ u_k}{x}\dpar{\theta_j}{x}}_{\textbf{Diffusione}}
++\underbrace{r^{10}_{k,j}\dpar{ u_k}{x}\theta_j}_{\textbf{Trasporto}}
++\underbrace{r^{00}_{k,j} u_k\theta_j}_{\textbf{Reazione}}
 dx\biggr]=\int_{\Omega_{1D}}\nsp{2}\underbrace{\theta_jf_k}_{\textbf{Forzante}} dx. \psp{3}\forall j=1\ldots m\quad\theta_j\in V_{1D} 
 \end{equation}}
- \hypertarget<4->{coeffR}{}
+
 \end{exampleblock}
  \end{frame}
 
  \begin{frame}
   \frametitle{Struttura alegebrica}
   \framesubtitle{Pattern di sparsit\`a}
-  Per $V_{1D}$ utilizziamo una discretizzazione elementi finiti P1 ottenendo il seguende 
+  Per $V_{1D}$ utilizziamo una discretizzazione elementi finiti P1 ottenendo il seguente 
   \textbf{pattern di 
   sparsit\`a}.
   

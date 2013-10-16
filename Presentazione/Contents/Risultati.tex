@@ -6,6 +6,7 @@
 \begin{frame}
 \frametitle{Convergenza DRDR}
 \begin{alertblock}{}
+\vspace{-0.3cm}
 {\footnotesize
 \begin{equation}
 u_{es}(x,y,z)=1e5(Lx - x)^2z(L_z-z)exp\left(70\frac{y^2}{xz + 1} - 140\frac{y^3}{3L_y( x z + 1 )} - \chi\frac{(L_y - 2y)^2}{4L_y\mu }\right)
@@ -22,6 +23,7 @@ u_{es}(x,y,z)=1e5(Lx - x)^2z(L_z-z)exp\left(70\frac{y^2}{xz + 1} - 140\frac{y^3}
 \begin{frame}
 \frametitle{Convergenza RRRR}
 \begin{alertblock}{}
+\vspace{-0.2cm}
 {\footnotesize
 \begin{equation}
 \begin{split}
@@ -46,24 +48,29 @@ C_2(x,z)=\frac{70}{1+x}(-\frac{2}{3L_z}z^3+z^2) \\
 \begin{block}{}
 \vspace{-0.5cm}
 \begin{center}
+{\footnotesize
 \begin{equation}
 \begin{cases}
--\mu\Delta u + \vect{b}\cdot \nabla u + \sigma u = f & \text{in $\Omega$}\\
+-\Delta u + (20,2,0)^T\cdot \nabla u + 0.3 u = f & \text{in $\Omega$}\\
 u=u_{in} & \text{su $\Gamma_{in}$}\\
 \frac{\partial u}{\partial \vect{n}}=0 & \text{su $\Gamma_{out}$ }\\
 u=0 & \text{su $\Gamma _{vaso}$} \\
 \end{cases}
 \end{equation}
+}
 \end{center}
 \end{block}
-\begin{figure}
-{\linkimage{\includegraphics[scale=0.3]{Foto2D+/HiModPretty50}}{Foto2D+/HiModPretty50}}
+\begin{figure}m=50
+{\linkimage{\includegraphics[scale=0.3]{Foto2D+/HiModPretty50}
+}{Foto2D+/HiModPretty50}}
 \end{figure}
 \end{column}
 \begin{column}{0.5 \paperwidth}
 \begin{figure}
 \subfigure
 {\linkimage{\includegraphics[scale=0.22]{DDDD_ADR/Forceterm}}{DDDD_ADR/Forceterm}}
+
+FEM-LifeV
 \subfigure
 {\linkimage{\includegraphics[scale=0.3]{Foto2D+/FEMPretty}}{Foto2D+/FEMPretty}}
 \end{figure}
@@ -72,7 +79,7 @@ u=0 & \text{su $\Gamma _{vaso}$} \\
 \end{frame}
 
 \begin{frame}
-\frametitle{Slice XY 2D}
+\frametitle{Slice XZ 2D}
 
 \begin{columns}
 
@@ -99,7 +106,7 @@ u=0 & \text{su $\Gamma _{vaso}$} \\
 \end{frame}
 
 \begin{frame}
-\frametitle{Slice XY}
+\frametitle{Slice XZ}
 \begin{columns}
 
 \begin{column}{0.5 \paperwidth}
