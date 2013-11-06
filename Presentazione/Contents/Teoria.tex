@@ -296,23 +296,12 @@ dx\biggr]=\int_{\Omega_{1D}}\nsp{2}\underbrace{\theta_jf_k}_{\textbf{Forzante}} 
  \framesubtitle{Basi trigonometriche e polinomi di Legendre}
  In \textbf{letteratura} \`e stato considerato il problema di \textbf{Dirichlet} in \textbf{2D}.
  Le basi scelte sono state
- \begin{columns}
- \begin{column}{0.7\textwidth}
  \begin{itemize}
   \item Funzioni \textcolor{red}{trigonometriche}: $\sin(\pi k x)\text{ in }(0,1)$ 
   \item Polinomi di \textcolor{red}{Legendre} moltiplicati per un \\fattore $(1-x^2)$ e ortogonalizzati alla Gram-Schmidt 
  \end{itemize}
- \end{column}
- \begin{column}{0.3\textwidth}
- \footnotesize
-  [Prof. Perotto]
-  \vspace{0.45cm}
-  
-  \noindent[Prof. Blanco, LNCC]
- \end{column}
- \end{columns}
 \begin{alertblock}{In questo progetto}
- abbiamo esteso l'approccio \textbf{trigonometrico} al \textbf{caso 3D} con condizioni al bordo omogenee di tipo pi\'u \textbf{generale}.
+ abbiamo esteso l'approccio \textbf{trigonometrico} al \textbf{caso 3D} con condizioni al bordo omogenee di tipo pi\'u \textbf{generale}
 \end{alertblock}
 
 \end{frame}
@@ -325,11 +314,20 @@ dx\biggr]=\int_{\Omega_{1D}}\nsp{2}\underbrace{\theta_jf_k}_{\textbf{Forzante}} 
 \end{frame}
 
 \begin{frame}
- \frametitle{Ipotesi geometriche}
+ \frametitle{Basi istruite}
  \framesubtitle{Dominio parallelepipedo}
- \begin{center}
+ \begin{columns}
+  \begin{column}{0.35\textwidth}
+\textbf{Ipotesi} per BC su $\textcolor{red}{\Gamma_{lat}}$
+\begin{itemize}
+ \item \textbf{omogenee}
+  \item di ogni tipo con \textbf{coefficienti~costanti}
+\end{itemize}
+  \end{column}
+\begin{column}{0.65\textwidth}
+  \begin{center}
 \begin{tikzpicture}
-[scale=1.5]
+[scale=1.3]
 
 \draw [color=green!75!blue,pattern=north west lines, pattern color=green!75!blue, thick] (0.5,0.75) rectangle (1.5,1.75);
 
@@ -375,11 +373,13 @@ dx\biggr]=\int_{\Omega_{1D}}\nsp{2}\underbrace{\theta_jf_k}_{\textbf{Forzante}} 
 \node[below] at (\x +\l,\y-\l +0.17) {\footnotesize $x$};
 \end{tikzpicture}
 \end{center}
-\textbf{Ipotesi} per le condizioni al bordo su $\textcolor{red}{\Gamma_{lat}}$
-\begin{itemize}
- \item \textbf{omogenee}
-  \item di ogni tipo ma con \textbf{coefficienti costanti}
-\end{itemize}
+\end{column}
+ \end{columns}
+ \begin{exampleblock}{Idea}
+  costruire un problema agli autovalori sulla slice trasversale e usarne le autofunzioni come base incorporando le condizioni al bordo
+  
+  \emph{[Aletti, Perotto, Veneziani in preparazione]}
+ \end{exampleblock}
 \end{frame}
 
 \begin{frame}
